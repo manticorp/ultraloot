@@ -1,0 +1,14 @@
+{
+    "name": "Clothing Store",
+    "id": "clothing_store",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "type": "table",
+                    "item": "clothing"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,58 @@
+{
+    "name": "Shoes",
+    "id": "shoes",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "weight": 20,
+                    "name": "Leather Shoes",
+                    "id": "leather_shoes",
+                    "item": {
+                        "colorable": {
+                            "color": "black"
+                        }
+                    },
+                    "functions": [
+                        {
+                            "function": "randomColor",
+                            "arguments": {
+                                "choices": {
+                                    "black": 50,
+                                    "brown": 50,
+                                    "lightbrown": 50,
+                                    "darkbrown": 50,
+                                    "white": 1
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "weight": 10,
+                    "name": "Sneakers",
+                    "id": "sneakers",
+                    "item": {
+                        "colorable": {
+                            "color": "white"
+                        }
+                    },
+                    "functions": [
+                        {
+                            "function": "randomColor",
+                            "arguments": {
+                                "choices": {
+                                    "white": 50,
+                                    "black": 50,
+                                    "red": 1,
+                                    "green": 1,
+                                    "blue": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

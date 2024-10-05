@@ -1,0 +1,22 @@
+{
+    "name": "Bathroom",
+    "id": "bathroom",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "name": "Plunger",
+                    "id": "plunger"
+                },
+                {
+                    "name": "Toothpaste",
+                    "id": "toothpaste"
+                },
+                {
+                    "name": "Hair Spray",
+                    "id": "hairspray"
+                }
+            ]
+        }
+    ]
+}

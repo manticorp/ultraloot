@@ -1,0 +1,30 @@
+{
+    "name": "Chocolate",
+    "id": "chocolate",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "weight": 1,
+                    "name": "Large Chocolate Bar",
+                    "id": "large_chocolate_bar"
+                },
+                {
+                    "weight": 4,
+                    "name": "Small Chocolate Bar",
+                    "id": "small_chocolate_bar"
+                },
+                {
+                    "weight": 1,
+                    "name": "Lindor",
+                    "id": "lindor"
+                },
+                {
+                    "weight": 1,
+                    "name": "Lindor",
+                    "id": "lindor"
+                }
+            ]
+        }
+    ]
+}

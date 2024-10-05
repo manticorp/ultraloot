@@ -1,0 +1,52 @@
+{
+    "name": "Shirts",
+    "id": "shirts",
+    "pools": [
+        {
+            "template": {
+                "functions": [
+                    {
+                        "function": "randomColor"
+                    }
+                ]
+            },
+            "entries": [
+                {
+                    "weight": 20,
+                    "name": "T-Shirt",
+                    "id": "t_shirt",
+                    "item": {
+                        "colorable": {
+                            "color": null
+                        }
+                    }
+                },
+                {
+                    "weight": 10,
+                    "name": "Buttondown Shirt",
+                    "id": "buttondown_shirt",
+                    "item": {
+                        "colorable": {
+                            "color": "white"
+                        }
+                    },
+                    "functions": [
+                        {
+                            "function": "randomColor",
+                            "arguments": {
+                                "choices": {
+                                    "white": 100,
+                                    "lightblue": 50,
+                                    "maroon": 10,
+                                    "darkblue": 10,
+                                    "darkgreen": 10,
+                                    "black": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

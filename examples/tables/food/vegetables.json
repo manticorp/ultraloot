@@ -1,0 +1,46 @@
+{
+    "name": "Vegetables",
+    "id": "vegetables",
+    "pools": [
+        {
+            "rolls": 1,
+            "nulls": 0,
+            "template": {
+                "item": {
+                    "perishable": {}
+                }
+            },
+            "functions": [
+                {
+                    "function": "staleLevel"
+                }
+            ],
+            "entries": [
+                {
+                    "weight": 2,
+                    "type": "item",
+                    "name": "Carrot",
+                    "id": "carrot"
+                },
+                {
+                    "weight": 2,
+                    "type": "item",
+                    "name": "Bean",
+                    "id": "bean"
+                },
+                {
+                    "weight": 1,
+                    "type": "item",
+                    "name": "Peas",
+                    "id": "peas"
+                },
+                {
+                    "weight": 1,
+                    "type": "item",
+                    "name": "Cabbage",
+                    "id": "cabbage"
+                }
+            ]
+        }
+    ]
+}

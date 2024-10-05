@@ -1,0 +1,51 @@
+{
+    "name": "Footwear",
+    "id": "footwear",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "name": "Leather Boots",
+                    "id": "boots_leather",
+                    "conditions": [
+                        {
+                            "function": "dependLooter",
+                            "arguments": {
+                                "property": "level",
+                                "min": 5,
+                                "max": 14
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Iron Boots",
+                    "id": "boots_iron",
+                    "conditions": [
+                        {
+                            "function": "dependLooter",
+                            "arguments": {
+                                "property": "level",
+                                "min": 15,
+                                "max": 24
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Steel Boots",
+                    "id": "boots_steel",
+                    "conditions": [
+                        {
+                            "function": "dependLooter",
+                            "arguments": {
+                                "property": "level",
+                                "min": 25
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,87 @@
+{
+    "name": "Trousers",
+    "id": "trousers",
+    "pools": [
+        {
+            "template": {
+                "functions": [
+                    {
+                        "function": "randomColor"
+                    }
+                ]
+            },
+            "entries": [
+                {
+                    "weight": 20,
+                    "name": "Jeans",
+                    "id": "jeans",
+                    "item": {
+                        "colorable": {
+                            "color": "darkblue"
+                        }
+                    },
+                    "functions": [
+                        {
+                            "function": "randomColor",
+                            "arguments": {
+                                "choices": {
+                                    "lightblue": 50,
+                                    "darkblue": 50,
+                                    "maroon": 10,
+                                    "darkgreen": 10,
+                                    "white": 2,
+                                    "black": 1
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "weight": 10,
+                    "name": "Suit Trousers",
+                    "id": "suit_trousers",
+                    "item": {
+                        "colorable": {
+                            "color": "black"
+                        }
+                    },
+                    "functions": [
+                        {
+                            "function": "randomColor",
+                            "arguments": {
+                                "choices": {
+                                    "black": 100,
+                                    "navy": 100,
+                                    "white": 1
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "weight": 10,
+                    "name": "Leggings",
+                    "id": "leggings",
+                    "item": {
+                        "colorable": {
+                            "color": "black"
+                        }
+                    },
+                    "functions": [
+                        {
+                            "function": "randomColor",
+                            "arguments": {
+                                "choices": {
+                                    "black": 100,
+                                    "navy": 100,
+                                    "darkgreen": 1,
+                                    "white": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

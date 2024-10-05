@@ -1,0 +1,26 @@
+{
+    "name": "Stable Foods",
+    "id": "food_stable",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "type": "table",
+                    "item": "food/candy"
+                },
+                {
+                    "type": "table",
+                    "item": "food/chocolate"
+                },
+                {
+                    "type": "table",
+                    "item": "food/junk"
+                },
+                {
+                    "type": "table",
+                    "item": "food/pantry"
+                }
+            ]
+        }
+    ]
+}

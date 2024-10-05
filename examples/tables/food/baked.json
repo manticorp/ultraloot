@@ -1,0 +1,33 @@
+{
+    "name": "Baked Goods",
+    "id": "baked",
+    "pools": [
+        {
+            "template": {
+                "item": {
+                    "perishable": {}
+                }
+            },
+            "functions": [
+                {
+                    "function": "staleLevel"
+                }
+            ],
+            "entries": [
+                {
+                    "name": "Bread",
+                    "id": "bread"
+                },
+                {
+                    "name": "Baguette",
+                    "id": "baguette"
+                },
+                {
+                    "weight": 0.5,
+                    "name": "Cake",
+                    "id": "cake"
+                }
+            ]
+        }
+    ]
+}

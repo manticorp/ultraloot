@@ -1,0 +1,51 @@
+{
+    "name": "Armor",
+    "id": "armor",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "name": "Leather Armor",
+                    "id": "armor_leather",
+                    "conditions": [
+                        {
+                            "function": "dependLooter",
+                            "arguments": {
+                                "property": "level",
+                                "min": 5,
+                                "max": 14
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Iron Armor",
+                    "id": "armor_iron",
+                    "conditions": [
+                        {
+                            "function": "dependLooter",
+                            "arguments": {
+                                "property": "level",
+                                "min": 15,
+                                "max": 24
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Steel Armor",
+                    "id": "armor_steel",
+                    "conditions": [
+                        {
+                            "function": "dependLooter",
+                            "arguments": {
+                                "property": "level",
+                                "min": 25
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

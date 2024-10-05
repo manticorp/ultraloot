@@ -1,0 +1,26 @@
+{
+    "name": "Cooked",
+    "id": "cooked",
+    "pools": [
+        {
+            "rolls": 1,
+            "nulls": 0,
+            "template": {
+                "item": {
+                    "perishable": {}
+                }
+            },
+            "functions": [
+                {
+                    "function": "staleLevel"
+                }
+            ],
+            "entries": [
+                {
+                    "name": "Cottage Pie",
+                    "id": "cottage_pie"
+                }
+            ]
+        }
+    ]
+}

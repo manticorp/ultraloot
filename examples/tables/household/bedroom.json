@@ -1,0 +1,30 @@
+{
+    "name": "Bedroom",
+    "id": "bedroom",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "name": "Hairbrush",
+                    "id": "hairbrush"
+                },
+                {
+                    "name": "Hair Curlers",
+                    "id": "hair_curlers"
+                },
+                {
+                    "name": "Hair Spray",
+                    "id": "hairspray"
+                },
+                {
+                    "name": "Pillow",
+                    "id": "pillow"
+                },
+                {
+                    "type": "table",
+                    "id": "clothing"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,14 @@
+{
+    "name": "Armor Box",
+    "id": "armor_box",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "type": "table",
+                    "item": "gear/armor"
+                }
+            ]
+        }
+    ]
+}

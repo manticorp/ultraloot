@@ -1,0 +1,22 @@
+{
+    "name": "Stones",
+    "id": "stones",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "name": "Sandstone",
+                    "id": "sandstone"
+                },
+                {
+                    "name": "Onyx",
+                    "id": "onyx"
+                },
+                {
+                    "name": "Flint",
+                    "id": "flint"
+                }
+            ]
+        }
+    ]
+}
