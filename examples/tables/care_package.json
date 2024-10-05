@@ -1,0 +1,33 @@
+{
+    "name": "Care Package",
+    "id": "care_package",
+    "pools": [
+        {
+            "rolls": 5,
+            "nulls": 2,
+            "entries": [
+                {
+                    "weight": 5,
+                    "type": "table",
+                    "item": "food"
+                },
+            ]
+        },
+        {
+            "rolls": 2,
+            "nulls": 2,
+            "entries": [
+                {
+                    "weight": 1,
+                    "type": "table",
+                    "item": "loot/skill_books"
+                },
+                {
+                    "weight": 5,
+                    "type": "table",
+                    "item": "loot/skill_magazines"
+                },
+            ]
+        }
+    ]
+}

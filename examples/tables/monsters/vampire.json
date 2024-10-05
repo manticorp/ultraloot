@@ -1,0 +1,23 @@
+{
+    "name": "Vampire",
+    "id": "vampire",
+    "pools": [
+        {
+            "rolls": 5,
+            "entries": [
+                {
+                    "type": "table",
+                    "item": "loot/animal_generic"
+                },
+                {
+                    "type": "table",
+                    "item": "gear"
+                },
+                {
+                    "name": "Sharp Tooth",
+                    "id": "sharp_tooth"
+                }
+            ]
+        }
+    ]
+}

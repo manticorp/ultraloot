@@ -1,0 +1,28 @@
+{
+    "name": "Fruit",
+    "id": "fruit",
+    "pools": [
+        {
+            "template": {
+                "item": {
+                    "perishable": {}
+                }
+            },
+            "functions": [
+                {
+                    "function": "staleLevel"
+                }
+            ],
+            "entries": [
+                {
+                    "name": "Apple",
+                    "id": "apple"
+                },
+                {
+                    "name": "Orange",
+                    "id": "orange"
+                }
+            ]
+        }
+    ]
+}

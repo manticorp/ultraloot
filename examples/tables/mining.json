@@ -1,0 +1,25 @@
+{
+    "name": "Mining",
+    "id": "mining",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "weight": 1,
+                    "type": "table",
+                    "item": "mining/gems"
+                },
+                {
+                    "weight": 2,
+                    "type": "table",
+                    "item": "mining/metals"
+                },
+                {
+                    "weight": 4,
+                    "type": "table",
+                    "item": "mining/stones"
+                }
+            ]
+        }
+    ]
+}

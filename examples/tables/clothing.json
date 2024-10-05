@@ -1,0 +1,26 @@
+{
+    "name": "Clothing",
+    "id": "clothing",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "type": "table",
+                    "item": "clothing/hats"
+                },
+                {
+                    "type": "table",
+                    "item": "clothing/shirts"
+                },
+                {
+                    "type": "table",
+                    "item": "clothing/shoes"
+                },
+                {
+                    "type": "table",
+                    "item": "clothing/trousers"
+                }
+            ]
+        }
+    ]
+}

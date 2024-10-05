@@ -1,0 +1,76 @@
+{
+    "name": "Hats",
+    "id": "hats",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "weight": 20,
+                    "name": "Baseball Cap",
+                    "id": "baseball_cap",
+                    "item": {
+                        "colorable": {
+                            "color": null
+                        }
+                    },
+                    "functions": [
+                        {
+                            "function": "randomColor"
+                        }
+                    ]
+                },
+                {
+                    "weight": 10,
+                    "name": "Wooly Hat",
+                    "id": "wooly_hat",
+                    "item": {
+                        "colorable": {
+                            "color": null
+                        }
+                    },
+                    "functions": [
+                        {
+                            "function": "randomColor"
+                        }
+                    ]
+                },
+                {
+                    "weight": 5,
+                    "name": "Top Hat",
+                    "id": "top_hat",
+                    "item": {
+                        "colorable": {
+                            "color": null
+                        }
+                    },
+                    "functions": [
+                        {
+                            "function": "randomColor"
+                        }
+                    ]
+                },
+                {
+                    "weight": 1,
+                    "name": "Crown",
+                    "id": "crown",
+                    "item": {
+                        "colorable": {
+                            "color": "gold"
+                        }
+                    },
+                    "functions": [
+                        {
+                            "function": "randomColor",
+                            "arguments": {
+                                "choices": [
+                                    "gold",
+                                    "silver"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

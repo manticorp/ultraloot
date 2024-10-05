@@ -1,0 +1,38 @@
+{
+    "name": "Skill Magazines",
+    "id": "skill_magazines",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "name": "STR Magazine",
+                    "id": "magazine_str"
+                },
+                {
+                    "name": "PER Magazine",
+                    "id": "magazine_per"
+                },
+                {
+                    "name": "END Magazine",
+                    "id": "magazine_end"
+                },
+                {
+                    "name": "CHA Magazine",
+                    "id": "magazine_cha"
+                },
+                {
+                    "name": "INt Magazine",
+                    "id": "magazine_int"
+                },
+                {
+                    "name": "AGI Magazine",
+                    "id": "magazine_agi"
+                },
+                {
+                    "name": "LCK Magazine",
+                    "id": "magazine_lck"
+                }
+            ]
+        }
+    ]
+}

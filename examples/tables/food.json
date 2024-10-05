@@ -1,0 +1,22 @@
+{
+    "name": "Food in General",
+    "id": "food",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "weight": 5,
+                    "type": "table",
+                    "name": "Stable Foods",
+                    "item": "food/composite/stable"
+                },
+                {
+                    "weight": 5,
+                    "type": "table",
+                    "name": "Unstable Foods",
+                    "item": "food/composite/unstable"
+                }
+            ]
+        }
+    ]
+}

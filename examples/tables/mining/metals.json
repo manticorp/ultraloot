@@ -1,0 +1,30 @@
+{
+    "name": "Metals",
+    "id": "metals",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "weight": 0.1,
+                    "name": "Gold",
+                    "id": "gold"
+                },
+                {
+                    "weight": 1,
+                    "name": "Silver",
+                    "id": "silver"
+                },
+                {
+                    "weight": 10,
+                    "name": "Copper",
+                    "id": "copper"
+                },
+                {
+                    "weight": 100,
+                    "name": "Iron",
+                    "id": "iron"
+                }
+            ]
+        }
+    ]
+}

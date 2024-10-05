@@ -1,0 +1,27 @@
+{
+    "name": "Generic Animal Loot",
+    "id": "animal_generic",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "name": "Bone",
+                    "id": "bone"
+                },
+                {
+                    "name": "Sinews",
+                    "id": "sinews"
+                },
+                {
+                    "name": "Blood",
+                    "id": "blood",
+                    "qty": {
+                        "min": 0,
+                        "max": 5,
+                        "type": "normal"
+                    }
+                }
+            ]
+        }
+    ]
+}

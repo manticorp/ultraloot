@@ -1,0 +1,18 @@
+{
+    "name": "Pantry",
+    "id": "pantry",
+    "pools": [
+        {
+            "rolls": 1,
+            "nulls": 0,
+            "entries": [
+                {
+                    "weight": 1,
+                    "type": "item",
+                    "name": "Flour",
+                    "id": "flour"
+                }
+            ]
+        }
+    ]
+}

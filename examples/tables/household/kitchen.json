@@ -1,0 +1,23 @@
+{
+    "name": "Kitchen",
+    "id": "kitchen",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "name": "Kitchen Knife",
+                    "id": "kitchen_knife"
+                },
+                {
+                    "name": "Ladel",
+                    "id": "ladel"
+                },
+                {
+                    "weight": 0.01,
+                    "name": "Frying Pan",
+                    "id": "pan"
+                }
+            ]
+        }
+    ]
+}

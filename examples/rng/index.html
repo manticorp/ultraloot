@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+        <script src="./../../dist/ultraloot.js"></script>
+        <script src="demo.js"></script>
+        <style>
+            * {
+                font-family: Aptos, Segoe UI, Helvetica, Arial, Verdana, sans-serif;
+            }
+
+            body {
+                padding: 0;
+            }
+
+            .app {
+                max-width: 1600px;
+            }
+
+            #graph-container {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .rng-demo-container {
+                display: flex;
+                flex-direction: column;
+                border: 2px solid grey;
+                padding: 1rem;
+            }
+
+            .rng-demo-container pre {
+                padding: 1rem;
+                border: 2px solid rgb(110,120,130);
+                background: rgb(50,54,59);
+                color: white;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="app">
+            <div class="rng-graphs">
+                <h1>Graphed Results of Rolling in RNG - different functions</h1>
+                <div id="graph-container"></div>
+            </div>
+        </div>
+    </body>
+</html>

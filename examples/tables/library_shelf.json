@@ -1,0 +1,22 @@
+{
+    "name": "Library Shelf",
+    "id": "library_shelf",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "weight": 1,
+                    "type": "table",
+                    "name": "Books",
+                    "item": "loot/skill_books"
+                },
+                {
+                    "weight": 10,
+                    "type": "table",
+                    "name": "Magazines",
+                    "item": "loot/skill_magazines"
+                }
+            ]
+        }
+    ]
+}

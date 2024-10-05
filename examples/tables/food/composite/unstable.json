@@ -1,0 +1,26 @@
+{
+    "name": "Unstable Foods",
+    "id": "food_unstable",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "type": "table",
+                    "item": "food/baked"
+                },
+                {
+                    "type": "table",
+                    "item": "food/cooked"
+                },
+                {
+                    "type": "table",
+                    "item": "food/fruit"
+                },
+                {
+                    "type": "table",
+                    "item": "food/vegetables"
+                }
+            ]
+        }
+    ]
+}

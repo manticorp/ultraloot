@@ -1,0 +1,19 @@
+{
+    "name": "Zombie",
+    "id": "zombie",
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "table",
+                    "item": "loot/animal_generic"
+                },
+                {
+                    "type": "table",
+                    "item": "gear"
+                }
+            ]
+        }
+    ]
+}

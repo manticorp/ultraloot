@@ -1,0 +1,22 @@
+{
+    "entryPoints": [
+        "src/index.ts",
+        // "src/ultraloot.ts",
+        // "src/rng.ts",
+        // "src/rng/predictable.ts",
+        // "src/utils.ts",
+        // "src/table.ts",
+        // "src/table/pool.ts",
+        // "src/table/manager.ts",
+        // "src/table/pool/entry.ts",
+        // "src/table/pool/entry/result.ts",
+        // "src/table/pool/entry/results.ts",
+        "src/default/functions.ts",
+        "src/default/conditions.ts"
+    ],
+    "plugin": [
+        // "typedoc-plugin-rename-defaults"
+    ],
+    "exclude" : ["dist/", "docs/", "node_modules/"],
+    "out": "docs/code"
+}

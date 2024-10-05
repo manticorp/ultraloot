@@ -1,0 +1,38 @@
+{
+    "name": "Skill Books",
+    "id": "skill_books",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "name": "STR Book",
+                    "id": "book_str"
+                },
+                {
+                    "name": "PER Book",
+                    "id": "book_per"
+                },
+                {
+                    "name": "END Book",
+                    "id": "book_end"
+                },
+                {
+                    "name": "CHA Book",
+                    "id": "book_cha"
+                },
+                {
+                    "name": "INt Book",
+                    "id": "book_int"
+                },
+                {
+                    "name": "AGI Book",
+                    "id": "book_agi"
+                },
+                {
+                    "name": "LCK Book",
+                    "id": "book_lck"
+                }
+            ]
+        }
+    ]
+}

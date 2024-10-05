@@ -1,0 +1,26 @@
+{
+    "name": "Armor Box",
+    "id": "armor_box",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "type": "table",
+                    "item": "gear/armor"
+                },
+                {
+                    "type": "table",
+                    "item": "gear/footwear"
+                },
+                {
+                    "type": "table",
+                    "item": "gear/headgear"
+                },
+                {
+                    "type": "table",
+                    "item": "gear/legwear"
+                }
+            ]
+        }
+    ]
+}

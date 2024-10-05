@@ -1,0 +1,51 @@
+{
+    "name": "Headgear",
+    "id": "headgear",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "name": "Leather Helmet",
+                    "id": "helmet_leather",
+                    "conditions": [
+                        {
+                            "function": "dependLooter",
+                            "arguments": {
+                                "property": "level",
+                                "min": 5,
+                                "max": 14
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Iron Helmet",
+                    "id": "helmet_iron",
+                    "conditions": [
+                        {
+                            "function": "dependLooter",
+                            "arguments": {
+                                "property": "level",
+                                "min": 15,
+                                "max": 24
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Steel Helmet",
+                    "id": "helmet_steel",
+                    "conditions": [
+                        {
+                            "function": "dependLooter",
+                            "arguments": {
+                                "property": "level",
+                                "min": 25
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

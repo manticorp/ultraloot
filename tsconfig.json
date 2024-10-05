@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es2022",
+    "jsx": "react",
+    "allowJs": true,
+    "lib": [ "es2022" ],
+    "moduleResolution": "node",
+    "resolveJsonModule": true
+  },
+  "exclude" : ["dist/", "docs/", "node_modules/"],
+}

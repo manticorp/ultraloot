@@ -1,0 +1,15 @@
+{
+    "name": "Deer",
+    "id": "deer",
+    "pools": [
+        {
+            "rolls": 2,
+            "entries": [
+                {
+                    "type": "table",
+                    "item": "loot/animal_generic"
+                }
+            ]
+        }
+    ]
+}

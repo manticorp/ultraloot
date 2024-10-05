@@ -1,0 +1,22 @@
+{
+    "name": "Cake",
+    "id": "cake",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "weight": 2,
+                    "type": "item",
+                    "name": "Chocolate",
+                    "id": "chocolate"
+                },
+                {
+                    "weight": 2,
+                    "type": "item",
+                    "name": "Boiled Sweets",
+                    "id": "boiled_sweets"
+                }
+            ]
+        }
+    ]
+}

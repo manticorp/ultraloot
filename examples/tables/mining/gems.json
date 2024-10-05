@@ -1,0 +1,35 @@
+{
+    "name": "Gems",
+    "id": "gems",
+    "pools": [
+        {
+            "entries": [
+                {
+                    "weight": 0.1,
+                    "name": "Diamond",
+                    "id": "diamond"
+                },
+                {
+                    "weight": 1,
+                    "name": "Ruby",
+                    "id": "ruby"
+                },
+                {
+                    "weight": 10,
+                    "name": "Emerald",
+                    "id": "emerald"
+                },
+                {
+                    "weight": 100,
+                    "name": "Sapphire",
+                    "id": "sapphire"
+                },
+                {
+                    "weight": 1000,
+                    "name": "Amethyst",
+                    "id": "amethyst"
+                }
+            ]
+        }
+    ]
+}
