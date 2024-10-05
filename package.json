@@ -5,9 +5,9 @@
   "main": "dist/ultraloot.js",
   "module": "dist/index.js",
   "scripts": {
-    "watch": "webpack --config webpack.dev.config.js --watch",
-    "dev": "webpack --config webpack.dev.config.js",
-    "build": "webpack --config webpack.production.config.js && npx typedoc",
+    "watch": "webpack --mode development --config webpack.dev.config.js --watch",
+    "dev": "webpack --mode development --config webpack.dev.config.js",
+    "build": "webpack --mode production --config webpack.production.config.js && npx typedoc",
     "ci": "npm t && npm run test-build",
     "test-build": "npm run build && node test-build.js && node test-build-common.cjs && node test-build-module.mjs",
     "test": "jest --coverage",
