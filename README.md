@@ -19,6 +19,11 @@ An easy to use, extendable, serialisable loot table module
 📫 Sync and Async versions (async default, to allow for async conditions/functions)  
 🏠 Many examples
 
+
+* [Advanced Docs](https://manticorp.github.io/ultraloot)
+* [Code Docs](https://manticorp.github.io/ultraloot/code/)
+* [Test Coverage Report](https://manticorp.github.io/ultraloot/coverage/lcov-report/index.html)
+
 ## Installation
 
 ### Browser
@@ -85,7 +90,7 @@ There is a hierarchy:
 
 Items marked **```Chancy```** have a special meaning.
 
-Here is a full table definition for illustration, although please view type information for ```LootTableEasyDefinition``` for more information:
+Here is a full table definition for illustration, although please view type information for [LootTableEasyDefinition](https://manticorp.github.io/ultraloot/code/types/index.LootTableEasyDefinition.html) for more information:
 
 ```javascript
 const tableDefinition = {
@@ -178,6 +183,8 @@ const tableWithOnePoolWithTwoEmptyEntries = u.createTable({
 });
 ```
 
+See [UltraLoot.createTable](https://manticorp.github.io/ultraloot/code/classes/index.UltraLoot.html#createTable) for more information.
+
 ### Chancy
 
 Anything marked as "Chancy" is special, and can take one of the following as an argument:
@@ -228,7 +235,13 @@ As you can see, it's quite flexible, and allows for many ways of specifying chan
 
 The ```rng``` object is also passed to any functions or conditions on tables, so you can use chancy stuff there as well.
 
+[You can find more information about Chancy here.](https://manticorp.github.io/ultraloot/code/types/index.Chancy.html)
+
 ## Usage
+
+[You can find the documentation for rolling here](https://manticorp.github.io/ultraloot/code/classes/index.LootTable.html#roll). Particularly, the [arguments to the roll function, which are passed as ab object](https://manticorp.github.io/ultraloot/code/interfaces/index.TableRollInterface.html).
+
+Here is a simple example:
 
 ```javascript
 
@@ -272,13 +285,13 @@ preciousMetalsTable.roll().then(results => {
 
 ### Simple
 
-The first thing you'll need to do is create an UltraLoot instance:
+The first thing you'll need to do is [create an UltraLoot instance](https://manticorp.github.io/ultraloot/code/classes/index.UltraLoot.html#constructor):
 
 ```javascript
 const ul = new UltraLoot();
 ```
 
-If you would like, you can pass in a seed for the random number generator:
+If you would like, you can pass in a [seed](https://manticorp.github.io/ultraloot/code/types/index.Seed.html) for the [random number generator](https://manticorp.github.io/ultraloot/code/classes/index.Rng.html#constructor):
 
 ```javascript
 const ul = new UltraLoot('my_awesome_seed');
@@ -286,13 +299,13 @@ const ul = new UltraLoot('my_awesome_seed');
 
 This allows you to get consistent results given the same seed.
 
-You can also pass in your own random number generator, as long as it has certain functionality. This can be seen in ```src/rng.ts``` with the interface ```RngInterface```.
+You can also pass in your own random number generator, as long as it has certain functionality. This can be seen in ```src/rng.ts``` with the interface [RngInterface](https://manticorp.github.io/ultraloot/code/interfaces/index.RngInterface.html) and [RngConstructor](https://manticorp.github.io/ultraloot/code/interfaces/index.RngConstructor.html).
 
 ```javascript
 const ul = new UltraLoot(myRngImplementation);
 ```
 
-Loot tables can be created with a call to ```createTable```:
+Loot tables can be created with a call to [createTable](https://manticorp.github.io/ultraloot/code/classes/index.UltraLoot.html#createTable):
 
 ```javascript
 const table = ul.createTable(tableDefinition);
@@ -323,7 +336,7 @@ game.scatterOnGround(items, monster.location);
 
 ### Handing Results
 
-The results are given as a raw list of rolls from each pool in the table. This can, of course, consist of all the rolls of the sub table as well.
+The [results](https://manticorp.github.io/ultraloot/code/classes/index.LootTableEntryResults.html) are given as a raw list of rolls from each pool in the table. This can, of course, consist of all the rolls of the sub table as well.
 
 The result is a simple array of entries which mimic the entries created when the table was created:
 
@@ -401,7 +414,7 @@ result.collapsed() == [
 
 The ```collapsed``` function collapses things based on their JSON representation (minus the qty) so if their keys aren't exactly the same they won't be collapsed together.
 
-Note: ```collapse```d non-stackable entries don't necessarily have a qty of 1 depending on how your tables, pools and functions are set up. The collapse function doesn't split objects with a qty > 1, it just doesn't add non stackable items together.
+Note: ```collapsed``` non-stackable entries don't necessarily have a qty of 1 depending on how your tables, pools and functions are set up. The collapse function doesn't split objects with a qty > 1, it just doesn't add non stackable items together.
 
 ### Sync vs Async
 
@@ -455,11 +468,11 @@ Here is an example loot table json file ```gems.json```:
 }
 ```
 
-We would load this file like this:
+We would load this file like this - not it is an async process:
 
 ```javascript
 const ul = new UltraLoot();
-ul.loadTable('gems.json');
+table = await ul.loadTable('gems.json');
 ```
 
 If you have a table with an entry that inherits from a table, then you need to provide it with a path and make sure it has the type "table". For example, lets say we have ```parent.json```:
@@ -498,7 +511,7 @@ They can be located in a subfolder in your project - you will just need to provi
 
 ```javascript
 const ul = new UltraLoot();
-ul.loadTable('parent.json', {path: 'tables'});
+const parent = await ul.loadTable('parent.json', {path: 'tables'});
 ```
 
 This relative path will be applied to all sub tables as well.
@@ -507,7 +520,7 @@ You can also give a default extension to be used when no extensions are given:
 
 ```javascript
 const ul = new UltraLoot();
-ul.loadTable('parent', {path: 'tables', defaultExtension: 'json'});
+const parent = await ul.loadTable('parent', {path: 'tables', defaultExtension: '.json'});
 ````
 
 Example file structure found in ```demo/tables```:
@@ -570,7 +583,7 @@ Then in your lootingGame.js:
 ```javascript
 const ul = new UltraLoot();
 const tables = {};
-const options = {path: 'tables', suffix: '.json'};
+const options = {path: 'tables', defaultExtension: '.json'};
 
 tables.clothing     = await ul.loadTable('clothing', options);
 tables.libraryShelf = await ul.loadTable('library_shelf', options);
@@ -715,7 +728,7 @@ ul.registerDefaultFunctions();
 ul.registerDefaultConditions();
 ```
 
-The following functions are available:
+The [following functions](https://manticorp.github.io/ultraloot/code/modules/default_functions.html) are available:
 
 ```
 inheritLooter
@@ -723,7 +736,7 @@ inheritContext
 setToRandomChoice
 ```
 
-And the following conditions are available:
+And the [following conditions](https://manticorp.github.io/ultraloot/code/modules/default_conditions.html) are available:
 
 ```
 dependContext
