@@ -432,6 +432,13 @@ export abstract class RngAbstract implements RngInterface {
     let total = 0; let id;
 
     if (Array.isArray(data)) {
+      // Some shortcuts
+      if (data.length === 0) {
+        return null;
+      }
+      if (data.length === 1) {
+        return data[0];
+      }
       const chances : Map<any, number> = new Map();
       data.forEach(function (a) {
         chances.set(a, 1);
@@ -440,10 +447,25 @@ export abstract class RngAbstract implements RngInterface {
     }
 
     if (data instanceof Map) {
+      // Some shortcuts
+      if (data.size === 0) {
+        return null;
+      }
+      if (data.size === 1) {
+        return data.keys().next().value;
+      }
       data.forEach((value, key) => {
         total += value;
       });
     } else {
+      // Some shortcuts
+      const entries = Object.keys(data);
+      if (entries.length === 0) {;
+        return null;
+      }
+      if (entries.length === 1) {
+        return entries[0];
+      }
       for (id in data) {
         if (data[id] < 0) {
           throw new Error('Probability cannot be negative');

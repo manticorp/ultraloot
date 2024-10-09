@@ -134,11 +134,11 @@ describe('testing ultraloot in a sync fashion', () => {
 
     const a = td.rollSync({ n: 6 });
     expect(a[0]).toHaveProperty('id', 'test');
-    expect(a[1]).toHaveProperty('id', 'teste');
+    expect(a[1]).toHaveProperty('id', 'test');
     expect(a[2]).toHaveProperty('id', 'test');
-    expect(a[3]).toHaveProperty('id', 'test');
+    expect(a[3]).toHaveProperty('id', 'teste');
     expect(a[4]).toHaveProperty('id', 'teste');
-    expect(a[5]).toHaveProperty('id', 'test');
+    expect(a[5]).toHaveProperty('id', 'teste');
   });
 
   test('roll with nulls', () => {
@@ -703,7 +703,7 @@ describe('testing ultraloot in a sync fashion', () => {
     const rng = new PredictableRng();
     const u = new UltraLoot(rng);
 
-    rng.setEvenSpread(12);
+    rng.setEvenSpread(6);
 
     const pm = {
       name: 'Precious Metals',
@@ -769,7 +769,7 @@ describe('testing ultraloot in a sync fashion', () => {
     const rng = new PredictableRng();
     const u = new UltraLoot(rng);
 
-    rng.setEvenSpread(12);
+    rng.setEvenSpread(6);
 
     const pm = {
       name: 'Precious Metals',

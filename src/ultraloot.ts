@@ -545,6 +545,15 @@ export class UltraLoot {
   }
 
   protected transformEasyToProperLootTablePoolDefinition (def: LootTablePoolEasyDefinition): LootTablePoolDefinition {
+    const transformedEntries = [];
+    for (let entry of (def.entries ?? [])) {
+      if (this.isEasyLootTableDefinition(entry)) {
+        if (typeof entry.pools !== 'undefined' && Array.isArray(entry.pools)) {
+          entry = this.createTable(entry);
+        }
+      }
+      transformedEntries.push(entry);
+    }
     const result: LootTablePoolDefinition = {
       name: def.name,
       id: def.id,
@@ -553,7 +562,7 @@ export class UltraLoot {
       template: def.template,
       conditions: def.conditions,
       functions: def.functions,
-      entries: def.entries
+      entries: transformedEntries
     };
     return result;
   }
