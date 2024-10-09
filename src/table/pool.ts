@@ -116,6 +116,7 @@ export default class LootPool {
         choices[i] = rng.chancy(a.weight ?? 1);
       }
     });
+    log.vv(`Pool ${this.description} | Choices:`, choices);
     return [numRolls, choices];
   }
 

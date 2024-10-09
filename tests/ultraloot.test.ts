@@ -518,14 +518,14 @@ describe('testing ultraloot', () => {
     const pd = u.createPool({ id: 'test_deep', entries: [et] });
     const td = u.createTable({ id: 'test_deep', fn: 'test_deep_filename', pools: [pd] });
 
-    expect(td.roll({ n: 6 }).then(a => {
+    return (td.roll({ n: 6 }).then(a => {
       expect(a[0]).toHaveProperty('id', 'test');
-      expect(a[1]).toHaveProperty('id', 'teste');
+      expect(a[1]).toHaveProperty('id', 'test');
       expect(a[2]).toHaveProperty('id', 'test');
-      expect(a[3]).toHaveProperty('id', 'test');
+      expect(a[3]).toHaveProperty('id', 'teste');
       expect(a[4]).toHaveProperty('id', 'teste');
-      expect(a[5]).toHaveProperty('id', 'test');
-    })).resolves.not.toThrow();
+      expect(a[5]).toHaveProperty('id', 'teste');
+    }));
   });
 
   test('roll with nulls', async () => {
@@ -563,6 +563,60 @@ describe('testing ultraloot', () => {
     const table = u.createTable(pm);
 
     return expect(table.roll({ n: 12 }).then(a => {
+      expect(a).toHaveLength(6);
+      expect(a[0]).toHaveProperty('id', 'gold');
+      expect(a[1]).toHaveProperty('id', 'silver');
+      expect(a[2]).toHaveProperty('id', 'silver');
+      expect(a[3]).toHaveProperty('id', 'bronze');
+      expect(a[4]).toHaveProperty('id', 'bronze');
+      expect(a[5]).toHaveProperty('id', 'bronze');
+    })).resolves.not.toThrow();
+  });
+
+  test('roll subtable with nulls', async () => {
+    const rng = new PredictableRng();
+    const u = new UltraLoot(rng);
+
+    rng.setEvenSpread(12);
+
+    const pm = {
+      name: 'Precious Metals',
+      pools: [
+        {
+          rolls: 1,
+          nulls: 6,
+          entries: [
+            {
+              name: 'Gold',
+              id: 'gold',
+              weight: 1,
+            },
+            {
+              name: 'Silver',
+              id: 'silver',
+              weight: 2,
+            },
+            {
+              name: 'Bronze',
+              id: 'bronze',
+              weight: 3,
+            }
+          ]
+        }
+      ],
+    };
+    const table = u.createTable({
+      pools: [
+        {
+          rolls: 12,
+          entries: [
+            pm
+          ]
+        }
+      ]
+    });
+
+    return expect(table.roll({ n: 1 }).then(a => {
       expect(a).toHaveLength(6);
       expect(a[0]).toHaveProperty('id', 'gold');
       expect(a[1]).toHaveProperty('id', 'silver');
@@ -1143,7 +1197,7 @@ describe('testing ultraloot', () => {
     const rng = new PredictableRng();
     const u = new UltraLoot(rng);
 
-    rng.setEvenSpread(12);
+    rng.setEvenSpread(6);
 
     const pm = {
       name: 'Precious Metals',
@@ -1210,7 +1264,7 @@ describe('testing ultraloot', () => {
     const rng = new PredictableRng();
     const u = new UltraLoot(rng);
 
-    rng.setEvenSpread(12);
+    rng.setEvenSpread(6);
 
     const pm = {
       name: 'Precious Metals',
