@@ -22,11 +22,11 @@ export default class LootTableEntryResults extends Array<LootTableEntryResult> {
   protected entrySignature (entry: LootTableEntryResult) {
     const entryWithoutQty: Record<string, any> = {};
     for (const [k, v] of Object.entries(entry)) {
-      if (k !== 'id') {
+      if (k !== 'qty') {
         entryWithoutQty[k] = v;
       }
     }
-    return JSON.stringify(entry);
+    return JSON.stringify(entryWithoutQty);
   }
 
   collapsed () {
@@ -35,7 +35,8 @@ export default class LootTableEntryResults extends Array<LootTableEntryResult> {
     for (const ob of this) {
       if (ob.stackable) {
         const sig = this.entrySignature(ob);
-        if (!map[sig]) {
+        console.log(sig, typeof map[sig]);
+        if (typeof map[sig] === 'undefined') {
           map[sig] = ob;
         } else {
           map[sig].addQty(ob.qty);

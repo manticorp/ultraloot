@@ -13,7 +13,7 @@ if (typeof PRODUCTION !== 'undefined') {
 /**
  * Trigger verbose logs
  */
-debug = false;
+// debug = false;
 const verbose = true;
 const ultraverbose = true;
 
