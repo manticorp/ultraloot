@@ -22,7 +22,6 @@ An easy to use, extendable, serialisable loot table module
 
 * [Advanced Docs](https://manticorp.github.io/ultraloot)
 * [Code Docs](https://manticorp.github.io/ultraloot/code/)
-* [Test Coverage Report](https://manticorp.github.io/ultraloot/coverage/lcov-report/index.html)
 
 ## Installation
 
