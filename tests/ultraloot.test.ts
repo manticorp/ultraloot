@@ -1331,7 +1331,7 @@ describe('testing ultraloot', () => {
     const rng = new PredictableRng();
     const u = new UltraLoot(rng);
 
-    rng.setEvenSpread(12);
+    rng.setEvenSpread(6);
 
     const pm = {
       name: 'Precious Metals',
