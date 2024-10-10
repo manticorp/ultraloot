@@ -35,7 +35,6 @@ export default class LootTableEntryResults extends Array<LootTableEntryResult> {
     for (const ob of this) {
       if (ob.stackable) {
         const sig = this.entrySignature(ob);
-        console.log(sig, typeof map[sig]);
         if (typeof map[sig] === 'undefined') {
           map[sig] = ob;
         } else {
