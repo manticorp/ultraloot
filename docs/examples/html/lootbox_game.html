@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/pixi.js@8.x/dist/pixi.min.js"></script>
+        <script src="./../../../dist/ultraloot.js"></script>
+        <script src="lootbox_game.js" type="module"></script>
+        <style>
+            * {
+                font-family: Aptos, Segoe UI, Helvetica, Arial, Verdana, sans-serif;
+            }
+
+            body {
+                padding: 0;
+                margin: 0;
+            }
+
+            kbd {
+                font-family: monospace;
+                background-color: #eee;
+                border-radius: 3px;
+                border: 1px solid #b4b4b4;
+                box-shadow:
+                0 1px 1px rgba(0, 0, 0, 0.2),
+                0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+                color: #333;
+                display: inline-block;
+                font-size: 0.85em;
+                font-weight: 700;
+                line-height: 1;
+                padding: 2px 4px;
+                white-space: nowrap;
+            }
+
+        </style>
+    </head>
+    <body>
+        <header>
+            <p>Move the Zombie Toast using <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow <kbd>⬆️</kbd><kbd>⬇️</kbd><kbd>➡️</kbd><kbd>⬅️</kbd> keys. Press <kbd>space</kbd> bar to loot a box.</p>
+        </header>
+        <div id="app">
+        </div>
+        <footer>
+            <p>Credit to <a href="https://twitter.com/LazyHamsters">@LazyHamsters</a> for the zombie toast sprite, and <a href="https://icosiumstudios.itch.io/pixel-chest-collection">icosiumstudios</a> for the chests.</p>
+        </footer>
+    </body>
+</html>

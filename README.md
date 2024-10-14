@@ -773,4 +773,4 @@ const parentTable = new LootTable({
 
 ## Examples
 
-There are numerous examples in the examples folder - I encourage you to explore!
+There are numerous examples in the docs/examples folder - I encourage you to explore!

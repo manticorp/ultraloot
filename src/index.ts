@@ -9,6 +9,7 @@ export * from './table/pool/entry/result';
 export * from './table/pool/entry/results';
 
 import { UltraLoot } from './ultraloot';
+export { UltraLoot as UltraLoot};
 export { default as Rng } from './rng';
 export { default as PredictableRng } from './rng/predictable';
 export { default as LootTable } from './table';

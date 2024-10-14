@@ -1,15 +1,25 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
+    "target": "esnext",
+    "lib": ["ESNext" ],
+    "module": "esnext",
+    "rootDir": "./src/",
+    "moduleResolution": "node10",
+    "baseUrl": "./",
+    "declaration": true,
     "sourceMap": true,
+    "outDir": "./dist",
+    "declarationDir": "./dist/types",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "noImplicitAny": true,
-    "module": "commonjs",
-    "target": "es2022",
+    "resolveJsonModule": true,
     "jsx": "react",
     "allowJs": true,
-    "lib": [ "es2022" ],
-    "moduleResolution": "node",
-    "resolveJsonModule": true
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
-  "exclude" : ["dist/", "docs/", "node_modules/"],
+  "include": ["src"],
+  "exclude" : ["dist/", "docs/", "node_modules/", "package.json"]
 }

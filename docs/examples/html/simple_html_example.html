@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <script src="./../../../dist/ultraloot.js"></script>
+        <script src="demo.js"></script>
+        <style>
+            * {
+                font-family: Aptos, Segoe UI, Helvetica, Arial, Verdana, sans-serif;
+            }
+
+            body {
+                padding: 0;
+            }
+
+            .app {
+                max-width: 1600px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="app">
+            <div class="random-rollers">
+                <div id="mining">
+                    <button data-looter='{"item-level": 1}' class="mining-button">Mine With Stone Axe</button>
+                    <button data-looter='{"item-level": 2}' class="mining-button">Mine With Copper Axe</button>
+                    <button data-looter='{"item-level": 3}' class="mining-button">Mine With Iron Axe</button>
+                    <button data-looter='{"item-level": 4}' class="mining-button">Mine With Steel Axe</button>
+                    <button data-looter='{"item-level": 5}' class="mining-button">Mine With Diamond Axe</button>
+                    <pre id="mining-result"></pre>
+                <div>
+            </div>
+        </div>
+    </body>
+</html>
