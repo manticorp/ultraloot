@@ -39,7 +39,13 @@ const ul = new UltraLoot();
 ### Node
 
 ```javascript
-const UltraLoot = require('ultraloot');
+const UltraLoot = require('UltraLoot');
+```
+
+### ES Module
+
+```javascript
+import UltraLoot from 'UltraLoot';
 ```
 
 ## Use cases

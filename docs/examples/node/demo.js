@@ -1,6 +1,9 @@
-import pkg from './../../dist/index.js';
+import { UltraLoot, LootTable, LootTablePool, LootTableEntry } from './../../../dist/ultraloot.mjs';
+import { fileURLToPath } from 'url';
+import path from "path";
 
-const { UltraLoot, LootTable, LootTablePool, LootTableEntry } = pkg;
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
 
 const ul = new UltraLoot();
 ul.registerDefaultFunctions();
@@ -28,7 +31,7 @@ const player = {
 };
 
 const tablePromises = [];
-const path = 'examples/tables';
+const tablepath = path.resolve(__dirname, './../tables');
 
 const genericTable = new LootTable({
   ul,
@@ -43,9 +46,9 @@ const genericTable = new LootTable({
   ]
 });
 
-tablePromises.push(ul.loadTable('armor_box', { path }));
-tablePromises.push(ul.loadTable('clothing_store', { path }));
-tablePromises.push(ul.loadTable('kitchen_cupboard', { path }));
+tablePromises.push(ul.loadTable('armor_box', { path: tablepath }));
+tablePromises.push(ul.loadTable('clothing_store', { path: tablepath }));
+tablePromises.push(ul.loadTable('kitchen_cupboard', { path: tablepath }));
 
 Promise.all(tablePromises).then(([
   armorBox,
