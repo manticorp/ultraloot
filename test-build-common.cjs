@@ -1,5 +1,5 @@
 const assert = require('assert');
-const pkg = require('./dist/index.js');
+const pkg = require('./dist/ultraloot.cjs');
 
 const { UltraLoot, LootTable, LootTablePool, LootTableEntry } = pkg;
 

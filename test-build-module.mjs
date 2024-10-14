@@ -1,7 +1,5 @@
 import assert from 'assert';
-import pkg from './dist/index.js';
-
-const { UltraLoot, LootTable, LootTablePool, LootTableEntry } = pkg;
+import { UltraLoot, LootTable, LootTablePool, LootTableEntry } from './dist/ultraloot.mjs';
 
 const ul = new UltraLoot();
 

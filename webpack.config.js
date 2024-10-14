@@ -35,7 +35,6 @@ export default (env, argv) => {
         library: {
           name: 'UltraLoot',
           type: 'umd',
-          export: 'default'
         }
       }
     },

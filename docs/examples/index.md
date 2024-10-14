@@ -3,7 +3,7 @@
 Welcome to the advanced documentation for UltraLoot
 
 * [Simple HTML Example](html/simple_html_example.html)
-* [Lootbox Game](html/loogbox_game.html) made with [Pixi.js](https://pixijs.com/)
+* [Lootbox Game](html/lootbox_game.html) made with [Pixi.js](https://pixijs.com/)
 
 And here are demonstrations of how the different RNG functions work, and their distributions:
 * [RNG examples](rng/index.html)

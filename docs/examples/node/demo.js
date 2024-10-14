@@ -1,4 +1,4 @@
-import { UltraLoot, LootTable, LootTablePool, LootTableEntry } from './../../../dist/ultraloot.mjs';
+import { UltraLoot, LootTable, LootTablePool, LootTableEntry } from './../../js/ultraloot.mjs';
 import { fileURLToPath } from 'url';
 import path from "path";
 

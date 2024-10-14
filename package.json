@@ -8,12 +8,12 @@
   "type": "module",
   "exports": {
     "require": {
-        "default": "./dist/ultraloot.cjs",
-        "types": "./dist/types/index.d.ts"
+      "default": "./dist/ultraloot.cjs",
+      "types": "./dist/types/index.d.ts"
     },
     "import": {
-        "default": "./dist/ultraloot.mjs",
-        "types": "./dist/types/index.d.ts"
+      "default": "./dist/ultraloot.mjs",
+      "types": "./dist/types/index.d.ts"
     }
   },
   "types": "./dist/types/index.d.ts",
@@ -21,7 +21,7 @@
     "watch": "webpack --mode development --config webpack.config.js --watch",
     "dev": "webpack --mode development --config webpack.config.js",
     "prebuild": "rimraf dist",
-    "build": "webpack --mode production --config webpack.config.js && webpack --mode production --config webpack-esm.config.js && npx typedoc",
+    "build": "webpack --mode production --config webpack.config.js && webpack --mode production --config webpack-esm.config.js && npx typedoc && copyfiles -f ./dist/*.* ./docs/js",
     "ci": "npm t && npm run test-build",
     "test-build": "npm run build && node test-build-common.cjs && node test-build-module.mjs",
     "test": "jest --coverage",
@@ -42,6 +42,8 @@
     "@types/jest": "^29.5.13",
     "autoprefixer": "^10.4.20",
     "babel-loader": "^9.2.1",
+    "copyfiles": "^2.4.1",
+    "cpy-cli": "^5.0.0",
     "esbuild": "^0.24.0",
     "eslint": "^9.11.1",
     "html-loader": "^5.1.0",
