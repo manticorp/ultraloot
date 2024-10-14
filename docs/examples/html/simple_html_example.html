@@ -1,7 +1,7 @@
 <html>
     <head>
         <script src="./../../js/ultraloot.js"></script>
-        <script src="demo.js"></script>
+        <script src="simple_html_example.js"></script>
         <style>
             * {
                 font-family: Aptos, Segoe UI, Helvetica, Arial, Verdana, sans-serif;
@@ -18,14 +18,35 @@
         </style>
     </head>
     <body>
+        <header>
+            <p>The following buttons all roll from the same loot table, but simulate generating depending on the looters axe level.</p>
+            <p>There is a single loot table that inherits from 3 different loot tables: Stones, Metals, Gems.</p>
+            <p><strong>Stones</strong> just has 1 entry: stone</p>
+            <p><strong>Metals</strong> just has 3 entries: gold, silver and bronze. To mine gold you must be axe level 4+, silver 3+ and bronze 2+.</p>
+            <p><strong>Gems</strong> has 2 pools, one for diamonds and one for diamonds, rubies and sapphires. Diamonds require level 5+, ruby 4+ and sapphire 2+.</p>
+            <p>The gems table has lots of conditions, utilising the <code>dependLooter</code> default condition.</p>
+            <p>We highly encourage you to check out the <a href="simple_html_example.js">source code</a> to see how it works.</p>
+        </header>
         <div class="app">
             <div class="random-rollers">
                 <div id="mining">
-                    <button data-looter='{"item-level": 1}' class="mining-button">Mine With Stone Axe</button>
-                    <button data-looter='{"item-level": 2}' class="mining-button">Mine With Copper Axe</button>
-                    <button data-looter='{"item-level": 3}' class="mining-button">Mine With Iron Axe</button>
-                    <button data-looter='{"item-level": 4}' class="mining-button">Mine With Steel Axe</button>
-                    <button data-looter='{"item-level": 5}' class="mining-button">Mine With Diamond Axe</button>
+                    <div class="">
+                        <h3>Regular Ores</h3>
+                        <button data-looter='{"item-level": 1}' class="mining-button">Mine With Stone Axe</button>
+                        <button data-looter='{"item-level": 2}' class="mining-button">Mine With Copper Axe</button>
+                        <button data-looter='{"item-level": 3}' class="mining-button">Mine With Iron Axe</button>
+                        <button data-looter='{"item-level": 4}' class="mining-button">Mine With Steel Axe</button>
+                        <button data-looter='{"item-level": 5}' class="mining-button">Mine With Diamond Axe</button>
+                    </div>
+                    <div class="">
+                        <h3>Rich Ores</h3>
+                        <p>(should give roughly double the gems + metals of the ores above)</p>
+                        <button data-looter='{"item-level": 1}' class="rich-mining-button">Mine With Stone Axe</button>
+                        <button data-looter='{"item-level": 2}' class="rich-mining-button">Mine With Copper Axe</button>
+                        <button data-looter='{"item-level": 3}' class="rich-mining-button">Mine With Iron Axe</button>
+                        <button data-looter='{"item-level": 4}' class="rich-mining-button">Mine With Steel Axe</button>
+                        <button data-looter='{"item-level": 5}' class="rich-mining-button">Mine With Diamond Axe</button>
+                    </div>
                     <pre id="mining-result"></pre>
                 <div>
             </div>

@@ -753,6 +753,113 @@ dependLooter
 
 For more information, please see the detailed code documentation which lists signatures for these functions.
 
+Conditions are called first, and determine whether items are included for rolling purposes, and functions are called after rolling, and can apply things to the looted item.
+
+```javascript
+const table = ul.createTable({
+  pools: [
+    {
+      conditions: [ // note: this whole pool will never roll
+        {
+          function: 'alwaysFalse',
+        }
+      ],
+      entries: [
+        {
+          id: 'never_1',
+          name: 'I will never appear in results.'
+        },
+        {
+          id: 'never_2',
+          name: 'I will also never appear in results.'
+        }
+      ]
+    },
+    {
+      conditions: [
+        {
+          function: 'alwaysTrue',
+        }
+      ],
+      entries: [
+        {
+          id: 'always_1',
+          name: 'I will always appear in results.'
+        }
+      ]
+    },
+    {
+      entries: [
+        {
+          id: 'never_3',
+          name: 'I will also *never* appear in results.'
+          conditions: [
+            {
+              function: 'alwaysFalse',
+            }
+          ],
+        },
+        {
+          id: 'always_2',
+          name: 'I will, however, always appear in results.'
+        }
+      ]
+    }
+  ]
+});
+
+// Every roll on the above table will result in 2 results: [{id:'always_1'}, {id:'always_2'}]
+```
+
+#### Functions
+
+Functions are passed a single object with the following properties:
+
+```javascript
+lootTableFunction({
+  rng,     // The rng the table used for this roll
+  looted,  // What was looted
+  looter,  // The looter passed when the table was rolled
+  context, // The context passed when the table was rolled
+  result,  // The current result set
+  args,    // Any arguments passed in the table definition
+})
+```
+
+#### Conditions
+
+Conditions are passed a single object with the following properties (note: missing "looted" from above):
+
+```javascript
+lootTableCondition({
+  rng,     // The rng the table used for this roll
+  looter,  // The looter passed when the table was rolled
+  context, // The context passed when the table was rolled
+  result,  // The current result set
+  args,    // Any arguments passed in the table definition
+})
+```
+
+#### Conditionally Removing Items **After** Generation
+
+If you want to depend whether or not to include an item after it is generated, you can always have a function set the qty to 0:
+
+```javascript
+const table = ul.createTable(def);
+
+table.registerFunction('inheritTypeFromContext', ({looted, context}) => {
+  looted.item.type = context.type ?? 'normal';
+});
+
+table.registerFunction('matchLootedToLooter', ({rng, looted, looter}) => {
+  if (looted.item.type !== looter.type) {
+    // if types aren't the same, 1 in 2 chance for it to be 0. This way
+    // you are more likely to get stuff that is your type.
+    looted.qty = rng.chance(1, 2) ? looted.qty : 0;
+  }
+});
+```
+
 ### Nesting Tables
 
 Tables can be nested by either using an existing loot table as an entry, or having an entry whose item property is a loot table.

@@ -1,5 +1,6 @@
 import { LootTableFunctionSignature } from './../table';
 import { RngInterface } from './../rng';
+import LootTableEntryResult from './../table/pool/entry/result';
 import {
   dotSet,
   dotGet
@@ -10,7 +11,7 @@ type InheritLooterSignature = ({
   looter,
   args
 }: {
-  looted: any,
+  looted: LootTableEntryResult,
   looter: any,
   args: {
     property?: string,
@@ -39,7 +40,7 @@ type InheritContextSignature = ({
   context,
   args
 }: {
-  looted: any,
+  looted: LootTableEntryResult,
   context: any,
   args: {
     property?: string,
@@ -69,7 +70,7 @@ type SetToRandomChoiceSignature = ({
   args
 }: {
   rng: RngInterface,
-  looted: any,
+  looted: LootTableEntryResult,
   args: {
     property?: string,
     choices?: Array<any> | Record<any, number> | Map<any, number>

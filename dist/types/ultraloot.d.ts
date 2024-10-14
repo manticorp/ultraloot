@@ -85,6 +85,8 @@ export type LoadSaveArgs = {
  * const ultralootCustomRng = new UltraLoot(rngSource);   // using a custom RNG
  */
 export declare class UltraLoot {
+    static version: string;
+    version: string;
     /**
      * Default RNG source when none is given
      */
@@ -149,9 +151,8 @@ export declare class UltraLoot {
         context: any;
         result: LootTableEntryResults;
     }): void;
-    applyConditionSync(conditionDefinition: ConditionDefinition, { rng, looted, looter, context, result }: {
+    applyConditionSync(conditionDefinition: ConditionDefinition, { rng, looter, context, result }: {
         rng: RngInterface;
-        looted: LootTableEntryResult;
         looter: any;
         context: any;
         result: LootTableEntryResults;
@@ -163,9 +164,8 @@ export declare class UltraLoot {
         context: any;
         result: LootTableEntryResults;
     }): Promise<void>;
-    applyCondition(conditionDefinition: ConditionDefinition, { rng, looted, looter, context, result }: {
+    applyCondition(conditionDefinition: ConditionDefinition, { rng, looter, context, result }: {
         rng: RngInterface;
-        looted: LootTableEntryResult;
         looter: any;
         context: any;
         result: LootTableEntryResults;

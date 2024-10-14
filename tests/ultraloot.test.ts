@@ -1187,7 +1187,7 @@ describe('testing ultraloot', () => {
     table.registerFunction('test', func);
 
     return expect(table.roll({ n: 6, looter, context }).then(a => {
-      expect(cond).toBeCalledTimes(1);
+      expect(cond).toBeCalledTimes(6);
       expect(func).toBeCalledTimes(1);
       expect(a).toHaveLength(6);
     })).resolves.not.toThrow();
@@ -1255,7 +1255,7 @@ describe('testing ultraloot', () => {
 
     return expect(parent.roll({ n: 6 }).then(a => {
       expect(a).toHaveLength(6);
-      expect(cond).toBeCalledTimes(1);
+      expect(cond).toBeCalledTimes(6);
       expect(func).toBeCalledTimes(1);
     })).resolves.not.toThrow();
   });
@@ -1389,7 +1389,7 @@ describe('testing ultraloot', () => {
 
     return expect(parent.roll({ n: 6 }).then(a => {
       expect(a).toHaveLength(6);
-      expect(cond).toBeCalledTimes(1);
+      expect(cond).toBeCalledTimes(6);
       expect(func).toBeCalledTimes(1);
     })).resolves.not.toThrow();
   });
@@ -1413,12 +1413,12 @@ describe('testing ultraloot', () => {
               weight: 1,
               conditions: [
                 {
-                  function: 'test'
+                  function: 'test_cn_7346867432'
                 }
               ],
               functions: [
                 {
-                  function: 'test'
+                  function: 'test_fn_45162764547'
                 }
               ],
             },
@@ -1451,8 +1451,8 @@ describe('testing ultraloot', () => {
 
     // const cond = jest.fn(() => true);
     const func = jest.fn(() => {});
-    // u.registerCondition('test', cond);
-    u.registerFunction('test', func);
+    // u.registerCondition('test_cn_7346867432', cond);
+    u.registerFunction('test_fn_45162764547', func);
 
     return expect(parent.roll({ n: 6 })).rejects.toThrow();
   });
@@ -1476,12 +1476,12 @@ describe('testing ultraloot', () => {
               weight: 1,
               conditions: [
                 {
-                  function: 'test'
+                  function: 'test_cn_347439864'
                 }
               ],
               functions: [
                 {
-                  function: 'test'
+                  function: 'test_fun_7863478634'
                 }
               ],
             },
@@ -1514,8 +1514,8 @@ describe('testing ultraloot', () => {
 
     const cond = jest.fn(() => true);
     // const func = jest.fn(() => {});
-    u.registerCondition('test', cond);
-    // u.registerFunction('test', func);
+    u.registerCondition('test_cn_347439864', cond);
+    // u.registerFunction('test_fun_7863478634', func);
 
     return expect(parent.roll({ n: 6 })).rejects.toThrow();
   });
@@ -1539,12 +1539,12 @@ describe('testing ultraloot', () => {
               weight: 1,
               conditions: [
                 {
-                  function: 'test'
+                  function: 'test_cond_478634678'
                 }
               ],
               functions: [
                 {
-                  function: 'test'
+                  function: 'test_fn_76467483'
                 }
               ],
             },
@@ -1579,8 +1579,8 @@ describe('testing ultraloot', () => {
 
     const cond = jest.fn(() => true);
     // const func = jest.fn(() => {});
-    u.registerCondition('test', cond);
-    // u.registerFunction('test', func);
+    u.registerCondition('test_cond_478634678', cond);
+    // u.registerFunction('test_fn_76467483', func);
 
     console.error = jest.fn();
     await expect(parent.roll({ n: 6 })).resolves.not.toThrow();
@@ -1606,12 +1606,12 @@ describe('testing ultraloot', () => {
               weight: 1,
               conditions: [
                 {
-                  function: 'test'
+                  function: 'test_cond_1475368453678'
                 }
               ],
               functions: [
                 {
-                  function: 'test'
+                  function: 'test_fn_4787586486'
                 }
               ],
             },
@@ -1646,8 +1646,8 @@ describe('testing ultraloot', () => {
 
     // const cond = jest.fn(() => true);
     const func = jest.fn(() => {});
-    // u.registerCondition('test', cond);
-    u.registerFunction('test', func);
+    // u.registerCondition('test_cond_1475368453678', cond);
+    u.registerFunction('test_fn_4787586486', func);
 
     console.error = jest.fn();
     await expect(parent.roll({ n: 6 })).resolves.not.toThrow();
@@ -1672,7 +1672,7 @@ describe('testing ultraloot', () => {
               weight: 1,
               functions: [
                 {
-                  function: 'test'
+                  function: 'test_func_doesnt_exist_18756'
                 }
               ],
             },
@@ -1823,12 +1823,12 @@ describe('testing ultraloot', () => {
               weight: 1,
               conditions: [
                 {
-                  function: 'test'
+                  function: 'test_cn_5347682345786'
                 }
               ],
               functions: [
                 {
-                  function: 'test'
+                  function: 'test_fn_54387658476'
                 }
               ],
             },
@@ -1849,8 +1849,8 @@ describe('testing ultraloot', () => {
     const table = u.createTable(pm);
     const cond = jest.fn(async () => true);
     const func = jest.fn(async () => null);
-    table.registerCondition('test', cond);
-    table.registerFunction('test', func);
+    table.registerCondition('test_cn_5347682345786', cond);
+    table.registerFunction('test_fn_54387658476', func);
 
     return expect(table.roll({ n: 6 }).then(a => {
       expect(cond).toBeCalled();
@@ -1878,12 +1878,12 @@ describe('testing ultraloot', () => {
               weight: 1,
               conditions: [
                 {
-                  function: 'test'
+                  function: 'test_cn_56789'
                 }
               ],
               functions: [
                 {
-                  function: 'test'
+                  function: 'test_fn_12345'
                 }
               ],
             },
@@ -1904,13 +1904,13 @@ describe('testing ultraloot', () => {
     const table = u.createTable(pm);
     const cond = jest.fn(async () => false);
     const func = jest.fn(async () => null);
-    table.registerCondition('test', cond);
-    table.registerFunction('test', func);
+    table.registerCondition('test_cn_56789', cond);
+    table.registerFunction('test_fn_12345', func);
 
     return expect(table.roll({ n: 6 }).then(a => {
       expect(cond).toBeCalled();
-      expect(func).toBeCalled();
-      expect(a).toHaveLength(5);
+      expect(func).not.toBeCalled();
+      expect(a).toHaveLength(6);
     })).resolves.not.toThrow();
   });
 });

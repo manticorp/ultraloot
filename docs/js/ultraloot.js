@@ -1066,32 +1066,32 @@ class LootTable {
      * @param conditionDefinition
      * @param context
      */
-    async applyCondition(conditionDefinition, { rng, looted, looter, context, result }) {
+    async applyCondition(conditionDefinition, { rng, looter, context, result }) {
         if (typeof this.conditions[conditionDefinition.function] === 'undefined') {
             for (const subtable of Array.from(this.borrowed)) {
                 if (subtable.hasCondition(conditionDefinition)) {
-                    return await subtable.applyCondition(conditionDefinition, { rng, looted, looter, context, result });
+                    return await subtable.applyCondition(conditionDefinition, { rng, looter, context, result });
                 }
             }
             const err = `Condition ${conditionDefinition.function} has not been defined. Did you forget to register the function with this loot table? table.registerCondition(name, condition_function).`;
             if (this.ultraloot) {
                 if (this.ultraloot.hasCondition(conditionDefinition.function)) {
-                    return await this.ultraloot.applyCondition(conditionDefinition, { rng, looted, looter, context, result });
+                    return await this.ultraloot.applyCondition(conditionDefinition, { rng, looter, context, result });
                 }
                 if (this.ultraloot.throwOnMissingConditions) {
                     throw new Error(err);
                 }
                 else {
-                    console.error(err);
+                    console.error(`CR: ${err}`);
                     return true;
                 }
             }
             else {
-                console.error(err);
+                console.error(`CR: ${err}`);
                 return true;
             }
         }
-        return await this.conditions[conditionDefinition.function]({ rng, looted, looter, context, result, args: conditionDefinition.arguments });
+        return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
     }
     /**
      * @param functionDefinition
@@ -1128,17 +1128,17 @@ class LootTable {
      * @param conditionDefinition
      * @param context
      */
-    applyConditionSync(conditionDefinition, { rng, looted, looter, context, result }) {
+    applyConditionSync(conditionDefinition, { rng, looter, context, result }) {
         if (typeof this.conditions[conditionDefinition.function] === 'undefined') {
             for (const subtable of Array.from(this.borrowed)) {
                 if (subtable.hasCondition(conditionDefinition)) {
-                    return subtable.applyConditionSync(conditionDefinition, { rng, looted, looter, context, result });
+                    return subtable.applyConditionSync(conditionDefinition, { rng, looter, context, result });
                 }
             }
             const err = `Condition ${conditionDefinition.function} has not been defined. Did you forget to register the function with this loot table? table.registerCondition(name, condition_function).`;
             if (this.ultraloot) {
                 if (this.ultraloot.hasCondition(conditionDefinition.function)) {
-                    return this.ultraloot.applyConditionSync(conditionDefinition, { rng, looted, looter, context, result });
+                    return this.ultraloot.applyConditionSync(conditionDefinition, { rng, looter, context, result });
                 }
                 if (this.ultraloot.throwOnMissingConditions) {
                     throw new Error(err);
@@ -1153,7 +1153,7 @@ class LootTable {
                 return true;
             }
         }
-        const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looted, looter, context, result, args: conditionDefinition.arguments });
+        const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
         if (conditionCallResult instanceof Promise) {
             throw new Error('Cannot return promise from sync condition call');
         }
@@ -1245,7 +1245,77 @@ class LootPool {
     getEntries() {
         return this.entries;
     }
-    rollPreamble({ rng }) {
+    async roll({ rng, table, looter, context, result = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
+        const numRolls = rng.chancyInt(this.rolls);
+        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
+        // We store a list of key/value choices with their weights in an array
+        const choices = {};
+        // A special NULL key to track null results
+        if (rng.chancy(this.nulls) > 0) {
+            choices[LootPool.NULLKEY] = rng.chancy(this.nulls);
+        }
+        // map the weights to positions in entries.
+        for (let idx in this.entries) {
+            const entry = this.entries[idx];
+            if (entry instanceof _table__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
+                choices[idx] = 1;
+            }
+            else {
+                const r = await entry.applyConditions({ rng, table, looter, context, result });
+                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.vv(`Pool ${this.description} | Result of calling await a.applyConditions was ${JSON.stringify(r)}`);
+                if (r) {
+                    choices[idx] = rng.chancy(entry.weight ?? 1);
+                }
+            }
+        }
+        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.vv(`Pool ${this.description} | Choices:`, choices);
+        const overallIntermediate = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A();
+        let add = true;
+        for (const cond of this.conditions) {
+            const conditionResult = await table.applyCondition(cond, { rng, looter, context, result });
+            _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+            add = add && conditionResult;
+            if (!add) {
+                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
+                break;
+            }
+        }
+        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
+        if (add) {
+            for (let i = 0; i < numRolls; i++) {
+                // This is our choice from the choices table
+                const choice = rng.weightedChoice(choices);
+                // Then, unless it is the null key, we extract it!
+                if (choice !== LootPool.NULLKEY) {
+                    const entry = this.entries[choice];
+                    if (entry instanceof _table__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
+                        // If the entry is a loot table, voila - we can roll it directly
+                        overallIntermediate.merge(await entry.roll({ looter, context, rng }));
+                    }
+                    else if (entry instanceof _pool_entry__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A) {
+                        // Otherwise, we can roll the entry itself
+                        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.g(`Pool ${this.description} | Rolling Loot Table Entry`);
+                        overallIntermediate.merge(await entry.roll({ rng, table, looter, context }));
+                        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.ge();
+                        if (entry.unique) {
+                            choices[choice] = 0;
+                        }
+                    }
+                }
+                else {
+                    _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Got null result`);
+                }
+            }
+        }
+        else {
+            _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Skipping because of conditions`);
+        }
+        // Then we process all the results
+        await this.processEntryResults(overallIntermediate, { rng, table, looter, context, result });
+        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.ge();
+        return result;
+    }
+    rollSync({ rng, table, looter, context, result = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
         const numRolls = rng.chancyInt(this.rolls);
         _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
         // We store a list of key/value choices with their weights in an array
@@ -1260,70 +1330,52 @@ class LootPool {
                 choices[i] = 1;
             }
             else {
-                choices[i] = rng.chancy(a.weight ?? 1);
+                if (a.applyConditionsSync({ rng, table, looter, context, result })) {
+                    choices[i] = rng.chancy(a.weight ?? 1);
+                }
             }
         });
         _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.vv(`Pool ${this.description} | Choices:`, choices);
-        return [numRolls, choices];
-    }
-    async roll({ rng, table, looter, context, result = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
-        const [numRolls, choices] = this.rollPreamble({ rng });
         const overallIntermediate = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A();
-        for (let i = 0; i < numRolls; i++) {
-            // This is our choice from the choices table
-            const choice = rng.weightedChoice(choices);
-            // Then, unless it is the null key, we extract it!
-            if (choice !== LootPool.NULLKEY) {
-                const entry = this.entries[choice];
-                if (entry instanceof _table__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
-                    // If the entry is a loot table, voila - we can roll it directly
-                    overallIntermediate.merge(await entry.roll({ looter, context, rng }));
-                }
-                else if (entry instanceof _pool_entry__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A) {
-                    // Otherwise, we can roll the entry itself
-                    _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.g(`Pool ${this.description} | Rolling Loot Table Entry`);
-                    overallIntermediate.merge(await entry.roll({ rng, table, looter, context }));
-                    _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.ge();
-                    if (entry.unique) {
-                        choices[choice] = 0;
-                    }
-                }
-            }
-            else {
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Got null result`);
+        let add = true;
+        for (const cond of this.conditions) {
+            const conditionResult = table.applyConditionSync(cond, { rng, looter, context, result });
+            _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+            add = add && conditionResult;
+            if (!add) {
+                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
+                break;
             }
         }
-        // Then we process all the results
-        await this.processEntryResults(overallIntermediate, { rng, table, looter, context, result });
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.ge();
-        return result;
-    }
-    rollSync({ rng, table, looter, context, result = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
-        const [numRolls, choices] = this.rollPreamble({ rng });
-        const overallIntermediate = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A();
-        for (let i = 0; i < numRolls; i++) {
-            // This is our choice from the choices table
-            const choice = rng.weightedChoice(choices);
-            // Then, unless it is the null key, we extract it!
-            if (choice !== LootPool.NULLKEY) {
-                const entry = this.entries[choice];
-                if (entry instanceof _table__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
-                    // If the entry is a loot table, voila - we can roll it directly
-                    overallIntermediate.merge(entry.rollSync({ looter, context, rng }));
-                }
-                else if (entry instanceof _pool_entry__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A) {
-                    // Otherwise, we can roll the entry itself
-                    _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.g(`Pool ${this.description} | Rolling Loot Table Entry`);
-                    overallIntermediate.merge(entry.rollSync({ rng, table, looter, context }));
-                    _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.ge();
-                    if (entry.unique) {
-                        choices[choice] = 0;
+        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
+        if (add) {
+            for (let i = 0; i < numRolls; i++) {
+                // This is our choice from the choices table
+                const choice = rng.weightedChoice(choices);
+                // Then, unless it is the null key, we extract it!
+                if (choice !== LootPool.NULLKEY) {
+                    const entry = this.entries[choice];
+                    if (entry instanceof _table__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
+                        // If the entry is a loot table, voila - we can roll it directly
+                        overallIntermediate.merge(entry.rollSync({ looter, context, rng }));
+                    }
+                    else if (entry instanceof _pool_entry__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A) {
+                        // Otherwise, we can roll the entry itself
+                        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.g(`Pool ${this.description} | Rolling Loot Table Entry`);
+                        overallIntermediate.merge(entry.rollSync({ rng, table, looter, context }));
+                        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.ge();
+                        if (entry.unique) {
+                            choices[choice] = 0;
+                        }
                     }
                 }
+                else {
+                    _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Got null result`);
+                }
             }
-            else {
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Got null result`);
-            }
+        }
+        else {
+            _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Skipping because of conditions`);
         }
         // Then we process all the results
         this.processEntryResultsSync(overallIntermediate, { rng, table, looter, context, result });
@@ -1347,18 +1399,7 @@ class LootPool {
         for (const fn of this.functions) {
             await table.applyFunction(fn, { rng, looted, looter, context, result });
         }
-        let add = true;
-        for (const cond of this.conditions) {
-            const conditionResult = await table.applyCondition(cond, { rng, looted, looter, context, result });
-            _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
-            add = add && conditionResult;
-            if (!add) {
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
-                break;
-            }
-        }
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
-        if (add && looted.qty > 0) {
+        if (looted.qty > 0) {
             if (looted.stackable) {
                 result.push(looted);
             }
@@ -1373,18 +1414,7 @@ class LootPool {
         for (const fn of this.functions) {
             table.applyFunctionSync(fn, { rng, looted, looter, context, result });
         }
-        let add = true;
-        for (const cond of this.conditions) {
-            const conditionResult = table.applyConditionSync(cond, { rng, looted, looter, context, result });
-            _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
-            add = add && conditionResult;
-            if (!add) {
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
-                break;
-            }
-        }
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
-        if (add && looted.qty > 0) {
+        if (looted.qty > 0) {
             if (looted.stackable) {
                 result.push(looted);
             }
@@ -1489,6 +1519,17 @@ class LootTableEntry {
         const def = this.resultDefinition(rng);
         return new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A([new _entry_result__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A(def)]);
     }
+    async applyConditions({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(), }) {
+        let add = true;
+        for (const cond of this.conditions) {
+            add = add && await table.applyCondition(cond, { rng, looter, context, result });
+            if (!add) {
+                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
+                break;
+            }
+        }
+        return add;
+    }
     async roll({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(), }) {
         if (this.isTable()) {
             return await this.rollTable({ rng, table, looter, context, result });
@@ -1519,16 +1560,7 @@ class LootTableEntry {
         for (const fn of this.functions) {
             await table.applyFunction(fn, { rng, looted: entryResult, looter, context, result });
         }
-        let add = true;
-        for (const cond of this.conditions) {
-            add = add && await table.applyCondition(cond, { rng, looted: entryResult, looter, context, result });
-            if (!add) {
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | Function "${cond.function}" stopped this from being added`);
-                break;
-            }
-        }
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
-        if (add && entryResult.qty > 0) {
+        if (entryResult.qty > 0) {
             if (entryResult.stackable) {
                 result.push(entryResult);
             }
@@ -1538,6 +1570,17 @@ class LootTableEntry {
                 }
             }
         }
+    }
+    applyConditionsSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(), }) {
+        let add = true;
+        for (const cond of this.conditions) {
+            add = add && table.applyConditionSync(cond, { rng, looter, context, result });
+            if (!add) {
+                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
+                break;
+            }
+        }
+        return add;
     }
     rollSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(), }) {
         if (this.isTable()) {
@@ -1569,16 +1612,7 @@ class LootTableEntry {
         for (const fn of this.functions) {
             table.applyFunctionSync(fn, { rng, looted, looter, context, result });
         }
-        let add = true;
-        for (const cond of this.conditions) {
-            add = add && table.applyConditionSync(cond, { rng, looted, looter, context, result });
-            if (!add) {
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | Function "${cond.function}" stopped this from being added`);
-                break;
-            }
-        }
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
-        if (add && looted.qty > 0) {
+        if (looted.qty > 0) {
             if (looted.stackable || looted.qty === 1) {
                 result.push(looted);
             }
@@ -1741,6 +1775,8 @@ class RecursiveTableError extends Error {
  * const ultralootCustomRng = new UltraLoot(rngSource);   // using a custom RNG
  */
 class UltraLoot {
+    static version = _package_json__WEBPACK_IMPORTED_MODULE_5__/* .version */ .rE;
+    version = _package_json__WEBPACK_IMPORTED_MODULE_5__/* .version */ .rE;
     /**
      * Default RNG source when none is given
      */
@@ -1925,9 +1961,9 @@ class UltraLoot {
             return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.arguments });
         }
     }
-    applyConditionSync(conditionDefinition, { rng, looted, looter, context, result }) {
+    applyConditionSync(conditionDefinition, { rng, looter, context, result }) {
         if (this.conditionCheck(conditionDefinition)) {
-            const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looted, looter, context, result, args: conditionDefinition.arguments });
+            const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
             if (conditionCallResult instanceof Promise) {
                 throw new Error('Cannot return promise from sync condition call');
             }
@@ -1939,9 +1975,9 @@ class UltraLoot {
             return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.arguments });
         }
     }
-    async applyCondition(conditionDefinition, { rng, looted, looter, context, result }) {
+    async applyCondition(conditionDefinition, { rng, looter, context, result }) {
         if (this.conditionCheck(conditionDefinition)) {
-            return await this.conditions[conditionDefinition.function]({ rng, looted, looter, context, result, args: conditionDefinition.arguments });
+            return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
         }
     }
     /**
@@ -2582,7 +2618,7 @@ const dotSet = (ob, path, value) => {
     let parent = ob;
     for (let i = 0; i < keys.length - 1; i++) {
         const key = keys[i];
-        if (!(key in parent)) {
+        if (!(key in parent) || parent[key] == null) {
             parent[key] = {};
         }
         parent = parent[key];
@@ -2652,7 +2688,7 @@ module.exports = require("fs");
 /***/ 330:
 /***/ ((module) => {
 
-module.exports = {"rE":"0.0.3"};
+module.exports = {"rE":"0.1.0"};
 
 /***/ })
 

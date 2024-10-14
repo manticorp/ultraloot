@@ -32,9 +32,6 @@ export default class LootPool {
     createEntry(def: LootTableEntryDefinition): LootTableEntry;
     addEntry(entry: LootTableEntry | LootTable | LootTableEntryDefinition, def?: Omit<LootTableEntryDefinition, 'id'>): this;
     getEntries(): (LootTableEntry | LootTable)[];
-    rollPreamble({ rng }: {
-        rng: RngInterface;
-    }): [number, Record<string, number>];
     roll({ rng, table, looter, context, result }: {
         rng: RngInterface;
         table: LootTable;

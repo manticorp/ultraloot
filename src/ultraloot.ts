@@ -107,6 +107,11 @@ export type LoadSaveArgs = { defaultExtension?: string, path?: string };
  * const ultralootCustomRng = new UltraLoot(rngSource);   // using a custom RNG
  */
 export class UltraLoot {
+
+  static version = CURRENT_VERSION;
+
+  version = CURRENT_VERSION;
+
   /**
    * Default RNG source when none is given
    */
@@ -329,19 +334,17 @@ export class UltraLoot {
 
   public applyConditionSync (conditionDefinition: ConditionDefinition, {
     rng,
-    looted,
     looter,
     context,
     result
   } : {
     rng: RngInterface,
-    looted: LootTableEntryResult,
     looter: any,
     context: any,
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looted, looter, context, result, args: conditionDefinition.arguments });
+      const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
       if (conditionCallResult instanceof Promise) {
         throw new Error('Cannot return promise from sync condition call');
       }
@@ -369,19 +372,17 @@ export class UltraLoot {
 
   public async applyCondition (conditionDefinition: ConditionDefinition, {
     rng,
-    looted,
     looter,
     context,
     result
   } : {
     rng: RngInterface,
-    looted: LootTableEntryResult,
     looter: any,
     context: any,
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      return await this.conditions[conditionDefinition.function]({ rng, looted, looter, context, result, args: conditionDefinition.arguments });
+      return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
     }
   }
 

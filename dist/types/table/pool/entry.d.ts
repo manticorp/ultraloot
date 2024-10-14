@@ -49,6 +49,13 @@ export default class LootTableEntry {
         qty: number;
     };
     generateBaseResults(rng: RngInterface): LootTableEntryResults;
+    applyConditions({ rng, table, looter, context, result, }: {
+        rng?: RngInterface;
+        table: LootTable;
+        looter: any;
+        context: any;
+        result?: LootTableEntryResults;
+    }): Promise<boolean>;
     roll({ rng, table, looter, context, result, }: {
         rng?: RngInterface;
         table: LootTable;
@@ -84,6 +91,13 @@ export default class LootTableEntry {
         context: any;
         result: LootTableEntryResults;
     }): Promise<void>;
+    applyConditionsSync({ rng, table, looter, context, result, }: {
+        rng?: RngInterface;
+        table: LootTable;
+        looter: any;
+        context: any;
+        result?: LootTableEntryResults;
+    }): boolean;
     rollSync({ rng, table, looter, context, result, }: {
         rng?: RngInterface;
         table: LootTable;

@@ -1,9 +1,10 @@
 import * as functions from './../src/default/functions';
 import { default as PredictableRng } from './../src/rng/predictable';
+import { default as LootTableEntryResult } from './../src/table/pool/entry/result';
 
 describe('testing default functions and conditions', () => {
   test('functions.inheritLooter', () => {
-    const looted = {};
+    const looted = new LootTableEntryResult({id: 'test'});
     const looter = { experience: { level: 10 } };
     functions.inheritLooter({
       looter,
@@ -20,7 +21,7 @@ describe('testing default functions and conditions', () => {
   });
 
   test('functions.inheritContext', () => {
-    const looted = {};
+    const looted = new LootTableEntryResult({id: 'test'});
     const context = { status: { onfire: true } };
     functions.inheritContext({
       context,
@@ -37,7 +38,7 @@ describe('testing default functions and conditions', () => {
   });
 
   test('functions.setToRandomChoice', () => {
-    const looted = {};
+    const looted = new LootTableEntryResult({id: 'test'});
     const rng = new PredictableRng();
     rng.results = [0];
 

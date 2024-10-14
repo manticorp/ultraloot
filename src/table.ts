@@ -27,7 +27,7 @@ export type LootTableFunctionSignature = ({
   args
 }: {
   rng: RngInterface,
-  looted: any,
+  looted: LootTableEntryResult,
   looter: any,
   context: any,
   result: LootTableEntryResults,
@@ -43,7 +43,7 @@ export type LootTableConditionSignature = ({
   args
 }: {
   rng: RngInterface,
-  looted: any,
+  looted?: LootTableEntryResult,
   looter: any,
   context: any,
   result: LootTableEntryResults,
@@ -372,7 +372,7 @@ export default class LootTable {
     result
   } : {
     rng: RngInterface,
-    looted: LootTableEntryResult,
+    looted?: LootTableEntryResult,
     looter: any,
     context: any,
     result: LootTableEntryResults
@@ -407,13 +407,11 @@ export default class LootTable {
    */
   async applyCondition (conditionDefinition: ConditionDefinition, {
     rng,
-    looted,
     looter,
     context,
     result
   } : {
     rng: RngInterface,
-    looted: LootTableEntryResult,
     looter: any,
     context: any,
     result: LootTableEntryResults
@@ -421,26 +419,26 @@ export default class LootTable {
     if (typeof this.conditions[conditionDefinition.function] === 'undefined') {
       for (const subtable of Array.from(this.borrowed)) {
         if (subtable.hasCondition(conditionDefinition)) {
-          return await subtable.applyCondition(conditionDefinition, { rng, looted, looter, context, result });
+          return await subtable.applyCondition(conditionDefinition, { rng, looter, context, result });
         }
       }
       const err = `Condition ${conditionDefinition.function} has not been defined. Did you forget to register the function with this loot table? table.registerCondition(name, condition_function).`;
       if (this.ultraloot) {
         if (this.ultraloot.hasCondition(conditionDefinition.function)) {
-          return await this.ultraloot.applyCondition(conditionDefinition, { rng, looted, looter, context, result });
+          return await this.ultraloot.applyCondition(conditionDefinition, { rng, looter, context, result });
         }
         if (this.ultraloot.throwOnMissingConditions) {
           throw new Error(err);
         } else {
-          console.error(err);
+          console.error(`CR: ${err}`);
           return true;
         }
       } else {
-        console.error(err);
+        console.error(`CR: ${err}`);
         return true;
       }
     }
-    return await this.conditions[conditionDefinition.function]({ rng, looted, looter, context, result, args: conditionDefinition.arguments });
+    return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
   }
 
   /**
@@ -490,13 +488,11 @@ export default class LootTable {
    */
   applyConditionSync (conditionDefinition: ConditionDefinition, {
     rng,
-    looted,
     looter,
     context,
     result
   } : {
     rng: RngInterface,
-    looted: LootTableEntryResult,
     looter: any,
     context: any,
     result: LootTableEntryResults
@@ -504,13 +500,13 @@ export default class LootTable {
     if (typeof this.conditions[conditionDefinition.function] === 'undefined') {
       for (const subtable of Array.from(this.borrowed)) {
         if (subtable.hasCondition(conditionDefinition)) {
-          return subtable.applyConditionSync(conditionDefinition, { rng, looted, looter, context, result });
+          return subtable.applyConditionSync(conditionDefinition, { rng, looter, context, result });
         }
       }
       const err = `Condition ${conditionDefinition.function} has not been defined. Did you forget to register the function with this loot table? table.registerCondition(name, condition_function).`;
       if (this.ultraloot) {
         if (this.ultraloot.hasCondition(conditionDefinition.function)) {
-          return this.ultraloot.applyConditionSync(conditionDefinition, { rng, looted, looter, context, result });
+          return this.ultraloot.applyConditionSync(conditionDefinition, { rng, looter, context, result });
         }
         if (this.ultraloot.throwOnMissingConditions) {
           throw new Error(err);
@@ -523,7 +519,7 @@ export default class LootTable {
         return true;
       }
     }
-    const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looted, looter, context, result, args: conditionDefinition.arguments });
+    const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
     if (conditionCallResult instanceof Promise) {
       throw new Error('Cannot return promise from sync condition call');
     }

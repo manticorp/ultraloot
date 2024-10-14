@@ -120,6 +120,30 @@ export default class LootTableEntry {
     return new LootTableEntryResults([new LootTableEntryResult(def)]);
   }
 
+  async applyConditions ({
+    rng,
+    table,
+    looter,
+    context,
+    result = new LootTableEntryResults(),
+  } : {
+    rng?: RngInterface,
+    table: LootTable,
+    looter: any,
+    context: any,
+    result?: LootTableEntryResults
+  }) {
+    let add = true;
+    for (const cond of this.conditions) {
+      add = add && await table.applyCondition(cond, { rng, looter, context, result });
+      if (!add) {
+        log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
+        break;
+      }
+    }
+    return add;
+  }
+
   async roll ({
     rng,
     table,
@@ -214,16 +238,7 @@ export default class LootTableEntry {
     for (const fn of this.functions) {
       await table.applyFunction(fn, { rng, looted: entryResult, looter, context, result });
     }
-    let add = true;
-    for (const cond of this.conditions) {
-      add = add && await table.applyCondition(cond, { rng, looted: entryResult, looter, context, result });
-      if (!add) {
-        log.d(`Entry: ${this.description} | Function "${cond.function}" stopped this from being added`);
-        break;
-      }
-    }
-    log.d(`Entry: ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
-    if (add && entryResult.qty > 0) {
+    if (entryResult.qty > 0) {
       if (entryResult.stackable) {
         result.push(entryResult);
       } else {
@@ -232,6 +247,30 @@ export default class LootTableEntry {
         }
       }
     }
+  }
+
+  applyConditionsSync ({
+    rng,
+    table,
+    looter,
+    context,
+    result = new LootTableEntryResults(),
+  } : {
+    rng?: RngInterface,
+    table: LootTable,
+    looter: any,
+    context: any,
+    result?: LootTableEntryResults
+  }) {
+    let add = true;
+    for (const cond of this.conditions) {
+      add = add && table.applyConditionSync(cond, { rng, looter, context, result });
+      if (!add) {
+        log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
+        break;
+      }
+    }
+    return add;
   }
 
   rollSync ({
@@ -328,16 +367,7 @@ export default class LootTableEntry {
     for (const fn of this.functions) {
       table.applyFunctionSync(fn, { rng, looted, looter, context, result });
     }
-    let add = true;
-    for (const cond of this.conditions) {
-      add = add && table.applyConditionSync(cond, { rng, looted, looter, context, result });
-      if (!add) {
-        log.d(`Entry: ${this.description} | Function "${cond.function}" stopped this from being added`);
-        break;
-      }
-    }
-    log.d(`Entry: ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
-    if (add && looted.qty > 0) {
+    if (looted.qty > 0) {
       if (looted.stackable || looted.qty === 1) {
         result.push(looted);
       } else {

@@ -17,7 +17,7 @@ export type LootTableDefinition = {
 };
 export type LootTableFunctionSignature = ({ rng, looted, looter, context, result, args }: {
     rng: RngInterface;
-    looted: any;
+    looted: LootTableEntryResult;
     looter: any;
     context: any;
     result: LootTableEntryResults;
@@ -25,7 +25,7 @@ export type LootTableFunctionSignature = ({ rng, looted, looter, context, result
 }) => void;
 export type LootTableConditionSignature = ({ rng, looted, looter, context, result, args }: {
     rng: RngInterface;
-    looted: any;
+    looted?: LootTableEntryResult;
     looter: any;
     context: any;
     result: LootTableEntryResults;
@@ -142,7 +142,7 @@ export default class LootTable {
      */
     applyFunction(functionDefinition: FunctionDefinition, { rng, looted, looter, context, result }: {
         rng: RngInterface;
-        looted: LootTableEntryResult;
+        looted?: LootTableEntryResult;
         looter: any;
         context: any;
         result: LootTableEntryResults;
@@ -151,9 +151,8 @@ export default class LootTable {
      * @param conditionDefinition
      * @param context
      */
-    applyCondition(conditionDefinition: ConditionDefinition, { rng, looted, looter, context, result }: {
+    applyCondition(conditionDefinition: ConditionDefinition, { rng, looter, context, result }: {
         rng: RngInterface;
-        looted: LootTableEntryResult;
         looter: any;
         context: any;
         result: LootTableEntryResults;
@@ -173,9 +172,8 @@ export default class LootTable {
      * @param conditionDefinition
      * @param context
      */
-    applyConditionSync(conditionDefinition: ConditionDefinition, { rng, looted, looter, context, result }: {
+    applyConditionSync(conditionDefinition: ConditionDefinition, { rng, looter, context, result }: {
         rng: RngInterface;
-        looted: LootTableEntryResult;
         looter: any;
         context: any;
         result: LootTableEntryResults;

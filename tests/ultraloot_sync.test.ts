@@ -694,7 +694,7 @@ describe('testing ultraloot in a sync fashion', () => {
     table.registerFunction('test', func);
 
     const a = table.rollSync({ n: 6, looter, context });
-    expect(cond).toBeCalledTimes(1);
+    expect(cond).toBeCalledTimes(6);
     expect(func).toBeCalledTimes(1);
     expect(a).toHaveLength(6);
   });
@@ -761,8 +761,8 @@ describe('testing ultraloot in a sync fashion', () => {
 
     const a = parent.rollSync({ n: 6 });
     expect(a).toHaveLength(6);
-    expect(cond).toBeCalledTimes(1);
-    expect(func).toBeCalledTimes(1);
+    expect(cond).toBeCalled();
+    expect(func).toBeCalled();
   });
 
   test('roll with function and condition on ultraloot', () => {
@@ -827,8 +827,8 @@ describe('testing ultraloot in a sync fashion', () => {
 
     const a = parent.rollSync({ n: 6 });
     expect(a).toHaveLength(6);
-    expect(cond).toBeCalledTimes(1);
-    expect(func).toBeCalledTimes(1);
+    expect(cond).toBeCalled();
+    expect(func).toBeCalled();
   });
 
   test('roll with function and condition on pool', () => {

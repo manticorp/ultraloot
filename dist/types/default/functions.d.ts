@@ -1,6 +1,7 @@
 import { RngInterface } from './../rng';
+import LootTableEntryResult from './../table/pool/entry/result';
 type InheritLooterSignature = ({ looted, looter, args }: {
-    looted: any;
+    looted: LootTableEntryResult;
     looter: any;
     args: {
         property?: string;
@@ -21,7 +22,7 @@ type InheritLooterSignature = ({ looted, looter, args }: {
  */
 export declare const inheritLooter: InheritLooterSignature;
 type InheritContextSignature = ({ looted, context, args }: {
-    looted: any;
+    looted: LootTableEntryResult;
     context: any;
     args: {
         property?: string;
@@ -43,7 +44,7 @@ type InheritContextSignature = ({ looted, context, args }: {
 export declare const inheritContext: InheritContextSignature;
 type SetToRandomChoiceSignature = ({ rng, looted, args }: {
     rng: RngInterface;
-    looted: any;
+    looted: LootTableEntryResult;
     args: {
         property?: string;
         choices?: Array<any> | Record<any, number> | Map<any, number>;

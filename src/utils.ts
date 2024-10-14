@@ -23,7 +23,7 @@ export const dotSet = (ob: any, path: string, value: any) => {
   let parent = ob;
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i];
-    if (!(key in parent)) {
+    if (!(key in parent) || parent[key] == null) {
       parent[key] = {};
     }
     parent = parent[key];
