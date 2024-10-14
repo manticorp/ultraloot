@@ -1,5 +1,5 @@
 {
-  "name": "UltraLoot",
+  "name": "@manticorp/ultraloot",
   "version": "0.0.1",
   "description": "",
   "main": "dist/ultraloot.cjs",
