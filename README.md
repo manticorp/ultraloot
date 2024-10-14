@@ -25,6 +25,8 @@ An easy to use, extendable, serialisable loot table module
 
 ## Installation
 
+Run ```npm install @manticorp/ultraloot``` or include the dist file in browser.
+
 ### Browser
 
 Download release and include ultraloot in browser:
@@ -39,13 +41,13 @@ const ul = new UltraLoot();
 ### Node
 
 ```javascript
-const { UltraLoot } = require('UltraLoot');
+const { UltraLoot } = require('@manticorp/ultraLoot');
 ```
 
 ### ES Module
 
 ```javascript
-import UltraLoot from 'UltraLoot';
+import UltraLoot from '@manticorp/ultraLoot';
 ```
 
 ## Use cases
