@@ -21,6 +21,7 @@ An easy to use, extendable, serialisable loot table module
 
 
 * [Advanced Docs](https://manticorp.github.io/ultraloot)
+* [Examples](https://manticorp.github.io/ultraloot/examples)
 * [Code Docs](https://manticorp.github.io/ultraloot/code/)
 
 ## Installation
