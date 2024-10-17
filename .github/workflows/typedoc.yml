@@ -12,8 +12,10 @@ permissions:
   id-token: write
 
 jobs:
-  test_schedule:
+  build_typedoc:
     runs-on: ubuntu-latest
     steps:
       - name: TypedocBuild
         uses: erikyo/tsdoc-action@v1
+        with:
+          options: "typedoc.json"
