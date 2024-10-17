@@ -21,8 +21,8 @@
     "watch": "webpack --mode development --config webpack.config.js --watch",
     "dev": "webpack --mode development --config webpack.config.js",
     "prebuild": "rimraf dist",
-    "build": "webpack --mode production --config webpack.config.js && webpack --mode production --config webpack-esm.config.js && npx typedoc && copyfiles -f ./dist/*.* ./docs/js",
-    "ci": "npm t && npm run test-build",
+    "build": "webpack --mode production --config webpack.config.js && webpack --mode production --config webpack-esm.config.js",
+    "ci": "npm t && npx typedoc && copyfiles -f ./dist/*.* ./docs/js && npm run test-build",
     "test-build": "npm run build && node test-build-common.cjs && node test-build-module.mjs",
     "test": "jest --coverage",
     "test-watch": "jest --coverage --watchAll"
