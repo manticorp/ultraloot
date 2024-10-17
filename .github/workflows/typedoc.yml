@@ -1,0 +1,2 @@
+- name: TypedocBuild
+  uses: erikyo/tsdoc-action@v1
