@@ -33,6 +33,7 @@ export default class Game {
     // The application will create a canvas element for you that you
     // can then insert into the DOM
     document.getElementById('app').appendChild(this.app.canvas);
+    this.app.canvas.style.imageRendering = 'pixelated';
 
     this.controller = new Controller();
     this.ul = new UltraLoot();

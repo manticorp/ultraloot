@@ -106,8 +106,8 @@ export default class Mover {
     }
 
     if (this.sprite) {
-      this.sprite.x = this.position.x;
-      this.sprite.y = this.position.y;
+      this.sprite.x = Math.round(this.position.x);
+      this.sprite.y = Math.round(this.position.y);
     }
 
     this.nanCheck();
