@@ -19,3 +19,7 @@ jobs:
         uses: erikyo/tsdoc-action@v1
         with:
           options: "typedoc.json"
+          entryPoints:
+            - "src/index.ts"
+            - "src/default/functions.ts"
+            - "src/default/conditions.ts"
