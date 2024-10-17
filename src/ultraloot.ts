@@ -328,7 +328,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.functionCheck(functionDefinition)) {
-      return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.arguments });
+      return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {})});
     }
   }
 
@@ -344,7 +344,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
+      const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {})});
       if (conditionCallResult instanceof Promise) {
         throw new Error('Cannot return promise from sync condition call');
       }
@@ -366,7 +366,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.functionCheck(functionDefinition)) {
-      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.arguments });
+      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {})});
     }
   }
 
@@ -382,7 +382,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
+      return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {})});
     }
   }
 

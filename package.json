@@ -1,6 +1,6 @@
 {
   "name": "@manticorp/ultraloot",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/ultraloot.cjs",
   "browser": "dist/ultraloot.cjs",

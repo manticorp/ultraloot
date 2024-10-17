@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             conditions: [
               {
                 function: 'dependLooter',
-                arguments: {
+                args: {
                   property: 'item-level',
                   min: 4
                 }
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             conditions: [
               {
                 function: 'dependLooter',
-                arguments: {
+                args: {
                   property: 'item-level',
                   min: 3
                 }
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             conditions: [
               {
                 function: 'dependLooter',
-                arguments: {
+                args: {
                   property: 'item-level',
                   min: 2
                 }
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     conditions: [
       {
         function: 'dependLooter',
-        arguments: {
+        args: {
           property: 'item-level',
           min: 5
         }
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         conditions: [
           {
             function: 'dependLooter',
-            arguments: {
+            args: {
               property: 'item-level',
               min: 5
             }
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             conditions: [
               {
                 function: 'dependLooter',
-                arguments: {
+                args: {
                   property: 'item-level',
                   min: 4
                 }
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             conditions: [
               {
                 function: 'dependLooter',
-                arguments: {
+                args: {
                   property: 'item-level',
                   min: 2
                 }

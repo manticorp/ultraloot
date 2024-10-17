@@ -1048,7 +1048,7 @@ class LootTable {
             }
         }
         else {
-            return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.arguments });
+            return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.args });
         }
     }
     /**
@@ -1080,7 +1080,7 @@ class LootTable {
                 return true;
             }
         }
-        return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
+        return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.args });
     }
     /**
      * @param functionDefinition
@@ -1110,7 +1110,7 @@ class LootTable {
             }
         }
         else {
-            return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.arguments });
+            return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.args });
         }
     }
     /**
@@ -1142,7 +1142,7 @@ class LootTable {
                 return true;
             }
         }
-        const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
+        const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.args });
         if (conditionCallResult instanceof Promise) {
             throw new Error('Cannot return promise from sync condition call');
         }
@@ -1947,12 +1947,12 @@ class UltraLoot {
     }
     applyFunctionSync(functionDefinition, { rng, looted, looter, context, result }) {
         if (this.functionCheck(functionDefinition)) {
-            return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.arguments });
+            return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {}) });
         }
     }
     applyConditionSync(conditionDefinition, { rng, looter, context, result }) {
         if (this.conditionCheck(conditionDefinition)) {
-            const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
+            const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {}) });
             if (conditionCallResult instanceof Promise) {
                 throw new Error('Cannot return promise from sync condition call');
             }
@@ -1961,12 +1961,12 @@ class UltraLoot {
     }
     async applyFunction(functionDefinition, { rng, looted, looter, context, result }) {
         if (this.functionCheck(functionDefinition)) {
-            return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.arguments });
+            return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {}) });
         }
     }
     async applyCondition(conditionDefinition, { rng, looter, context, result }) {
         if (this.conditionCheck(conditionDefinition)) {
-            return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
+            return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {}) });
         }
     }
     /**
@@ -2677,7 +2677,7 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("fs");
 /***/ 330:
 /***/ ((module) => {
 
-module.exports = {"rE":"0.1.0"};
+module.exports = {"rE":"0.1.1"};
 
 /***/ })
 

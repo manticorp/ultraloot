@@ -397,7 +397,7 @@ export default class LootTable {
         console.error(err);
       }
     } else {
-      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.arguments });
+      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.args });
     }
   }
 
@@ -438,7 +438,7 @@ export default class LootTable {
         return true;
       }
     }
-    return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
+    return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.args });
   }
 
   /**
@@ -478,7 +478,7 @@ export default class LootTable {
         console.error(err);
       }
     } else {
-      return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.arguments });
+      return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.args });
     }
   }
 
@@ -519,7 +519,7 @@ export default class LootTable {
         return true;
       }
     }
-    const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.arguments });
+    const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.args });
     if (conditionCallResult instanceof Promise) {
       throw new Error('Cannot return promise from sync condition call');
     }

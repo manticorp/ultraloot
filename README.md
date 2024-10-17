@@ -119,7 +119,7 @@ const tableDefinition = {
                        //            If any condition returns false, no result is returned for that pool (all rolls).
       {
         function: 'condition_name', // required - the name of the condition
-        arguments: {                // optional - arguments passed to the "args" named parameter of the function.
+        args: {                     // optional - arguments passed to the "args" named parameter of the function.
           foo: 'bar'                //            This can be anything you like.
         }
       }
@@ -127,7 +127,7 @@ const tableDefinition = {
     functions: [       // optional - functions that are applied to every entry result.
       {
         function: 'function_name', // required - the name of the function
-        arguments: {               // optional - arguments passed to the "args" named parameter of the function.
+        args: {                    // optional - arguments passed to the "args" named parameter of the function.
           foo: 'bar'               //            This can be anything you like.
         }
       }
@@ -149,7 +149,7 @@ const tableDefinition = {
                             //            If any condition returns false, no result is returned for that entry.
           {
             function: 'condition_name', // required - the name of the condition
-            arguments: {                // optional - arguments passed to the "args" named parameter of the function.
+            args: {                     // optional - arguments passed to the "args" named parameter of the function.
               foo: 'bar'                //            This can be anything you like.
             }
           }
@@ -157,7 +157,7 @@ const tableDefinition = {
         functions: [        // optional - functions that are applied to every entry result.
           {
             function: 'function_name', // required - the name of the function
-            arguments: {               // optional - arguments passed to the "args" named parameter of the function.
+            args: {                    // optional - arguments passed to the "args" named parameter of the function.
               foo: 'bar'               //            This can be anything you like.
             }
           }
@@ -653,7 +653,7 @@ const miningTable = ul.createTable({
           functions: [
             {
               function: 'chanceToBreakTool',
-              arguments: {
+              args: {
                 chance: {
                   n: 1,
                   in: 10
@@ -664,7 +664,7 @@ const miningTable = ul.createTable({
           conditions: [
             {
               function: 'dependLooterPropertyNumeric',
-              arguments: {
+              args: {
                 property: 'experience.level',
                 min: 20
               }
@@ -676,7 +676,7 @@ const miningTable = ul.createTable({
           functions: [
             {
               function: 'chanceToBreakTool',
-              arguments: {
+              args: {
                 chance: {
                   n: 1,
                   in: 100

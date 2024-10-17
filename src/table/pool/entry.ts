@@ -18,11 +18,13 @@ export type LootTableEntryDefinition = {
 
 export interface FunctionDefinition {
   function: string,
-  arguments?: Array<any> | Record<string, any>
+  arguments?: Array<any> | Record<string, any>,
+  args?: Array<any> | Record<string, any>
 }
 export interface ConditionDefinition {
   function: string,
-  arguments?: Array<any> | Record<string, any>
+  arguments?: Array<any> | Record<string, any>,
+  args?: Array<any> | Record<string, any>
 }
 
 export default class LootTableEntry {

@@ -1109,7 +1109,7 @@ describe('testing ultraloot', () => {
               functions: [
                 {
                   function: 'test',
-                  arguments: funcArgs
+                  args: funcArgs
                 }
               ],
             },
