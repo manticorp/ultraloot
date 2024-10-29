@@ -56,7 +56,10 @@ __webpack_require__.r(__webpack_exports__);
  * }
  */
 const dependContext = ({ context, args }) => {
-    return (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .depend */ .fE)(context, args);
+    if (args) {
+        return (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .depend */ .fE)(context, args);
+    }
+    return true;
 };
 /**
  * Returns true or false depending on value set in looter
@@ -93,7 +96,10 @@ const dependContext = ({ context, args }) => {
  * }
  */
 const dependLooter = ({ looter, args }) => {
-    return (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .depend */ .fE)(looter, args);
+    if (args) {
+        return (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .depend */ .fE)(looter, args);
+    }
+    return true;
 };
 
 
@@ -121,7 +127,12 @@ __webpack_require__.r(__webpack_exports__);
  * }})
  */
 const inheritLooter = ({ looted, looter, args }) => {
-    (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotSet */ ._c)(looted, args.property ?? args.lootedProperty, (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotGet */ .m0)(looter, args.property ?? args.looterProperty, args.default));
+    args = args ?? {};
+    args.lootedProperty = args.lootedProperty ?? args.property;
+    args.looterProperty = args.looterProperty ?? args.property;
+    if (args.looterProperty && args.lootedProperty) {
+        (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotSet */ ._c)(looted, args.lootedProperty, (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotGet */ .m0)(looter, args.looterProperty, args.default));
+    }
 };
 /**
  * Inherits some property from context to looted
@@ -134,7 +145,12 @@ const inheritLooter = ({ looted, looter, args }) => {
  * }})
  */
 const inheritContext = ({ looted, context, args }) => {
-    (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotSet */ ._c)(looted, args.property ?? args.lootedProperty, (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotGet */ .m0)(context, args.property ?? args.contextProperty, args.default));
+    args = args ?? {};
+    args.lootedProperty = args.lootedProperty ?? args.property;
+    args.contextProperty = args.contextProperty ?? args.property;
+    if (args.contextProperty && args.lootedProperty) {
+        (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotSet */ ._c)(looted, args.lootedProperty, (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotGet */ .m0)(context, args.contextProperty, args.default));
+    }
 };
 /**
  * Sets a property of looted to some random choice from choices list
@@ -149,6 +165,7 @@ const inheritContext = ({ looted, context, args }) => {
  * }}); // looted.item.color will be one of red, green or blue.
  */
 const setToRandomChoice = ({ rng, looted, args }) => {
+    args = args ?? {};
     const { property, choices } = args;
     if (property && looted && choices) {
         (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotSet */ ._c)(looted, property, rng.weightedChoice(choices));
@@ -529,6 +546,7 @@ class RngAbstract {
                     return input.min ?? 0;
             }
         }
+        throw new Error('Invalid input given to chancyMin');
     }
     static chancyMax(input) {
         if (typeof input === 'string') {
@@ -559,6 +577,7 @@ class RngAbstract {
                     return input.max ?? 1;
             }
         }
+        throw new Error('Invalid input given to chancyMax');
     }
     choice(data) {
         return this.weightedChoice(data);
@@ -604,7 +623,6 @@ class RngAbstract {
             // Some shortcuts
             const entries = Object.keys(data);
             if (entries.length === 0) {
-                ;
                 return null;
             }
             if (entries.length === 1) {
@@ -733,7 +751,7 @@ class RngAbstract {
 }
 class Rng extends RngAbstract {
     #mask;
-    #seed;
+    #seed = 0;
     #m_z = 0;
     constructor(seed) {
         super(seed);
@@ -837,7 +855,7 @@ class LootTable {
      * The string to be used as a filename for this table.
      */
     get filename() {
-        return this.fn ?? this.id ?? this.name ?? null;
+        return this.fn ?? this.id ?? this.name;
     }
     set filename(fn) {
         this.fn = fn;
@@ -914,7 +932,6 @@ class LootTable {
      */
     async roll({ looter, context, result = new _table_pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(), rng, n = 1 } = {}) {
         const [rngToUse, rolls] = this.rollBasics({ rng, n, looter, context });
-        let i = 1;
         for (const pool of this.pools) {
             await this.rollPool({
                 n: rolls,
@@ -939,7 +956,7 @@ class LootTable {
         const rngToUse = rng ?? this.rng;
         const rolls = rngToUse.chancy(n);
         for (let i = 0; i < rolls; i++) {
-            pool.rollSync({ rng, table: this, looter, context, result });
+            pool.rollSync({ rng: rngToUse, table: this, looter, context, result });
         }
         return result;
     }
@@ -955,7 +972,7 @@ class LootTable {
         const rngToUse = rng ?? this.rng;
         const rolls = rngToUse.chancy(n);
         for (let i = 0; i < rolls; i++) {
-            await pool.roll({ rng, table: this, looter, context, result });
+            await pool.roll({ rng: rngToUse, table: this, looter, context, result });
         }
         return result;
     }
@@ -999,7 +1016,7 @@ class LootTable {
             for (const entry of pool.getEntries()) {
                 if (entry instanceof LootTable || entry.isTable()) {
                     let table;
-                    let weight;
+                    let weight = 1;
                     if (entry instanceof LootTable) {
                         weight = 1;
                         table = entry;
@@ -1195,7 +1212,7 @@ class LootPool {
     /**
      * @param definition The loot table pool definition
      */
-    constructor({ name, id, conditions = [], functions = [], rolls = 1, nulls = 0, entries = [], template, } = {}) {
+    constructor({ name, id, conditions = [], functions = [], rolls = 1, nulls = 0, entries = [], template = {}, } = {}) {
         this.name = name;
         this.conditions = conditions ?? [];
         this.functions = functions ?? [];
@@ -1255,7 +1272,7 @@ class LootPool {
             choices[LootPool.NULLKEY] = rng.chancy(this.nulls);
         }
         // map the weights to positions in entries.
-        for (let idx in this.entries) {
+        for (const idx in this.entries) {
             const entry = this.entries[idx];
             if (entry instanceof _table__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
                 choices[idx] = 1;
@@ -1438,8 +1455,10 @@ class LootPool {
 /* harmony export */ });
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(334);
 /* harmony import */ var _table__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(784);
-/* harmony import */ var _entry_result__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(668);
-/* harmony import */ var _entry_results__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(219);
+/* harmony import */ var _rng__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(629);
+/* harmony import */ var _entry_result__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(668);
+/* harmony import */ var _entry_results__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(219);
+
 
 
 
@@ -1454,6 +1473,7 @@ class LootTableEntry {
     qty = 1;
     functions;
     conditions;
+    rng;
     /**
      * @param definition The loot table entry definition
      */
@@ -1467,6 +1487,12 @@ class LootTableEntry {
         this.qty = qty;
         this.functions = functions ?? [];
         this.conditions = conditions ?? [];
+    }
+    getRng(rng) {
+        return rng ?? this.rng ?? (this.rng = new _rng__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A());
+    }
+    setRng(rng) {
+        this.rng = rng;
     }
     get description() {
         return this.describe();
@@ -1517,12 +1543,12 @@ class LootTableEntry {
     }
     generateBaseResults(rng) {
         const def = this.resultDefinition(rng);
-        return new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A([new _entry_result__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A(def)]);
+        return new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A([new _entry_result__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A(def)]);
     }
-    async applyConditions({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(), }) {
+    async applyConditions({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A(), }) {
         let add = true;
         for (const cond of this.conditions) {
-            add = add && await table.applyCondition(cond, { rng, looter, context, result });
+            add = add && await table.applyCondition(cond, { rng: this.getRng(rng), looter, context, result });
             if (!add) {
                 _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
                 break;
@@ -1530,35 +1556,35 @@ class LootTableEntry {
         }
         return add;
     }
-    async roll({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(), }) {
+    async roll({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A(), }) {
         if (this.isTable()) {
-            return await this.rollTable({ rng, table, looter, context, result });
+            return await this.rollTable({ rng: this.getRng(rng), table, looter, context, result });
         }
         else {
-            return await this.rollItem({ rng, table, looter, context, result });
+            return await this.rollItem({ rng: this.getRng(rng), table, looter, context, result });
         }
     }
-    async rollItem({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
+    async rollItem({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
         _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
-        await this.processEntryResults(this.generateBaseResults(rng), { rng, table, looter, context, result });
+        await this.processEntryResults(this.generateBaseResults(this.getRng(rng)), { rng: this.getRng(rng), table, looter, context, result });
         return result;
     }
-    async rollTable({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
+    async rollTable({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
         // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
         const entryResults = await this.getItem().borrow(table).roll({ looter, context, result: [], rng, n: this.qty });
         this.getItem().unborrow(table);
-        await this.processEntryResults(entryResults, { rng, table, looter, context, result });
+        await this.processEntryResults(entryResults, { rng: this.getRng(rng), table, looter, context, result });
         return result;
     }
-    async processEntryResults(entryResults, { rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
+    async processEntryResults(entryResults, { rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
         for (const entryResult of entryResults) {
-            await this.processEntryResult(entryResult, { rng, table, looter, context, result });
+            await this.processEntryResult(entryResult, { rng: this.getRng(rng), table, looter, context, result });
         }
         return entryResults;
     }
-    async processEntryResult(entryResult, { rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
+    async processEntryResult(entryResult, { rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
         for (const fn of this.functions) {
-            await table.applyFunction(fn, { rng, looted: entryResult, looter, context, result });
+            await table.applyFunction(fn, { rng: this.getRng(rng), looted: entryResult, looter, context, result });
         }
         if (entryResult.qty > 0) {
             if (entryResult.stackable) {
@@ -1566,15 +1592,15 @@ class LootTableEntry {
             }
             else {
                 for (let i = 0; i < entryResult.qty; i++) {
-                    result.push(new _entry_result__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A({ ...entryResult, ...{ qty: 1 } }));
+                    result.push(new _entry_result__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A({ ...entryResult, ...{ qty: 1 } }));
                 }
             }
         }
     }
-    applyConditionsSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(), }) {
+    applyConditionsSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A(), }) {
         let add = true;
         for (const cond of this.conditions) {
-            add = add && table.applyConditionSync(cond, { rng, looter, context, result });
+            add = add && table.applyConditionSync(cond, { rng: this.getRng(rng), looter, context, result });
             if (!add) {
                 _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
                 break;
@@ -1582,35 +1608,35 @@ class LootTableEntry {
         }
         return add;
     }
-    rollSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(), }) {
+    rollSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A(), }) {
         if (this.isTable()) {
-            return this.rollTableSync({ rng, table, looter, context, result });
+            return this.rollTableSync({ rng: this.getRng(rng), table, looter, context, result });
         }
         else {
-            return this.rollItemSync({ rng, table, looter, context, result });
+            return this.rollItemSync({ rng: this.getRng(rng), table, looter, context, result });
         }
     }
-    rollItemSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
+    rollItemSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
         _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
-        this.processEntryResultsSync(this.generateBaseResults(rng), { rng, table, looter, context, result });
+        this.processEntryResultsSync(this.generateBaseResults(this.getRng(rng)), { rng: this.getRng(rng), table, looter, context, result });
         return result;
     }
-    rollTableSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
+    rollTableSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
         // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
         const entryResults = this.getItem().borrow(table).rollSync({ looter, context, result: [], rng, n: this.qty });
         this.getItem().unborrow(table);
-        this.processEntryResultsSync(entryResults, { rng, table, looter, context, result });
+        this.processEntryResultsSync(entryResults, { rng: this.getRng(rng), table, looter, context, result });
         return result;
     }
-    processEntryResultsSync(entryResults, { rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
+    processEntryResultsSync(entryResults, { rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
         for (const entryResult of entryResults) {
-            this.processEntryResultSync(entryResult, { rng, table, looter, context, result });
+            this.processEntryResultSync(entryResult, { rng: this.getRng(rng), table, looter, context, result });
         }
         return entryResults;
     }
-    processEntryResultSync(looted, { rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
+    processEntryResultSync(looted, { rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
         for (const fn of this.functions) {
-            table.applyFunctionSync(fn, { rng, looted, looter, context, result });
+            table.applyFunctionSync(fn, { rng: this.getRng(rng), looted, looter, context, result });
         }
         if (looted.qty > 0) {
             if (looted.stackable || looted.qty === 1) {
@@ -1618,7 +1644,7 @@ class LootTableEntry {
             }
             else {
                 for (let i = 0; i < looted.qty; i++) {
-                    result.push(new _entry_result__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A({ ...looted, ...{ qty: 1 } }));
+                    result.push(new _entry_result__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A({ ...looted, ...{ qty: 1 } }));
                 }
             }
         }
@@ -1639,8 +1665,8 @@ class LootTableEntryResult {
     stackable = true;
     name;
     item;
-    qty;
-    constructor({ id, stackable = true, name, item, qty } = {}) {
+    qty = 1;
+    constructor({ id, stackable = true, name, item, qty = 1 } = {}) {
         this.id = id;
         this.name = name;
         this.item = item;
@@ -1969,6 +1995,7 @@ class UltraLoot {
             }
             return conditionCallResult;
         }
+        return true;
     }
     async applyFunction(functionDefinition, { rng, looted, looter, context, result }) {
         if (this.functionCheck(functionDefinition)) {
@@ -1979,6 +2006,7 @@ class UltraLoot {
         if (this.conditionCheck(conditionDefinition)) {
             return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {}) });
         }
+        return true;
     }
     /**
      * Create a loot table, with this ultraloot instance
@@ -2125,6 +2153,7 @@ class UltraLoot {
             id: def.id,
             pools: [],
         };
+        result.pools = [];
         if (def.pools) {
             for (const pool of def.pools) {
                 result.pools.push(this.createPool(pool));
@@ -2168,19 +2197,27 @@ class UltraLoot {
         if (str.endsWith(extension)) {
             return str;
         }
-        const last = str.split('/').pop().split('\\').pop();
+        if (str.length === 0) {
+            return extension;
+        }
+        const lastPart = str.split('/').pop();
+        const last = lastPart.split('\\').pop();
         const pos = last.includes('.') ? last.lastIndexOf('.') : last.length;
-        const fileRoot = str.substr(0, (str.length - last.length) + pos);
+        const fileRoot = str.substring(0, (str.length - last.length) + pos);
         const output = `${fileRoot}.${extension.replace('.', '')}`;
         return output;
     }
     getExtension(str) {
-        const last = str.split('/').pop().split('\\').pop();
+        if (str.length === 0) {
+            return null;
+        }
+        const lastPart = str.split('/').pop();
+        const last = lastPart.split('\\').pop();
         if (!last.includes('.')) {
             return null;
         }
         const pos = last.lastIndexOf('.');
-        return last.substr(pos, last.length);
+        return last.substring(pos, last.length);
     }
     /**
      * Serializes a LootTable ready for converting to text, e.g. JSON
@@ -2261,6 +2298,7 @@ class UltraLoot {
             fn: table.fn,
             pools: []
         };
+        clone.pools = [];
         const keyToUse = table.filename ?? this.getRng().uniqstr(6);
         had.add(table);
         if (includeRng) {

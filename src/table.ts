@@ -11,8 +11,8 @@ import { default as RNG, RngInterface, Chancy } from './rng';
  */
 export type LootTableDefinition = {
   name ?: string,
-  id ?: string,
-  fn ?: string,
+  id ?: string | number,
+  fn ?: string | number | null,
   rng ?: RngInterface,
   pools ?: Array<LootTablePool>,
   ul ?: UltraLoot,
@@ -31,7 +31,7 @@ export type LootTableFunctionSignature = ({
   looter: any,
   context: any,
   result: LootTableEntryResults,
-  args: Record<string, any>,
+  args?: any,
 }) => void;
 
 export type LootTableConditionSignature = ({
@@ -47,7 +47,7 @@ export type LootTableConditionSignature = ({
   looter: any,
   context: any,
   result: LootTableEntryResults,
-  args: Record<string, any>,
+  args?: any,
 }) => boolean | Promise<boolean>;
 
 export interface TableRollInterface {
@@ -68,19 +68,19 @@ export interface TablePoolRollInterface {
 }
 
 export default class LootTable {
-  name ?: string;
-  id ?: string;
+  name?: string;
+  id: string | number;
 
   /**
    * Filename that should be used to represent this table
    * when it is saved as JSON. This should include relative
    * path/folder names
    */
-  fn ?: string;
+  fn?: string | number | null;
 
-  ul ?: UltraLoot;
+  ul?: UltraLoot;
   rng: RngInterface;
-  pools ?: Array<LootTablePool> = [];
+  pools: Array<LootTablePool> = [];
   functions: Record<string, LootTableFunctionSignature> = {};
   conditions: Record<string, LootTableConditionSignature> = {};
 
@@ -118,11 +118,11 @@ export default class LootTable {
   /**
    * The string to be used as a filename for this table.
    */
-  get filename (): string | null {
-    return this.fn ?? this.id ?? this.name ?? null;
+  get filename (): string | number | undefined | null {
+    return this.fn ?? this.id ?? this.name;
   }
 
-  set filename (fn) {
+  set filename (fn: string | number | null | undefined) {
     this.fn = fn;
   }
 
@@ -225,7 +225,6 @@ export default class LootTable {
     n = 1
   } : TableRollInterface = {}) : Promise<LootTableEntryResults> {
     const [rngToUse, rolls] = this.rollBasics({ rng, n, looter, context });
-    let i = 1;
     for (const pool of this.pools) {
       await this.rollPool({
         n: rolls,
@@ -258,7 +257,7 @@ export default class LootTable {
     const rngToUse = rng ?? this.rng;
     const rolls = rngToUse.chancy(n);
     for (let i = 0; i < rolls; i++) {
-      pool.rollSync({ rng, table: this, looter, context, result });
+      pool.rollSync({ rng: rngToUse, table: this, looter, context, result });
     }
     return result;
   }
@@ -282,7 +281,7 @@ export default class LootTable {
     const rngToUse = rng ?? this.rng;
     const rolls = rngToUse.chancy(n);
     for (let i = 0; i < rolls; i++) {
-      await pool.roll({ rng, table: this, looter, context, result });
+      await pool.roll({ rng: rngToUse, table: this, looter, context, result });
     }
     return result;
   }
@@ -329,7 +328,7 @@ export default class LootTable {
       for (const entry of pool.getEntries()) {
         if (entry instanceof LootTable || entry.isTable()) {
           let table;
-          let weight;
+          let weight = 1;
           if (entry instanceof LootTable) {
             weight = 1;
             table = entry;
@@ -372,7 +371,7 @@ export default class LootTable {
     result
   } : {
     rng: RngInterface,
-    looted?: LootTableEntryResult,
+    looted: LootTableEntryResult,
     looter: any,
     context: any,
     result: LootTableEntryResults

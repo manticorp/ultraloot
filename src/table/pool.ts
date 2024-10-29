@@ -17,8 +17,8 @@ export interface LootTablePoolDefinition {
 }
 
 export default class LootPool {
-  name: string;
-  id: string;
+  name?: string;
+  id?: string;
   conditions: Array<ConditionDefinition> = [];
   functions: Array<FunctionDefinition> = [];
   rolls: Chancy = 1;
@@ -39,7 +39,7 @@ export default class LootPool {
     rolls = 1,
     nulls = 0,
     entries = [],
-    template,
+    template = {},
   } : LootTablePoolDefinition = {}) {
     this.name = name;
     this.conditions = conditions ?? [];
@@ -121,12 +121,12 @@ export default class LootPool {
     }
 
     // map the weights to positions in entries.
-    for (let idx in this.entries) {
+    for (const idx in this.entries) {
       const entry = this.entries[idx];
       if (entry instanceof LootTable) {
         choices[idx] = 1;
       } else {
-        const r = await entry.applyConditions({rng, table, looter, context, result});
+        const r = await entry.applyConditions({ rng, table, looter, context, result });
         log.vv(`Pool ${this.description} | Result of calling await a.applyConditions was ${JSON.stringify(r)}`);
         if (r) {
           choices[idx] = rng.chancy(entry.weight ?? 1);
@@ -213,7 +213,7 @@ export default class LootPool {
       if (a instanceof LootTable) {
         choices[i] = 1;
       } else {
-        if (a.applyConditionsSync({rng, table, looter, context, result})) {
+        if (a.applyConditionsSync({ rng, table, looter, context, result })) {
           choices[i] = rng.chancy(a.weight ?? 1);
         }
       }

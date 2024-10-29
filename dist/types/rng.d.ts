@@ -26,7 +26,6 @@ export interface ChancyInterface {
 }
 export type Chancy = ChancyInterface | string | number;
 export type Seed = string | number;
-export type MathFunc = 'floor' | 'ceil' | 'round';
 export interface RngInterface {
     predictable(seed?: Seed): RngInterface;
     hashStr(str: string): string | number;
@@ -43,7 +42,7 @@ export interface RngInterface {
     uniqstr(len?: number): string;
     randBetween(from: number, to: number, skew: number): number;
     normal(args?: NormalArgs): number;
-    chancyInt(input: Chancy, fn?: MathFunc): number;
+    chancyInt(input: Chancy): number;
     chancy(input: Chancy): number;
     choice(data: Array<any>): any;
     weightedChoice(data: Record<any, number> | Array<any> | Map<any, number>): any;

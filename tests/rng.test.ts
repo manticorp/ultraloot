@@ -462,6 +462,7 @@ describe('testing Rng & predictable Rng', () => {
 
   test('dice - invalid inputs', () => {
     expect(() => {
+      // @ts-ignore
       rng.dice(null);
     }).toThrow();
 

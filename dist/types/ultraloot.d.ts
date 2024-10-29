@@ -34,8 +34,8 @@ export type LootTablePoolEasyDefinition = {
  */
 export type LootTableJsonDefinition = {
     name?: string;
-    id?: string;
-    fn?: string;
+    id: string | number;
+    fn?: string | number | null;
     rng?: string | number | RngInterface;
     pools?: Array<LootTablePoolJsonDefinition>;
 };
@@ -56,7 +56,7 @@ export type LootTablePoolJsonDefinition = {
  */
 export type LootTableEntryJsonDefinition = {
     name?: string;
-    id: number | string;
+    id?: number | string;
     type?: string;
     stackable?: boolean;
     weight?: number;
@@ -90,7 +90,7 @@ export declare class UltraLoot {
     /**
      * Default RNG source when none is given
      */
-    protected defaultRng: RngInterface;
+    protected defaultRng?: RngInterface;
     /**
      * RNG source given by the end user
      */
@@ -190,7 +190,7 @@ export declare class UltraLoot {
      *   }
      * ]);
      */
-    createTable(def: LootTable | LootTableDefinition | LootTableEasyDefinition): LootTable;
+    createTable(def: LootTable | LootTableDefinition | LootTableEasyDefinition | LootTableJsonDefinition): LootTable;
     /**
      * Create a loot pool for use in a loot table
      */
@@ -290,7 +290,7 @@ export declare class UltraLoot {
      */
     serialize(table: LootTable, { includeRng, key, had }?: {
         includeRng?: boolean;
-        key?: string;
+        key?: string | number;
         had?: Set<any>;
     }): SerializedTables;
     /**

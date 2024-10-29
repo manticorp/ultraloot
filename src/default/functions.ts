@@ -13,12 +13,12 @@ type InheritLooterSignature = ({
 }: {
   looted: LootTableEntryResult,
   looter: any,
-  args: {
+  args?: {
     property?: string,
     looterProperty?: string,
     lootedProperty?: string,
     default?: any,
-  }
+  } | null
 }) => void;
 
 /**
@@ -32,7 +32,12 @@ type InheritLooterSignature = ({
  * }})
  */
 export const inheritLooter: InheritLooterSignature = ({ looted, looter, args }) => {
-  dotSet(looted, args.property ?? args.lootedProperty, dotGet(looter, args.property ?? args.looterProperty, args.default));
+  args = args ?? {};
+  args.lootedProperty = args.lootedProperty ?? args.property;
+  args.looterProperty = args.looterProperty ?? args.property;
+  if (args.looterProperty && args.lootedProperty) {
+    dotSet(looted, args.lootedProperty, dotGet(looter, args.looterProperty, args.default));
+  }
 };
 
 type InheritContextSignature = ({
@@ -42,12 +47,12 @@ type InheritContextSignature = ({
 }: {
   looted: LootTableEntryResult,
   context: any,
-  args: {
+  args?: {
     property?: string,
     contextProperty?: string,
     lootedProperty?: string,
     default?: any,
-  }
+  } | null
 }) => void;
 
 /**
@@ -61,7 +66,12 @@ type InheritContextSignature = ({
  * }})
  */
 export const inheritContext: InheritContextSignature = ({ looted, context, args }) => {
-  dotSet(looted, args.property ?? args.lootedProperty, dotGet(context, args.property ?? args.contextProperty, args.default));
+  args = args ?? {};
+  args.lootedProperty = args.lootedProperty ?? args.property;
+  args.contextProperty = args.contextProperty ?? args.property;
+  if (args.contextProperty && args.lootedProperty) {
+    dotSet(looted, args.lootedProperty, dotGet(context, args.contextProperty, args.default));
+  }
 };
 
 type SetToRandomChoiceSignature = ({
@@ -71,10 +81,10 @@ type SetToRandomChoiceSignature = ({
 }: {
   rng: RngInterface,
   looted: LootTableEntryResult,
-  args: {
+  args?: {
     property?: string,
     choices?: Array<any> | Record<any, number> | Map<any, number>
-  }
+  } | null
 }) => void;
 
 /**
@@ -90,6 +100,7 @@ type SetToRandomChoiceSignature = ({
  * }}); // looted.item.color will be one of red, green or blue.
  */
 export const setToRandomChoice: SetToRandomChoiceSignature = ({ rng, looted, args }) => {
+  args = args ?? {};
   const { property, choices } = args;
   if (property && looted && choices) {
     dotSet(looted, property, rng.weightedChoice(choices));

@@ -9,8 +9,8 @@ import { RngInterface, Chancy } from './rng';
  */
 export type LootTableDefinition = {
     name?: string;
-    id?: string;
-    fn?: string;
+    id?: string | number;
+    fn?: string | number | null;
     rng?: RngInterface;
     pools?: Array<LootTablePool>;
     ul?: UltraLoot;
@@ -21,7 +21,7 @@ export type LootTableFunctionSignature = ({ rng, looted, looter, context, result
     looter: any;
     context: any;
     result: LootTableEntryResults;
-    args: Record<string, any>;
+    args?: any;
 }) => void;
 export type LootTableConditionSignature = ({ rng, looted, looter, context, result, args }: {
     rng: RngInterface;
@@ -29,7 +29,7 @@ export type LootTableConditionSignature = ({ rng, looted, looter, context, resul
     looter: any;
     context: any;
     result: LootTableEntryResults;
-    args: Record<string, any>;
+    args?: any;
 }) => boolean | Promise<boolean>;
 export interface TableRollInterface {
     looter?: any;
@@ -48,16 +48,16 @@ export interface TablePoolRollInterface {
 }
 export default class LootTable {
     name?: string;
-    id?: string;
+    id: string | number;
     /**
      * Filename that should be used to represent this table
      * when it is saved as JSON. This should include relative
      * path/folder names
      */
-    fn?: string;
+    fn?: string | number | null;
     ul?: UltraLoot;
     rng: RngInterface;
-    pools?: Array<LootTablePool>;
+    pools: Array<LootTablePool>;
     functions: Record<string, LootTableFunctionSignature>;
     conditions: Record<string, LootTableConditionSignature>;
     /**
@@ -77,8 +77,8 @@ export default class LootTable {
     /**
      * The string to be used as a filename for this table.
      */
-    get filename(): string | null;
-    set filename(fn: string | null);
+    get filename(): string | number | undefined | null;
+    set filename(fn: string | number | null | undefined);
     /**
      * ultraloot instance
      */
@@ -142,7 +142,7 @@ export default class LootTable {
      */
     applyFunction(functionDefinition: FunctionDefinition, { rng, looted, looter, context, result }: {
         rng: RngInterface;
-        looted?: LootTableEntryResult;
+        looted: LootTableEntryResult;
         looter: any;
         context: any;
         result: LootTableEntryResults;

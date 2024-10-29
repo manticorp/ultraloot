@@ -14,8 +14,8 @@ export interface LootTablePoolDefinition {
     template?: Partial<LootTableEntryDefinition>;
 }
 export default class LootPool {
-    name: string;
-    id: string;
+    name?: string;
+    id?: string;
     conditions: Array<ConditionDefinition>;
     functions: Array<FunctionDefinition>;
     rolls: Chancy;

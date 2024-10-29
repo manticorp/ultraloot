@@ -96,7 +96,7 @@ describe('testing ultraloot', () => {
       result: LootTableEntryResults,
     } = {
       rng: new Rng(),
-      looted: null,
+      looted: new LootTableEntryResult(),
       looter: null,
       context: null,
       result: new LootTableEntryResults(),

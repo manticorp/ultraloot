@@ -1,5 +1,5 @@
 import LootTable from './../../table';
-import { RngInterface, Chancy } from './../../rng';
+import { default as RNG, RngInterface, Chancy } from './../../rng';
 import LootTableEntryResult from './entry/result';
 import LootTableEntryResults from './entry/results';
 export type LootTableEntryDefinition = {
@@ -30,13 +30,16 @@ export default class LootTableEntry {
     name?: string;
     weight: number;
     item?: any;
-    qty?: Chancy;
+    qty: Chancy;
     functions: Array<FunctionDefinition>;
     conditions: Array<ConditionDefinition>;
+    rng?: RngInterface;
     /**
      * @param definition The loot table entry definition
      */
     constructor({ id, stackable, unique, name, weight, item, functions, conditions, qty, }?: LootTableEntryDefinition);
+    getRng(rng?: RngInterface): RngInterface | RNG;
+    setRng(rng: RngInterface): void;
     get description(): string;
     describe(): string;
     getItem(): any;
@@ -44,9 +47,9 @@ export default class LootTableEntry {
     cloneItem(): any;
     isTable(): boolean;
     resultDefinition(rng: RngInterface): {
-        id: string | number;
-        stackable: boolean;
-        name: string;
+        id: string | number | undefined;
+        stackable: boolean | undefined;
+        name: string | undefined;
         item: any;
         qty: number;
     };
@@ -66,28 +69,28 @@ export default class LootTableEntry {
         result?: LootTableEntryResults;
     }): Promise<LootTableEntryResults>;
     rollItem({ rng, table, looter, context, result }: {
-        rng: RngInterface;
+        rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
     }): Promise<LootTableEntryResults>;
     rollTable({ rng, table, looter, context, result }: {
-        rng: RngInterface;
+        rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
     }): Promise<LootTableEntryResults>;
     processEntryResults(entryResults: LootTableEntryResults, { rng, table, looter, context, result }: {
-        rng: RngInterface;
+        rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
     }): Promise<LootTableEntryResults>;
     processEntryResult(entryResult: LootTableEntryResult, { rng, table, looter, context, result }: {
-        rng: RngInterface;
+        rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
@@ -115,21 +118,21 @@ export default class LootTableEntry {
         result: LootTableEntryResults;
     }): LootTableEntryResults;
     rollTableSync({ rng, table, looter, context, result }: {
-        rng: RngInterface;
+        rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
     }): LootTableEntryResults;
     processEntryResultsSync(entryResults: LootTableEntryResults, { rng, table, looter, context, result }: {
-        rng: RngInterface;
+        rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
     }): LootTableEntryResults;
     processEntryResultSync(looted: LootTableEntryResult, { rng, table, looter, context, result }: {
-        rng: RngInterface;
+        rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;

@@ -3,12 +3,12 @@ import LootTableEntryResult from './../table/pool/entry/result';
 type InheritLooterSignature = ({ looted, looter, args }: {
     looted: LootTableEntryResult;
     looter: any;
-    args: {
+    args?: {
         property?: string;
         looterProperty?: string;
         lootedProperty?: string;
         default?: any;
-    };
+    } | null;
 }) => void;
 /**
  * Inherits some property from looter to looted
@@ -24,12 +24,12 @@ export declare const inheritLooter: InheritLooterSignature;
 type InheritContextSignature = ({ looted, context, args }: {
     looted: LootTableEntryResult;
     context: any;
-    args: {
+    args?: {
         property?: string;
         contextProperty?: string;
         lootedProperty?: string;
         default?: any;
-    };
+    } | null;
 }) => void;
 /**
  * Inherits some property from context to looted
@@ -45,10 +45,10 @@ export declare const inheritContext: InheritContextSignature;
 type SetToRandomChoiceSignature = ({ rng, looted, args }: {
     rng: RngInterface;
     looted: LootTableEntryResult;
-    args: {
+    args?: {
         property?: string;
         choices?: Array<any> | Record<any, number> | Map<any, number>;
-    };
+    } | null;
 }) => void;
 /**
  * Sets a property of looted to some random choice from choices list

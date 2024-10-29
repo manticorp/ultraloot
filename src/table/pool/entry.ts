@@ -1,6 +1,6 @@
 import log from './../../log';
 import LootTable from './../../table';
-import { RngInterface, Chancy } from './../../rng';
+import { default as RNG, RngInterface, Chancy } from './../../rng';
 import LootTableEntryResult from './entry/result';
 import LootTableEntryResults from './entry/results';
 
@@ -34,9 +34,10 @@ export default class LootTableEntry {
   name?: string;
   weight: number = 1;
   item?: any;
-  qty?: Chancy = 1;
+  qty: Chancy = 1;
   functions: Array<FunctionDefinition>;
   conditions: Array<ConditionDefinition>;
+  rng?: RngInterface;
 
   /**
    * @param definition The loot table entry definition
@@ -61,6 +62,14 @@ export default class LootTableEntry {
     this.qty = qty;
     this.functions = functions ?? [];
     this.conditions = conditions ?? [];
+  }
+
+  getRng (rng?: RngInterface) {
+    return rng ?? this.rng ?? (this.rng = new RNG());
+  }
+
+  setRng (rng: RngInterface) {
+    this.rng = rng;
   }
 
   get description () {
@@ -137,7 +146,7 @@ export default class LootTableEntry {
   }) {
     let add = true;
     for (const cond of this.conditions) {
-      add = add && await table.applyCondition(cond, { rng, looter, context, result });
+      add = add && await table.applyCondition(cond, { rng: this.getRng(rng), looter, context, result });
       if (!add) {
         log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
         break;
@@ -160,9 +169,9 @@ export default class LootTableEntry {
     result?: LootTableEntryResults
   }) : Promise<LootTableEntryResults> {
     if (this.isTable()) {
-      return await this.rollTable({ rng, table, looter, context, result });
+      return await this.rollTable({ rng: this.getRng(rng), table, looter, context, result });
     } else {
-      return await this.rollItem({ rng, table, looter, context, result });
+      return await this.rollItem({ rng: this.getRng(rng), table, looter, context, result });
     }
   }
 
@@ -173,14 +182,14 @@ export default class LootTableEntry {
     context,
     result = new LootTableEntryResults()
   } : {
-    rng: RngInterface,
+    rng?: RngInterface,
     table: LootTable,
     looter: any,
     context: any,
     result: LootTableEntryResults
   }) {
     log.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
-    await this.processEntryResults(this.generateBaseResults(rng), { rng, table, looter, context, result });
+    await this.processEntryResults(this.generateBaseResults(this.getRng(rng)), { rng: this.getRng(rng), table, looter, context, result });
     return result;
   }
 
@@ -191,7 +200,7 @@ export default class LootTableEntry {
     context,
     result = new LootTableEntryResults()
   } : {
-    rng: RngInterface,
+    rng?: RngInterface,
     table: LootTable,
     looter: any,
     context: any,
@@ -200,7 +209,7 @@ export default class LootTableEntry {
     // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
     const entryResults = await this.getItem().borrow(table).roll({ looter, context, result: [], rng, n: this.qty });
     this.getItem().unborrow(table);
-    await this.processEntryResults(entryResults, { rng, table, looter, context, result });
+    await this.processEntryResults(entryResults, { rng: this.getRng(rng), table, looter, context, result });
     return result;
   }
 
@@ -212,14 +221,14 @@ export default class LootTableEntry {
       context,
       result = new LootTableEntryResults()
     } : {
-      rng: RngInterface,
+      rng?: RngInterface,
       table: LootTable,
       looter: any,
       context: any,
       result: LootTableEntryResults
     }) {
     for (const entryResult of entryResults) {
-      await this.processEntryResult(entryResult, { rng, table, looter, context, result });
+      await this.processEntryResult(entryResult, { rng: this.getRng(rng), table, looter, context, result });
     }
     return entryResults;
   }
@@ -231,14 +240,14 @@ export default class LootTableEntry {
     context,
     result = new LootTableEntryResults()
   } : {
-    rng: RngInterface,
+    rng?: RngInterface,
     table: LootTable,
     looter: any,
     context: any,
     result: LootTableEntryResults
   }) {
     for (const fn of this.functions) {
-      await table.applyFunction(fn, { rng, looted: entryResult, looter, context, result });
+      await table.applyFunction(fn, { rng: this.getRng(rng), looted: entryResult, looter, context, result });
     }
     if (entryResult.qty > 0) {
       if (entryResult.stackable) {
@@ -266,7 +275,7 @@ export default class LootTableEntry {
   }) {
     let add = true;
     for (const cond of this.conditions) {
-      add = add && table.applyConditionSync(cond, { rng, looter, context, result });
+      add = add && table.applyConditionSync(cond, { rng: this.getRng(rng), looter, context, result });
       if (!add) {
         log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
         break;
@@ -289,9 +298,9 @@ export default class LootTableEntry {
     result?: LootTableEntryResults
   }) : LootTableEntryResults {
     if (this.isTable()) {
-      return this.rollTableSync({ rng, table, looter, context, result });
+      return this.rollTableSync({ rng: this.getRng(rng), table, looter, context, result });
     } else {
-      return this.rollItemSync({ rng, table, looter, context, result });
+      return this.rollItemSync({ rng: this.getRng(rng), table, looter, context, result });
     }
   }
 
@@ -309,7 +318,7 @@ export default class LootTableEntry {
     result: LootTableEntryResults
   }) {
     log.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
-    this.processEntryResultsSync(this.generateBaseResults(rng), { rng, table, looter, context, result });
+    this.processEntryResultsSync(this.generateBaseResults(this.getRng(rng)), { rng: this.getRng(rng), table, looter, context, result });
     return result;
   }
 
@@ -320,7 +329,7 @@ export default class LootTableEntry {
     context,
     result = new LootTableEntryResults()
   } : {
-    rng: RngInterface,
+    rng?: RngInterface,
     table: LootTable,
     looter: any,
     context: any,
@@ -329,7 +338,7 @@ export default class LootTableEntry {
     // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
     const entryResults = this.getItem().borrow(table).rollSync({ looter, context, result: [], rng, n: this.qty });
     this.getItem().unborrow(table);
-    this.processEntryResultsSync(entryResults, { rng, table, looter, context, result });
+    this.processEntryResultsSync(entryResults, { rng: this.getRng(rng), table, looter, context, result });
     return result;
   }
 
@@ -341,14 +350,14 @@ export default class LootTableEntry {
       context,
       result = new LootTableEntryResults()
     } : {
-      rng: RngInterface,
+      rng?: RngInterface,
       table: LootTable,
       looter: any,
       context: any,
       result: LootTableEntryResults
     }) {
     for (const entryResult of entryResults) {
-      this.processEntryResultSync(entryResult, { rng, table, looter, context, result });
+      this.processEntryResultSync(entryResult, { rng: this.getRng(rng), table, looter, context, result });
     }
     return entryResults;
   }
@@ -360,14 +369,14 @@ export default class LootTableEntry {
     context,
     result = new LootTableEntryResults()
   } : {
-    rng: RngInterface,
+    rng?: RngInterface,
     table: LootTable,
     looter: any,
     context: any,
     result: LootTableEntryResults
   }) {
     for (const fn of this.functions) {
-      table.applyFunctionSync(fn, { rng, looted, looter, context, result });
+      table.applyFunctionSync(fn, { rng: this.getRng(rng), looted, looter, context, result });
     }
     if (looted.qty > 0) {
       if (looted.stackable || looted.qty === 1) {

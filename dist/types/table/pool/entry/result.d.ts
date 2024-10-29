@@ -3,7 +3,7 @@ export default class LootTableEntryResult {
     stackable: boolean;
     name?: string;
     item?: any;
-    qty?: number;
+    qty: number;
     constructor({ id, stackable, name, item, qty }?: {
         id?: number | string;
         stackable?: boolean;

@@ -54,8 +54,8 @@ export type LootTablePoolEasyDefinition = {
  */
 export type LootTableJsonDefinition = {
   name?: string,
-  id?: string,
-  fn?: string,
+  id: string | number,
+  fn?: string | number | null,
   rng?: string | number | RngInterface,
   pools?: Array<LootTablePoolJsonDefinition>,
 };
@@ -78,7 +78,7 @@ export type LootTablePoolJsonDefinition = {
  */
 export type LootTableEntryJsonDefinition = {
   name?: string,
-  id: number | string,
+  id?: number | string,
   type?: string,
   stackable?: boolean,
   weight?: number,
@@ -107,7 +107,6 @@ export type LoadSaveArgs = { defaultExtension?: string, path?: string };
  * const ultralootCustomRng = new UltraLoot(rngSource);   // using a custom RNG
  */
 export class UltraLoot {
-
   static version = CURRENT_VERSION;
 
   version = CURRENT_VERSION;
@@ -115,7 +114,7 @@ export class UltraLoot {
   /**
    * Default RNG source when none is given
    */
-  protected defaultRng: RngInterface;
+  protected defaultRng?: RngInterface;
 
   /**
    * RNG source given by the end user
@@ -328,7 +327,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.functionCheck(functionDefinition)) {
-      return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {})});
+      return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {}) });
     }
   }
 
@@ -344,12 +343,13 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {})});
+      const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {}) });
       if (conditionCallResult instanceof Promise) {
         throw new Error('Cannot return promise from sync condition call');
       }
       return conditionCallResult;
     }
+    return true;
   }
 
   public async applyFunction (functionDefinition: FunctionDefinition, {
@@ -366,7 +366,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.functionCheck(functionDefinition)) {
-      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {})});
+      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {}) });
     }
   }
 
@@ -382,8 +382,9 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {})});
+      return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {}) });
     }
+    return true;
   }
 
   /**
@@ -406,7 +407,7 @@ export class UltraLoot {
    *   }
    * ]);
    */
-  public createTable (def: LootTable | LootTableDefinition | LootTableEasyDefinition): LootTable {
+  public createTable (def: LootTable | LootTableDefinition | LootTableEasyDefinition | LootTableJsonDefinition): LootTable {
     if (def instanceof LootTable || this.isLootTableDefinition(def)) {
       if (def instanceof LootTable) {
         log.vv('Creating table from LootTable');
@@ -536,6 +537,7 @@ export class UltraLoot {
       id: def.id,
       pools: [],
     };
+    result.pools = [];
     if (def.pools) {
       for (const pool of def.pools) {
         result.pools.push(this.createPool(pool));
@@ -583,20 +585,28 @@ export class UltraLoot {
     if (str.endsWith(extension)) {
       return str;
     }
-    const last = str.split('/').pop().split('\\').pop();
+    if (str.length === 0) {
+      return extension;
+    }
+    const lastPart = str.split('/').pop() as string;
+    const last = lastPart.split('\\').pop() as string;
     const pos = last.includes('.') ? last.lastIndexOf('.') : last.length;
-    const fileRoot = str.substr(0, (str.length - last.length) + pos);
+    const fileRoot = str.substring(0, (str.length - last.length) + pos);
     const output = `${fileRoot}.${extension.replace('.', '')}`;
     return output;
   }
 
   protected getExtension (str: string) : string | null | undefined {
-    const last = str.split('/').pop().split('\\').pop();
+    if (str.length === 0) {
+      return null;
+    }
+    const lastPart = str.split('/').pop() as string;
+    const last = lastPart.split('\\').pop() as string;
     if (!last.includes('.')) {
       return null;
     }
     const pos = last.lastIndexOf('.');
-    return last.substr(pos, last.length);
+    return last.substring(pos, last.length);
   }
 
   /**
@@ -670,7 +680,7 @@ export class UltraLoot {
    *   }
    * }
    */
-  public serialize (table: LootTable, { includeRng = false, key, had = new Set() }: { includeRng?: boolean, key?: string, had?: Set<any> } = {}): SerializedTables {
+  public serialize (table: LootTable, { includeRng = false, key, had = new Set() }: { includeRng?: boolean, key?: string | number, had?: Set<any> } = {}): SerializedTables {
     const result: Record<string, LootTableJsonDefinition> = {};
     const clone: LootTableJsonDefinition = {
       name: table.name,
@@ -678,6 +688,7 @@ export class UltraLoot {
       fn: table.fn,
       pools: []
     };
+    clone.pools = [];
 
     const keyToUse = table.filename ?? this.getRng().uniqstr(6);
     had.add(table);

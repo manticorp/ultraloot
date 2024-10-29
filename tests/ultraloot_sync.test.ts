@@ -8,7 +8,6 @@ import LootTableEntryResult from './../src/table/pool/entry/result';
 import LootTableEntryResults from './../src/table/pool/entry/results';
 
 describe('testing ultraloot in a sync fashion', () => {
-
   test('noThrowOnMissingFunctionsOrConditions', () => {
     const u = new UltraLoot();
 
@@ -25,7 +24,7 @@ describe('testing ultraloot in a sync fashion', () => {
       result: LootTableEntryResults,
     } = {
       rng: new Rng(),
-      looted: null,
+      looted: new LootTableEntryResult(),
       looter: null,
       context: null,
       result: new LootTableEntryResults(),

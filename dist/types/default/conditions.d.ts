@@ -1,13 +1,13 @@
 type DependContextSignature = ({ context, args }: {
     context: any;
-    args: {
+    args?: {
         property?: string;
         min?: number;
         max?: number;
         tobe?: any;
         inverse?: boolean;
         strict?: boolean;
-    };
+    } | null;
 }) => boolean;
 /**
  * Returns true or false depending on value set in looter
@@ -45,14 +45,14 @@ type DependContextSignature = ({ context, args }: {
 export declare const dependContext: DependContextSignature;
 type DependLooterSignature = ({ looter, args }: {
     looter: any;
-    args: {
+    args?: {
         property?: string;
         min?: number;
         max?: number;
         tobe?: any;
         inverse?: boolean;
         strict?: boolean;
-    };
+    } | null;
 }) => boolean;
 /**
  * Returns true or false depending on value set in looter

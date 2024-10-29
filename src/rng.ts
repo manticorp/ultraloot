@@ -34,8 +34,6 @@ export type Chancy = ChancyInterface | string | number;
 
 export type Seed = string | number;
 
-export type MathFunc = 'floor' | 'ceil' | 'round';
-
 export interface RngInterface {
   predictable(seed?: Seed) : RngInterface;
   hashStr(str : string) : string | number;
@@ -52,7 +50,7 @@ export interface RngInterface {
   uniqstr(len?: number) : string;
   randBetween(from : number, to : number, skew : number) : number;
   normal(args?: NormalArgs) : number;
-  chancyInt(input : Chancy, fn ?: MathFunc) : number;
+  chancyInt(input : Chancy) : number;
   chancy(input : Chancy) : number;
   choice(data : Array<any>) : any;
   weightedChoice(data : Record<any, number> | Array<any> | Map<any, number>) : any;
@@ -383,6 +381,7 @@ export abstract class RngAbstract implements RngInterface {
           return input.min ?? 0;
       }
     }
+    throw new Error('Invalid input given to chancyMin');
   }
 
   public static chancyMax (input : Chancy) : number {
@@ -414,6 +413,7 @@ export abstract class RngAbstract implements RngInterface {
           return input.max ?? 1;
       }
     }
+    throw new Error('Invalid input given to chancyMax');
   }
 
   public choice (data : Array<any>) : any {
@@ -460,7 +460,7 @@ export abstract class RngAbstract implements RngInterface {
     } else {
       // Some shortcuts
       const entries = Object.keys(data);
-      if (entries.length === 0) {;
+      if (entries.length === 0) {
         return null;
       }
       if (entries.length === 1) {
@@ -518,7 +518,7 @@ export abstract class RngAbstract implements RngInterface {
 
   public parseDiceArgs (n : string | DiceInterface | number | number[] = 1, d: number = 6, plus: number = 0) : DiceInterface {
     const { constructor } = Object.getPrototypeOf(this);
-    return constructor.parseDiceArgs(n)
+    return constructor.parseDiceArgs(n);
   }
 
   public static parseDiceString (string : string) : DiceInterface {
@@ -598,7 +598,7 @@ export abstract class RngAbstract implements RngInterface {
 
 export default class Rng extends RngAbstract implements RngInterface {
   #mask: number;
-  #seed: number;
+  #seed: number = 0;
   #m_z: number = 0;
   constructor (seed? : Seed) {
     super(seed);
