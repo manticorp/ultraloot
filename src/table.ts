@@ -4,7 +4,8 @@ import { default as LootTablePool, LootTablePoolDefinition } from './table/pool'
 import { FunctionDefinition, ConditionDefinition } from './table/pool/entry';
 import LootTableEntryResult from './table/pool/entry/result';
 import LootTableEntryResults from './table/pool/entry/results';
-import { default as RNG, RngInterface, Chancy } from './rng';
+import RNG from './rng';
+import { RngInterface, ChancyNumeric } from './rng/interface';
 
 /**
  * Object used when creating a loot table.
@@ -55,7 +56,7 @@ export interface TableRollInterface {
   context?: any,
   result?: LootTableEntryResults,
   rng?: RngInterface,
-  n?: Chancy,
+  n?: ChancyNumeric,
 }
 
 export interface TablePoolRollInterface {
@@ -64,7 +65,7 @@ export interface TablePoolRollInterface {
   context?: any,
   result?: LootTableEntryResults,
   rng?: RngInterface,
-  n?: Chancy,
+  n?: ChancyNumeric,
 }
 
 export default class LootTable {
@@ -102,7 +103,7 @@ export default class LootTable {
     this.fn = fn;
     this.ul = ul;
     this.rng = rng ?? (ul ? ul.getRng() : new RNG());
-    this.id = id ?? this.rng.uniqstr(6);
+    this.id = id ?? this.rng.randomString(6);
   }
 
   // Register a function for use in loot pools

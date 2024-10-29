@@ -1,14 +1,70 @@
+import { RngAbstract } from './../rng';
 import {
-  RngAbstract,
+  RngDistributionsInterface,
   RngInterface,
   Seed
-} from './../rng';
+} from './interface';
 
 /**
+ *
  * An Rng type that can be used to give predictable results
  * for testing purposes, and giving known results.
+ *
+ * You can set an array of results that will be returned from called to _next()
+ *
+ * Note: To avoid unexpected results when using this in place of regular Rng, it is
+ * only allowed to make the results spread from [0, 1)
+ *
+ * The numbers are returned and cycled, so once you reach the end of the list, it will
+ * just keep on going.
+ *
+ * @category Other Rngs
+ *
+ * @example
+ * const prng = new PredictableRng();
+ * prng.results = [0.0];
+ * prng.random(); // 0.0
+ * prng.random(); // 0.0
+ * prng.random(); // 0.0
+ *
+ * @example
+ * const prng = new PredictableRng();
+ * prng.results = [0, 0.5];
+ * prng.random(); // 0.0
+ * prng.random(); // 0.5
+ * prng.random(); // 0.0
+ * prng.random(); // 0.5
+ *
+ * @example
+ * const prng = new PredictableRng();
+ * prng.results = [0.0, 0.1, 0.2, 0.3, 0.4];
+ * prng.random(); // 0.0
+ * prng.random(); // 0.1
+ * prng.random(); // 0.2
+ * prng.random(); // 0.3
+ * prng.random(); // 0.4
+ * prng.random(); // 0.0
+ *
+ * @example
+ * // The setEvenSpread and evenSpread methods can be used to generate
+ * // n numbers between [0, 1) with even gaps between
+ * const prng = new PredictableRng();
+ * prng.results = [0.0, 0.1, 0.2, 0.3, 0.4];
+ * prng.setEvenSpread(11);
+ * prng.random(); // 0.0
+ * prng.random(); // 0.1
+ * prng.random(); // 0.2
+ * prng.random(); // 0.3
+ * prng.random(); // 0.4
+ * prng.random(); // 0.5
+ * prng.random(); // 0.6
+ * prng.random(); // 0.7
+ * prng.random(); // 0.8
+ * prng.random(); // 0.9
+ * prng.random(); // 0.9999999...
+ * prng.random(); // 0.0
  */
-export default class Rng extends RngAbstract implements RngInterface {
+export default class PredictableRng extends RngAbstract implements RngInterface, RngDistributionsInterface {
   public counter = 0;
   protected _results: number[] = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 - Number.EPSILON];
   constructor (seed? : Seed, results?: number[]) {
@@ -52,9 +108,14 @@ export default class Rng extends RngAbstract implements RngInterface {
     return this;
   }
 
-  public sameAs (other : Rng) : boolean {
-    return this.results.sort().join(',') === other.results.sort().join(',') &&
-    this.counter === other.counter;
+  public sameAs (other : any) : boolean {
+    if (other instanceof PredictableRng) {
+      return this.results.join(',') === other.results.join(',') &&
+        this.counter === other.counter &&
+        this.getRandomSource() === other.getRandomSource()
+      ;
+    }
+    return false;
   }
 
   public reset () {
@@ -62,7 +123,7 @@ export default class Rng extends RngAbstract implements RngInterface {
     return this;
   }
 
-  protected _random () : number {
+  protected _next () : number {
     return this.results[this.counter++ % this.results.length];
   }
 }

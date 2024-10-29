@@ -1,5 +1,7 @@
 export * from './ultraloot';
+export * from './number';
 export * from './rng';
+export * from './rng/interface';
 export * from './rng/predictable';
 export * from './table';
 export * from './table/manager';
@@ -8,7 +10,7 @@ export * from './table/pool/entry';
 export * from './table/pool/entry/result';
 export * from './table/pool/entry/results';
 import { UltraLoot } from './ultraloot';
-export { UltraLoot as UltraLoot };
+export { UltraLoot };
 export { default as Rng } from './rng';
 export { default as PredictableRng } from './rng/predictable';
 export { default as LootTable } from './table';

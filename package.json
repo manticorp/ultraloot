@@ -1,6 +1,6 @@
 {
   "name": "@manticorp/ultraloot",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "",
   "main": "dist/ultraloot.cjs",
   "browser": "dist/ultraloot.cjs",
@@ -22,7 +22,7 @@
     "dev": "webpack --mode development --config webpack.config.js",
     "prebuild": "rimraf dist",
     "build": "webpack --mode production --config webpack.config.js && webpack --mode production --config webpack-esm.config.js",
-    "ci": "npm t && npx typedoc && copyfiles -f ./dist/*.* ./docs/js && npm run test-build",
+    "ci": "npm t && npx typedoc && npm run test-build && copyfiles -f ./dist/*.* ./docs/js",
     "test-build": "npm run build && node test-build-common.cjs && node test-build-module.mjs",
     "test": "jest --coverage",
     "test-watch": "jest --coverage --watchAll"

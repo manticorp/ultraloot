@@ -3,15 +3,16 @@ import { default as LootTableEntry, LootTableEntryDefinition, ConditionDefinitio
 import LootTableEntryResult from './pool/entry/result';
 import LootTableEntryResults from './pool/entry/results';
 import { default as LootTable } from './../table';
-import { default as RNG, RngInterface, Chancy } from './../rng';
+import RNG from './../rng';
+import { RngInterface, ChancyNumeric } from './../rng/interface';
 
 export interface LootTablePoolDefinition {
   name?: string,
   id?: string,
   conditions?: Array<ConditionDefinition>,
   functions?: Array<FunctionDefinition>,
-  rolls?: Chancy,
-  nulls?: Chancy,
+  rolls?: ChancyNumeric,
+  nulls?: ChancyNumeric,
   entries?: Array<LootTableEntry | LootTable | LootTableEntryDefinition>,
   template?: Partial<LootTableEntryDefinition>
 }
@@ -21,8 +22,8 @@ export default class LootPool {
   id?: string;
   conditions: Array<ConditionDefinition> = [];
   functions: Array<FunctionDefinition> = [];
-  rolls: Chancy = 1;
-  nulls: Chancy = 0;
+  rolls: ChancyNumeric = 1;
+  nulls: ChancyNumeric = 0;
   entries: Array<LootTableEntry | LootTable> = [];
   template: Partial<LootTableEntryDefinition> = {};
 
@@ -46,7 +47,7 @@ export default class LootPool {
     this.functions = functions ?? [];
     this.rolls = rolls;
     this.nulls = nulls;
-    this.id = id ?? (new RNG()).uniqstr(6);
+    this.id = id ?? (new RNG()).randomString(6);
     this.template = template;
     if (entries) {
       for (const entry of entries) {

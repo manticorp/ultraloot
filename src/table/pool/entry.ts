@@ -1,6 +1,7 @@
 import log from './../../log';
 import LootTable from './../../table';
-import { default as RNG, RngInterface, Chancy } from './../../rng';
+import RNG from './../../rng';
+import { RngInterface, ChancyNumeric } from './../../rng/interface';
 import LootTableEntryResult from './entry/result';
 import LootTableEntryResults from './entry/results';
 
@@ -11,7 +12,7 @@ export type LootTableEntryDefinition = {
   unique?: boolean,
   weight?: number,
   item?: any,
-  qty?: Chancy,
+  qty?: ChancyNumeric,
   functions?: Array<FunctionDefinition>,
   conditions?: Array<ConditionDefinition>
 };
@@ -34,7 +35,7 @@ export default class LootTableEntry {
   name?: string;
   weight: number = 1;
   item?: any;
-  qty: Chancy = 1;
+  qty: ChancyNumeric = 1;
   functions: Array<FunctionDefinition>;
   conditions: Array<ConditionDefinition>;
   rng?: RngInterface;

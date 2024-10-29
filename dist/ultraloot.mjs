@@ -260,21 +260,682 @@ if (debug) {
 
 /***/ }),
 
-/***/ 629:
+/***/ 623:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (/* binding */ Rng),
-/* harmony export */   U: () => (/* binding */ RngAbstract)
+/* harmony export */   Ay: () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   Bh: () => (/* binding */ ArrayNumberValidator),
+/* harmony export */   Ol: () => (/* binding */ NumberValidator),
+/* harmony export */   X: () => (/* binding */ NumberValidationError)
 /* harmony export */ });
-const MAX_RECURSIONS = 100;
+/**
+ * @category Number Validator
+ */
+const assert = (truthy, msg = 'Assertion failed') => {
+    if (!truthy) {
+        throw new NumberValidationError(msg);
+    }
+};
+/**
+ * @category Number Validator
+ */
+class NumberValidationError extends Error {
+}
+/**
+ * @category Number Validator
+ */
+class ArrayNumberValidator {
+    /**
+     * The numbers to be validated
+     */
+    #numbers = [];
+    /**
+     * Descriptive name for this validation
+     */
+    name = 'numbers';
+    constructor(numbers, name = 'numbers') {
+        this.numbers = numbers;
+        this.name = name;
+    }
+    get numbers() {
+        return this.#numbers;
+    }
+    set numbers(numbers) {
+        for (const number of numbers) {
+            assert(typeof number === 'number', `Non-number passed to validator ${number}`);
+        }
+        this.#numbers = numbers;
+    }
+    /**
+     * Specify the numbers to validate
+     */
+    all(numbers) {
+        this.numbers = numbers;
+        return this;
+    }
+    /**
+     * Specify the numbers to validate
+     */
+    validate(numbers) {
+        if (!Array.isArray(numbers)) {
+            return new NumberValidator(numbers);
+        }
+        return this.all(numbers);
+    }
+    /**
+     * Pass a string decribing the varname to this to make the error messages
+     * make more sense in your context.
+     *
+     * @example
+     *
+     * const potatoes = [0, 1];
+     * validate(potatoes).varname('potatoes').gt(2); // "Expected every component of potatoes to be > 2, got 0"
+     */
+    varname(name) {
+        this.name = name;
+        return this;
+    }
+    /**
+     * Get the sum of our numbers
+     */
+    sum() {
+        return this.numbers.reduce((a, b) => a + b, 0);
+    }
+    /**
+     * Validates whether the total of all of our numbers is close to sum, with a maximum difference of diff
+     * @param sum The sum
+     * @param diff The maximum difference
+     * @param msg Error message
+     * @throws {@link NumberValidationError} If they do not sum close to the correct amount
+     */
+    sumcloseto(sum, diff = 0.0001, msg) {
+        assert(Math.abs(this.sum() - sum) < diff, msg ?? `Expected sum of ${this.name} to be within ${diff} of ${sum}, got ${this.sum()}`);
+        return this;
+    }
+    /**
+     * Validates whether the total of all of our numbers is equal (===) to sum
+     * @param sum The sum
+     * @param msg Error message
+     * @throws {@link NumberValidationError} If they do not total to the correct amount
+     */
+    sumto(sum, msg) {
+        assert(this.sum() === sum, msg ?? `Expected sum of ${this.name} to be equal to ${sum}, got ${this.sum()}`);
+        return this;
+    }
+    /**
+     * Validates whether the total of all of our numbers is < sum
+     * @param sum The sum
+     * @param msg Error message
+     * @throws {@link NumberValidationError} If they do not total to < sum
+     */
+    sumtolt(sum, msg) {
+        assert(this.sum() < sum, msg ?? `Expected sum of ${this.name} to be less than ${sum}, got ${this.sum()}`);
+        return this;
+    }
+    /**
+     * Validates whether the total of all of our numbers is > sum
+     * @param sum The sum
+     * @param msg Error message
+     * @throws {@link NumberValidationError} If they do not total to > sum
+     */
+    sumtogt(sum, msg) {
+        assert(this.sum() > sum, msg ?? `Expected sum of ${this.name} to be greater than ${sum}, got ${this.sum()}`);
+        return this;
+    }
+    /**
+     * Validates whether the total of all of our numbers is <= sum
+     * @param sum The sum
+     * @param msg Error message
+     * @throws {@link NumberValidationError} If they do not total to <= sum
+     */
+    sumtolteq(sum, msg) {
+        assert(this.sum() <= sum, msg ?? `Expected sum of ${this.name} to be less than or equal to ${sum}, got ${this.sum()}`);
+        return this;
+    }
+    /**
+     * Validates whether the total of all of our numbers is >= sum
+     * @param sum The sum
+     * @param msg Error message
+     * @throws {@link NumberValidationError} If they do not total to >= sum
+     */
+    sumtogteq(sum, msg) {
+        assert(this.sum() >= sum, msg ?? `Expected sum of ${this.name} to be greater than or equal to ${sum}, got ${this.sum()}`);
+        return this;
+    }
+    /**
+     * @throws {@link NumberValidationError} if numbers are not all integers
+     */
+    int(msg) {
+        this.numbers.forEach(a => validate(a).int(msg ?? `Expected every component of ${this.name} to be an integer, got ${a}`));
+        return this;
+    }
+    /**
+     * @throws {@link NumberValidationError} if numbers are not all positive
+     */
+    positive(msg) {
+        this.numbers.forEach(a => validate(a).positive(msg ?? `Expected every component of ${this.name} to be postiive, got ${a}`));
+        return this;
+    }
+    /**
+     * @throws {@link NumberValidationError} if numbers are not all negative
+     */
+    negative(msg) {
+        this.numbers.forEach(a => validate(a).negative(msg ?? `Expected every component of ${this.name} to be negative, got ${a}`));
+        return this;
+    }
+    /**
+     * @throws {@link NumberValidationError} if numbers are not all between from and to
+     */
+    between(from, to, msg) {
+        this.numbers.forEach(a => validate(a).between(from, to, msg ?? `Expected every component of ${this.name} to be between ${from} and ${to}, got ${a}`));
+        return this;
+    }
+    /**
+     * @throws {@link NumberValidationError} if numbers are not all between or equal to from and to
+     */
+    betweenEq(from, to, msg) {
+        this.numbers.forEach(a => validate(a).betweenEq(from, to, msg ?? `Expected every component of ${this.name} to be between or equal to ${from} and ${to}, got ${a}`));
+        return this;
+    }
+    /**
+     * @throws {@link NumberValidationError} if numbers are not all > n
+     */
+    gt(n, msg) {
+        this.numbers.forEach(a => validate(a).gt(n, msg ?? `Expected every component of ${this.name} to be > ${n}, got ${a}`));
+        return this;
+    }
+    /**
+     * @throws {@link NumberValidationError} if numbers are not all >= n
+     */
+    gteq(n, msg) {
+        this.numbers.forEach(a => validate(a).gteq(n, msg ?? `Expected every component of ${this.name} to be >= ${n}, got ${a}`));
+        return this;
+    }
+    /**
+     * @throws {@link NumberValidationError} if numbers are not all < n
+     */
+    lt(n, msg) {
+        this.numbers.forEach(a => validate(a).lt(n, msg ?? `Expected every component of ${this.name} to be < ${n}, got ${a}`));
+        return this;
+    }
+    /**
+     * @throws {@link NumberValidationError} if numbers are not all <= n
+     */
+    lteq(n, msg) {
+        this.numbers.forEach(a => validate(a).lteq(n, msg ?? `Expected every component of ${this.name} to be <= ${n}, got ${a}`));
+        return this;
+    }
+}
+/**
+ * Validate numbers in a fluent fashion.
+ *
+ * Each validator method accepts a message as the last parameter
+ * for customising the error message.
+ *
+ * @category Number Validator
+ *
+ * @example
+ * const n = new NumberValidator();
+ * n.validate(0).gt(1); // NumberValidationError
+ *
+ * @example
+ * const n = new NumberValidator();
+ * const probability = -0.1;
+ * n.validate(probability).gteq(0, 'Probabilities should always be >= 0'); // NumberValidationError('Probabilities should always be >= 0').
+ */
+class NumberValidator {
+    /**
+     * The number being tested.
+     */
+    #number;
+    /**
+     * The name of the variable being validated - shows up in error messages.
+     */
+    name = 'number';
+    constructor(number = 0, name = 'number') {
+        this.number = number;
+        this.name = name;
+    }
+    get number() {
+        return this.#number;
+    }
+    set number(number) {
+        assert(typeof number === 'number', `Non-number passed to validator ${number}`);
+        this.#number = number;
+    }
+    /**
+     * Returns an ArrayNumberValidator for all the numbers
+     */
+    all(numbers, name) {
+        return new ArrayNumberValidator(numbers, name ?? this.name);
+    }
+    assertNumber(num) {
+        assert(typeof this.number !== 'undefined', 'No number passed to validator.');
+        return true;
+    }
+    /**
+     * Pass a string decribing the varname to this to make the error messages
+     * make more sense in your context.
+     *
+     * @example
+     *
+     * const potato = 1;
+     * validate(potato).varname('potato').gt(2); // "Expected potato to be greater than 2, got 1"
+     * @param {string} name [description]
+     */
+    varname(name) {
+        this.name = name;
+        return this;
+    }
+    /**
+     * Specify the number to be validated
+     */
+    validate(number) {
+        if (Array.isArray(number)) {
+            return this.all(number);
+        }
+        this.number = number;
+        return this;
+    }
+    /**
+     * Asserts that the number is an integer
+     * @throws {@link NumberValidationError} if ths number is not an integer
+     */
+    int(msg) {
+        if (this.assertNumber(this.number))
+            assert(Number.isInteger(this.number), msg ?? `Expected ${this.name} to be an integer, got ${this.number}`);
+        return this;
+    }
+    /**
+     * Asserts that the number is > 0
+     * @throws {@link NumberValidationError} if the number is not positive
+     */
+    positive(msg) {
+        return this.gt(0, msg ?? `Expected ${this.name} to be positive, got ${this.number}`);
+    }
+    /**
+     * Asserts that the number is < 0
+     * @throws {@link NumberValidationError} if the number is not negative
+     */
+    negative(msg) {
+        return this.lt(0, msg ?? `Expected ${this.name} to be negative, got ${this.number}`);
+    }
+    /**
+     * Asserts that the from < number < to
+     * @throws {@link NumberValidationError} if it is outside or equal to those bounds
+     */
+    between(from, to, msg) {
+        if (this.assertNumber(this.number))
+            assert(this.number > from && this.number < to, msg ?? `Expected ${this.name} to be between ${from} and ${to}, got ${this.number}`);
+        return this;
+    }
+    /**
+     * Asserts that the from <= number <= to
+     * @throws {@link NumberValidationError} if it is outside those bounds
+     */
+    betweenEq(from, to, msg) {
+        if (this.assertNumber(this.number))
+            assert(this.number >= from && this.number <= to, msg ?? `Expected ${this.name} to be between or equal to ${from} and ${to}, got ${this.number}`);
+        return this;
+    }
+    /**
+     * Asserts that number > n
+     * @throws {@link NumberValidationError} if it is less than or equal to n
+     */
+    gt(n, msg) {
+        if (this.assertNumber(this.number))
+            assert(this.number > n, msg ?? `Expected ${this.name} to be greater than ${n}, got ${this.number}`);
+        return this;
+    }
+    /**
+     * Asserts that number >= n
+     * @throws {@link NumberValidationError} if it is less than n
+     */
+    gteq(n, msg) {
+        if (this.assertNumber(this.number))
+            assert(this.number >= n, msg ?? `Expected ${this.name} to be greater than or equal to ${n}, got ${this.number}`);
+        return this;
+    }
+    /**
+     * Asserts that number < n
+     * @throws {@link NumberValidationError} if it is greater than or equal to n
+     */
+    lt(n, msg) {
+        if (this.assertNumber(this.number))
+            assert(this.number < n, msg ?? `Expected ${this.name} to be less than ${n}, got ${this.number}`);
+        return this;
+    }
+    /**
+     * Asserts that number <= n
+     * @throws {@link NumberValidationError} if it is greater than n
+     */
+    lteq(n, msg) {
+        if (this.assertNumber(this.number))
+            assert(this.number <= n, msg ?? `Expected ${this.name} to be less than or equal to ${n}, got ${this.number}`);
+        return this;
+    }
+}
+function validate(number) {
+    if (Array.isArray(number)) {
+        return new ArrayNumberValidator(number);
+    }
+    else if (typeof number === 'object') {
+        const entries = Object.entries(number);
+        if (entries.length === 0) {
+            throw new Error('Empty object provided');
+        }
+        const [name, value] = entries[0];
+        return validate(value).varname(name);
+    }
+    else {
+        return new NumberValidator(number);
+    }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (validate);
+
+
+/***/ }),
+
+/***/ 673:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  YG: () => (/* binding */ MaxRecursionsError),
+  Qs: () => (/* binding */ NonRandomRandomError),
+  Up: () => (/* binding */ RngAbstract),
+  Ay: () => (/* binding */ src_rng)
+});
+
+// EXTERNAL MODULE: ./src/number.ts
+var src_number = __webpack_require__(623);
+;// ./src/rng/pool.ts
+
+/**
+ * @category Pool
+ */
+class PoolEmptyError extends Error {
+}
+/**
+ * @category Pool
+ */
+class PoolNotEnoughElementsError extends Error {
+}
+/**
+ * Allows for randomly drawing from a pool of entries without replacement
+ * @category Pool
+ */
+class Pool {
+    rng;
+    #entries = [];
+    constructor(entries = [], rng) {
+        this.entries = entries;
+        if (rng) {
+            this.rng = rng;
+        }
+        else {
+            this.rng = new src_rng();
+        }
+    }
+    copyArray(arr) {
+        return Array.from(arr);
+    }
+    setEntries(entries) {
+        this.entries = entries;
+        return this;
+    }
+    getEntries() {
+        return this.#entries;
+    }
+    set entries(entries) {
+        this.#entries = this.copyArray(entries);
+    }
+    get entries() {
+        return this.#entries;
+    }
+    get length() {
+        return this.#entries.length;
+    }
+    setRng(rng) {
+        this.rng = rng;
+        return this;
+    }
+    getRng() {
+        return this.rng;
+    }
+    add(entry) {
+        this.#entries.push(entry);
+    }
+    empty() {
+        this.#entries = [];
+        return this;
+    }
+    isEmpty() {
+        return this.length <= 0;
+    }
+    /**
+     * Draw an element from the pool, without replacement.
+     *
+     * @throws {@link PoolEmptyError} if the pool is empty
+     */
+    draw() {
+        if (this.length === 0) {
+            throw new PoolEmptyError('No more elements left to draw from in pool.');
+        }
+        if (this.length === 1) {
+            return this.#entries.splice(0, 1)[0];
+        }
+        const idx = this.rng.randInt(0, this.#entries.length - 1);
+        return this.#entries.splice(idx, 1)[0];
+    }
+    /**
+     * Draw n elements from the pool, without replacement.
+     *
+     * @throws {@link PoolEmptyError} if the pool is empty
+     * @throws {@link PoolNotEnoughElementsError} if the pool does not have enough elements to draw n values
+     */
+    drawMany(n) {
+        if (n < 0) {
+            throw new Error('Cannot draw < 0 elements from pool');
+        }
+        if (this.length === 0 && n > 0) {
+            throw new PoolEmptyError('No more elements left to draw from in pool.');
+        }
+        if (this.length < n) {
+            throw new PoolNotEnoughElementsError(`Tried to draw ${n} elements from pool with only ${this.length} entries.`);
+        }
+        const result = [];
+        for (let i = 0; i < n; i++) {
+            const idx = this.rng.randInt(0, this.#entries.length - 1);
+            result.push(this.#entries.splice(idx, 1)[0]);
+        }
+        return result;
+    }
+}
+
+;// ./src/rng/queue.ts
+class Dequeue {
+    size;
+    elements = [];
+    constructor(length = 1) {
+        if (Array.isArray(length)) {
+            this.elements = length;
+            this.size = this.elements.length;
+        }
+        else {
+            this.size = length;
+        }
+    }
+    get length() {
+        return this.elements.length;
+    }
+    push(el) {
+        this.elements.push(el);
+        if (this.elements.length > this.size) {
+            return this.pop();
+        }
+    }
+    pop() {
+        return this.elements.pop();
+    }
+    full() {
+        return this.length >= this.size;
+    }
+    empty() {
+        this.elements = [];
+    }
+    get(i) {
+        return this.elements[i];
+    }
+    allSame() {
+        if (this.length > 0) {
+            return this.elements.every(a => a === this.elements[0]);
+        }
+        return true;
+    }
+}
+class NumberQueue extends (/* unused pure expression or super */ null && (Dequeue)) {
+    sum() {
+        return this.elements.reduce((a, b) => a + b, 0);
+    }
+    avg() {
+        return this.sum() / this.length;
+    }
+}
+class LoopDetectedError extends Error {
+}
+class NonRandomDetector extends Dequeue {
+    minsequencelength = 2;
+    errormessage = 'Loop detected in input data. Randomness source not random?';
+    constructor(length = 1, minsequencelength = 2) {
+        super(length);
+        if (this.size > 10000) {
+            throw new Error('Cannot detect loops for more than 10000 elements');
+        }
+        this.minsequencelength = minsequencelength;
+    }
+    push(el) {
+        this.detectLoop();
+        this.elements.push(el);
+        if (this.elements.length > this.size) {
+            return this.pop();
+        }
+    }
+    detectLoop(msg) {
+        if (this.full()) {
+            if (this.allSame()) {
+                this.loopDetected(msg);
+            }
+            if (this.hasRepeatingSequence(this.elements, this.minsequencelength)) {
+                this.loopDetected(msg);
+            }
+        }
+    }
+    loopDetected(msg) {
+        throw new LoopDetectedError(msg ?? this.errormessage);
+    }
+    /**
+     * Checks if there is a repeating sequence longer than a specified length in an array of numbers.
+     *
+     * @param {number[]} arr - The array of numbers.
+     * @param {number} n - The minimum length of the repeating sequence.
+     * @returns {boolean} True if a repeating sequence longer than length n is found, otherwise false.
+     */
+    hasRepeatingSequence(arr, n) {
+        for (let i = 0; i < arr.length; i++) {
+            for (let j = i + 1; j < arr.length; j++) {
+                let k = 0;
+                while (j + k < arr.length && arr[i + k] === arr[j + k]) {
+                    k++;
+                    if (k > n) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+}
+
+;// ./src/rng.ts
+
+
+
+/**
+ * Safeguard against huge loops. If loops unintentionally grow beyond this
+ * arbitrary limit, bail out..
+ */
+const LOOP_MAX = 10000000;
+/**
+ * Safeguard against too much recursion - if a function recurses more than this,
+ * we know we have a problem.
+ *
+ * Max recursion limit is around ~1000 anyway, so would get picked up by interpreter.
+ */
+const MAX_RECURSIONS = 500;
 const THROW_ON_MAX_RECURSIONS_REACHED = true;
-const diceRe = /^ *([0-9]+) *[dD] *([0-9]+) *([+-]? *[0-9]*) *$/;
-const diceReNoInit = /^ *[dD] *([0-9]+) *([+-]? *[0-9]*) *$/;
+const PREDICTABLE_SEED = 5789938451;
+const SAMERANDOM_MAX = 10;
+const diceRe = /^ *([+-]? *[0-9_]*) *[dD] *([0-9_]+) *([+-]? *[0-9_.]*) *$/;
 const strToNumberCache = {};
 const diceCache = {};
+class MaxRecursionsError extends Error {
+}
+class NonRandomRandomError extends Error {
+}
+function sum(numbersFirstArg, ...numbers) {
+    if (Array.isArray(numbersFirstArg)) {
+        return numbersFirstArg.reduce((a, b) => a + b, 0);
+    }
+    return numbers.reduce((a, b) => a + b, 0);
+}
+function isNumeric(input) {
+    return (typeof input === 'number') || (!isNaN(parseFloat(input)) && isFinite(input));
+}
+/**
+ * This abstract class implements most concrete implementations of
+ * functions, as the only underlying changes are likely to be to the
+ * uniform random number generation, and how that is handled.
+ *
+ * All the typedoc documentation for this has been sharded out to RngInterface
+ * in a separate file.
+ */
 class RngAbstract {
     #seed = 0;
+    #monotonic = 0;
+    #lastuniqid = 0;
+    #randFunc;
+    #shouldThrowOnMaxRecursionsReached;
+    #distributions = [
+        'normal',
+        'gaussian',
+        'boxMuller',
+        'irwinHall',
+        'bates',
+        'batesgaussian',
+        'bernoulli',
+        'exponential',
+        'pareto',
+        'poisson',
+        'hypergeometric',
+        'rademacher',
+        'binomial',
+        'betaBinomial',
+        'beta',
+        'gamma',
+        'studentsT',
+        'wignerSemicircle',
+        'kumaraswamy',
+        'hermite',
+        'chiSquared',
+        'rayleigh',
+        'logNormal',
+        'cauchy',
+        'laplace',
+        'logistic',
+    ];
     constructor(seed) {
         this.setSeed(seed);
     }
@@ -282,7 +943,17 @@ class RngAbstract {
         return this.#seed;
     }
     sameAs(other) {
-        return this.#seed === other.#seed;
+        if (other instanceof RngAbstract) {
+            return this.#seed === other.#seed && this.#randFunc === other.#randFunc;
+        }
+        return false;
+    }
+    randomSource(source) {
+        this.#randFunc = source;
+        return this;
+    }
+    getRandomSource() {
+        return this.#randFunc;
     }
     setSeed(seed) {
         if (typeof seed !== 'undefined' && seed !== null) {
@@ -305,6 +976,10 @@ class RngAbstract {
             seed: this.#seed,
         };
     }
+    /**
+     * {@inheritDoc RngConstructor.unserialize}
+     * @group Serialization
+     */
     static unserialize(serialized) {
         const { constructor } = Object.getPrototypeOf(this);
         const rng = new constructor(serialized.seed);
@@ -313,11 +988,15 @@ class RngAbstract {
     }
     predictable(seed) {
         const { constructor } = Object.getPrototypeOf(this);
-        const newSelf = new constructor(seed);
+        const newSelf = new constructor(seed ?? PREDICTABLE_SEED);
         return newSelf;
     }
+    /**
+     * {@inheritDoc RngInterface.predictable}
+     * @group Seeding
+     */
     static predictable(seed) {
-        return new this(seed);
+        return new this(seed ?? PREDICTABLE_SEED);
     }
     hashStr(str) {
         let hash = 0;
@@ -341,23 +1020,36 @@ class RngAbstract {
         return num;
     }
     _random() {
-        return Math.random();
+        if (typeof this.#randFunc === 'function') {
+            return this.#randFunc();
+        }
+        return this._next();
     }
     percentage() {
         return this.randBetween(0, 100);
+    }
+    probability() {
+        return this.randBetween(0, 1);
     }
     random(from = 0, to = 1, skew = 0) {
         return this.randBetween(from, to, skew);
     }
     chance(n, chanceIn = 1) {
+        (0,src_number/* default */.Ay)({ chanceIn }).positive();
+        (0,src_number/* default */.Ay)({ n }).positive();
         const chance = n / chanceIn;
         return this._random() <= chance;
     }
     // 500 to 1 chance, for example
     chanceTo(from, to) {
-        return this._random() <= (from / (from + to));
+        return this.chance(from, from + to);
     }
     randInt(from = 0, to = 1, skew = 0) {
+        (0,src_number/* default */.Ay)({ from }).int();
+        (0,src_number/* default */.Ay)({ to }).int();
+        if (from === to) {
+            return from;
+        }
         [from, to] = [Math.min(from, to), Math.max(from, to)];
         let rand = this._random();
         if (skew < 0) {
@@ -368,14 +1060,21 @@ class RngAbstract {
         }
         return Math.floor(rand * ((to + 1) - from)) + from;
     }
-    // Not deterministic
-    uniqid(prefix = '', random = false) {
-        const sec = Date.now() * 1000 + Math.random() * 1000;
+    uniqid(prefix = '') {
+        const now = Date.now() * 1000;
+        if (this.#lastuniqid === now) {
+            this.#monotonic++;
+        }
+        else {
+            this.#monotonic = Math.round(this._random() * 100);
+        }
+        const sec = now + this.#monotonic;
         const id = sec.toString(16).replace(/\./g, '').padEnd(14, '0');
-        return `${prefix}${id}${random ? `.${Math.trunc(Math.random() * 100000000)}` : ''}`;
+        this.#lastuniqid = now;
+        return `${prefix}${id}`;
     }
-    // Deterministic
-    uniqstr(len = 6) {
+    randomString(len = 6) {
+        (0,src_number/* default */.Ay)({ len }).gt(0);
         const str = [];
         const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         const alen = 61;
@@ -384,7 +1083,10 @@ class RngAbstract {
         }
         return str.join('');
     }
-    randBetween(from = 0, to = 1, skew = 0) {
+    randBetween(from = 0, to, skew = 0) {
+        if (typeof to === 'undefined') {
+            to = from + 1;
+        }
         [from, to] = [Math.min(from, to), Math.max(from, to)];
         let rand = this._random();
         if (skew < 0) {
@@ -396,57 +1098,97 @@ class RngAbstract {
         return this.scaleNorm(rand, from, to);
     }
     scale(number, from, to, min = 0, max = 1) {
-        if (number > max)
-            throw new Error(`Number ${number} is greater than max of ${max}`);
-        if (number < min)
-            throw new Error(`Number ${number} is less than min of ${min}`);
+        (0,src_number/* default */.Ay)({ number }).lteq(max);
+        (0,src_number/* default */.Ay)({ number }).gteq(min);
         // First we scale the number in the range [0-1)
         number = (number - min) / (max - min);
         return this.scaleNorm(number, from, to);
     }
     scaleNorm(number, from, to) {
-        if (number > 1 || number < 0)
-            throw new Error(`Number must be < 1 and > 0, got ${number}`);
+        (0,src_number/* default */.Ay)({ number }).betweenEq(0, 1);
         return (number * (to - from)) + from;
     }
-    shouldThrowOnMaxRecursionsReached() {
+    shouldThrowOnMaxRecursionsReached(val) {
+        if (typeof val === 'boolean') {
+            this.#shouldThrowOnMaxRecursionsReached = val;
+            return this;
+        }
+        if (typeof this.#shouldThrowOnMaxRecursionsReached !== 'undefined') {
+            return this.#shouldThrowOnMaxRecursionsReached;
+        }
         return THROW_ON_MAX_RECURSIONS_REACHED;
     }
-    // Gaussian number between 0 and 1
-    normal({ mean, stddev = 1, max, min, skew = 0 } = {}, depth = 0) {
+    /**
+     * Generates a normally distributed number, but with a special clamping and skewing procedure
+     * that is sometimes useful.
+     *
+     * Note that the results of this aren't strictly gaussian normal when min/max are present,
+     * but for our puposes they should suffice.
+     *
+     * Otherwise, without min and max and skew, the results are gaussian normal.
+     *
+     * @example
+     *
+     * rng.normal({ min: 0, max: 1, stddev: 0.1 });
+     * rng.normal({ mean: 0.5, stddev: 0.5 });
+     *
+     * @see [Normal Distribution - Wikipedia](https://en.wikipedia.org/wiki/Normal_distribution)
+     * @group Random Number Generation
+     * @param [options]
+     * @param [options.mean] - The mean value of the distribution
+     * @param [options.stddev] - Must be > 0 if present
+     * @param [options.skew] - The skew to apply. -ve = left, +ve = right
+     * @param [options.min] - Minimum value allowed for the output
+     * @param [options.max] - Maximum value allowed for the output
+     * @param [depth] - used internally to track the recursion depth
+     * @return A normally distributed number
+     * @throws {@link NumberValidationError} If the input parameters are not valid.
+     * @throws {@link MaxRecursionsError} If the function recurses too many times in trying to generate in bounds numbers
+     */
+    normal({ mean, stddev, max, min, skew = 0 } = {}, depth = 0) {
+        if (typeof min === 'undefined' && typeof max === 'undefined') {
+            return this.gaussian({ mean, stddev, skew });
+        }
         if (depth > MAX_RECURSIONS && this.shouldThrowOnMaxRecursionsReached()) {
-            throw new Error('Max recursive calls to rng normal function. This might be as a result of using predictable random numbers?');
+            throw new MaxRecursionsError(`Max recursive calls to rng normal function. This might be as a result of using predictable random numbers, or inappropriate arguments? Args: ${JSON.stringify({ mean, stddev, max, min, skew })}`);
         }
-        let num = this.boxMuller();
-        num = num / 10.0 + 0.5; // Translate to 0 -> 1
-        if (depth > MAX_RECURSIONS) {
-            num = Math.min(Math.max(num, 0), 1);
-        }
-        else {
-            if (num > 1 || num < 0) {
-                return this.normal({ mean, stddev, max, min, skew }, depth + 1); // resample between 0 and 1
-            }
-        }
+        let num = this.bates(7);
         if (skew < 0) {
             num = 1 - (Math.pow(num, Math.pow(2, skew)));
         }
         else {
             num = Math.pow(num, Math.pow(2, -skew));
         }
+        if (typeof mean === 'undefined' &&
+            typeof stddev === 'undefined' &&
+            typeof max !== 'undefined' &&
+            typeof min !== 'undefined') {
+            // This is a simple scaling of the bates distribution.
+            return this.scaleNorm(num, min, max);
+        }
+        num = (num * 10) - 5;
         if (typeof mean === 'undefined') {
             mean = 0;
             if (typeof max !== 'undefined' && typeof min !== 'undefined') {
-                num *= max - min;
-                num += min;
+                mean = (max + min) / 2;
+                if (typeof stddev === 'undefined') {
+                    stddev = Math.abs(max - min) / 10;
+                }
             }
-            else {
-                num = num * 10;
-                num = num - 5;
+            if (typeof stddev === 'undefined') {
+                stddev = 0.1;
             }
+            num = num * stddev + mean;
         }
         else {
-            num = num * 10;
-            num = num - 5;
+            if (typeof stddev === 'undefined') {
+                if (typeof max !== 'undefined' && typeof min !== 'undefined') {
+                    stddev = Math.abs(max - min) / 10;
+                }
+                else {
+                    stddev = 0.1;
+                }
+            }
             num = num * stddev + mean;
         }
         if (depth <= MAX_RECURSIONS && ((typeof max !== 'undefined' && num > max) || (typeof min !== 'undefined' && num < min))) {
@@ -465,48 +1207,489 @@ class RngAbstract {
         }
         return num;
     }
-    // Standard Normal variate using Box-Muller transform.
+    gaussian({ mean = 0, stddev = 1, skew = 0 } = {}) {
+        (0,src_number/* default */.Ay)({ stddev }).positive();
+        if (skew === 0) {
+            return this.boxMuller({ mean, stddev });
+        }
+        let num = this.boxMuller({ mean: 0, stddev: 1 });
+        num = num / 10.0 + 0.5; // Translate to 0 -> 1
+        if (skew < 0) {
+            num = 1 - (Math.pow(num, Math.pow(2, skew)));
+        }
+        else {
+            num = Math.pow(num, Math.pow(2, -skew));
+        }
+        num = num * 10;
+        num = num - 5;
+        num = num * stddev + mean;
+        return num;
+    }
     boxMuller(mean = 0, stddev = 1) {
+        if (typeof mean === 'object') {
+            ({ mean = 0, stddev = 1 } = mean);
+        }
+        (0,src_number/* default */.Ay)({ stddev }).gteq(0);
         const u = 1 - this._random(); // Converting [0,1) to (0,1]
         const v = this._random();
         const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
         // Transform to the desired mean and standard deviation:
         return z * stddev + mean;
     }
+    irwinHall(n = 6) {
+        if (typeof n === 'object') {
+            ({ n = 6 } = n);
+        }
+        (0,src_number/* default */.Ay)({ n }).int().positive();
+        let sum = 0;
+        for (let i = 0; i < n; i++) {
+            sum += this._random();
+        }
+        return sum;
+    }
+    bates(n = 6) {
+        if (typeof n === 'object') {
+            ({ n = 6 } = n);
+        }
+        (0,src_number/* default */.Ay)({ n }).int().positive();
+        return this.irwinHall({ n }) / n;
+    }
+    batesgaussian(n = 6) {
+        if (typeof n === 'object') {
+            ({ n = 6 } = n);
+        }
+        (0,src_number/* default */.Ay)({ n }).int().gt(1);
+        return (this.irwinHall({ n }) / Math.sqrt(n)) - ((1 / Math.sqrt(1 / n)) / 2);
+    }
+    bernoulli(p = 0.5) {
+        if (typeof p === 'object') {
+            ({ p = 0.5 } = p);
+        }
+        (0,src_number/* default */.Ay)({ p }).lteq(1).gteq(0);
+        return this._random() < p ? 1 : 0;
+    }
+    exponential(rate = 1) {
+        if (typeof rate === 'object') {
+            ({ rate = 1 } = rate);
+        }
+        (0,src_number/* default */.Ay)({ rate }).gt(0);
+        return -Math.log(1 - this._random()) / rate;
+    }
+    pareto({ shape = 0.5, scale = 1, location = 0 } = {}) {
+        (0,src_number/* default */.Ay)({ shape }).gteq(0);
+        (0,src_number/* default */.Ay)({ scale }).positive();
+        const u = this._random();
+        if (shape !== 0) {
+            return location + (scale / shape) * (Math.pow(u, -shape) - 1);
+        }
+        else {
+            return location - scale * Math.log(u);
+        }
+    }
+    poisson(lambda = 1) {
+        if (typeof lambda === 'object') {
+            ({ lambda = 1 } = lambda);
+        }
+        (0,src_number/* default */.Ay)({ lambda }).positive();
+        const L = Math.exp(-lambda);
+        let k = 0;
+        let p = 1;
+        let i = 0;
+        const nq = new NonRandomDetector(SAMERANDOM_MAX, 2);
+        do {
+            k++;
+            const r = this._random();
+            nq.push(r);
+            p *= r;
+            nq.detectLoop(`Loop detected in randomly generated numbers over the last ${SAMERANDOM_MAX} generations. This is incompatible with the poisson distribution. Try either using a spread of non-random numbers or fine tune the number to not fall foul of the looped way of generating. Last random number was ${r}`);
+        } while (p > L && i++ < LOOP_MAX);
+        if ((i + 1) >= LOOP_MAX) {
+            throw new Error('LOOP_MAX reached in poisson - bailing out - possible parameter error, or using non-random source?');
+        }
+        return k - 1;
+    }
+    hypergeometric({ N = 50, K = 10, n = 5, k } = {}) {
+        (0,src_number/* default */.Ay)({ N }).int().positive();
+        (0,src_number/* default */.Ay)({ K }).int().positive().lteq(N);
+        (0,src_number/* default */.Ay)({ n }).int().positive().lteq(N);
+        if (typeof k === 'undefined') {
+            k = this.randInt(0, Math.min(K, n));
+        }
+        (0,src_number/* default */.Ay)({ k }).int().betweenEq(0, Math.min(K, n));
+        function logFactorial(x) {
+            let res = 0;
+            for (let i = 2; i <= x; i++) {
+                res += Math.log(i);
+            }
+            return res;
+        }
+        function logCombination(a, b) {
+            return logFactorial(a) - logFactorial(b) - logFactorial(a - b);
+        }
+        const logProb = logCombination(K, k) + logCombination(N - K, n - k) - logCombination(N, n);
+        return Math.exp(logProb);
+    }
+    rademacher() {
+        return this._random() < 0.5 ? -1 : 1;
+    }
+    binomial({ n = 1, p = 0.5 } = {}) {
+        (0,src_number/* default */.Ay)({ n }).int().positive();
+        (0,src_number/* default */.Ay)({ p }).betweenEq(0, 1);
+        let successes = 0;
+        for (let i = 0; i < n; i++) {
+            if (this._random() < p) {
+                successes++;
+            }
+        }
+        return successes;
+    }
+    betaBinomial({ alpha = 1, beta = 1, n = 1 } = {}) {
+        (0,src_number/* default */.Ay)({ alpha }).positive();
+        (0,src_number/* default */.Ay)({ beta }).positive();
+        (0,src_number/* default */.Ay)({ n }).int().positive();
+        const bd = (alpha, beta) => {
+            let x = this._random();
+            let y = this._random();
+            x = Math.pow(x, 1 / alpha);
+            y = Math.pow(y, 1 / beta);
+            return x / (x + y);
+        };
+        const p = bd(alpha, beta);
+        let k = 0;
+        for (let i = 0; i < n; i++) {
+            if (this._random() < p) {
+                k++;
+            }
+        }
+        return k;
+    }
+    beta({ alpha = 0.5, beta = 0.5 } = {}) {
+        (0,src_number/* default */.Ay)({ alpha }).positive();
+        (0,src_number/* default */.Ay)({ beta }).positive();
+        const gamma = (alpha) => {
+            let x = 0;
+            for (let i = 0; i < alpha; i++) {
+                const r = this._random();
+                x += -Math.log(r);
+                if ((i + 1) >= LOOP_MAX) {
+                    throw new Error('LOOP_MAX reached in beta - bailing out - possible parameter error, or using non-random source?');
+                }
+            }
+            return x;
+        };
+        const x = gamma(alpha);
+        const y = gamma(beta);
+        return x / (x + y);
+    }
+    gamma({ shape = 1, rate, scale } = {}) {
+        (0,src_number/* default */.Ay)({ shape }).positive();
+        if (typeof scale !== 'undefined' && typeof rate !== 'undefined' && rate !== 1 / scale) {
+            throw new Error('Cannot supply rate and scale');
+        }
+        if (typeof scale !== 'undefined') {
+            (0,src_number/* default */.Ay)({ scale }).positive();
+            rate = 1 / scale;
+        }
+        if (typeof rate === 'undefined') {
+            rate = 1;
+        }
+        if (rate) {
+            (0,src_number/* default */.Ay)({ rate }).positive();
+        }
+        let flg;
+        let x2;
+        let v0;
+        let v1;
+        let x;
+        let u;
+        let v = 1;
+        const d = shape - 1 / 3;
+        const c = 1.0 / Math.sqrt(9.0 * d);
+        let i = 0;
+        flg = true;
+        const nq1 = new NonRandomDetector(SAMERANDOM_MAX);
+        while (flg && i++ < LOOP_MAX) {
+            let j = 0;
+            const nq2 = new NonRandomDetector(SAMERANDOM_MAX);
+            do {
+                x = this.normal();
+                nq2.push(x);
+                nq2.detectLoop(`Loop detected in randomly generated numbers over the last ${SAMERANDOM_MAX} generations. This is incompatible with the gamma distribution. Try either using a spread of non-random numbers or fine tune the number to not fall foul ofthe looped way of generating.`);
+                v = 1.0 + (c * x);
+            } while (v <= 0.0 && j++ < LOOP_MAX);
+            if ((j + 1) >= LOOP_MAX) {
+                throw new Error(`LOOP_MAX reached inside gamma inner loop - bailing out - possible parameter error, or using non-random source? had shape = ${shape}, rate = ${rate}, scale = ${scale}`);
+            }
+            v *= Math.pow(v, 2);
+            x2 = Math.pow(x, 2);
+            v0 = 1.0 - (0.331 * x2 * x2);
+            v1 = (0.5 * x2) + (d * (1.0 - v + Math.log(v)));
+            u = this._random();
+            nq1.push(u);
+            nq1.detectLoop(`Loop detected in randomly generated numbers over the last ${SAMERANDOM_MAX} generations. This is incompatible with the gamma distribution. Try either using a spread of non-random numbers or fine tune the number to not fall foul of the looped way of generating. Last random number was ${u}`);
+            if (u < v0 || Math.log(u) < v1) {
+                flg = false;
+            }
+        }
+        if ((i + 1) >= LOOP_MAX) {
+            throw new Error(`LOOP_MAX reached inside gamma - bailing out - possible parameter error, or using non-random source? had shape = ${shape}, rate = ${rate}, scale = ${scale}`);
+        }
+        return rate * d * v;
+    }
+    studentsT(nu = 1) {
+        if (typeof nu === 'object') {
+            ({ nu = 1 } = nu);
+        }
+        (0,src_number/* default */.Ay)({ nu }).positive();
+        const normal = Math.sqrt(-2.0 * Math.log(this._random())) * Math.cos(2.0 * Math.PI * this._random());
+        const chiSquared = this.gamma({ shape: nu / 2, rate: 2 });
+        return normal / Math.sqrt(chiSquared / nu);
+    }
+    wignerSemicircle(R = 1) {
+        if (typeof R === 'object') {
+            ({ R = 1 } = R);
+        }
+        (0,src_number/* default */.Ay)({ R }).gt(0);
+        const theta = this._random() * 2 * Math.PI;
+        return R * Math.cos(theta);
+    }
+    kumaraswamy({ alpha = 0.5, beta = 0.5 } = {}) {
+        (0,src_number/* default */.Ay)({ alpha }).gt(0);
+        (0,src_number/* default */.Ay)({ beta }).gt(0);
+        const u = this._random();
+        return Math.pow(1 - Math.pow(1 - u, 1 / beta), 1 / alpha);
+    }
+    hermite({ lambda1 = 1, lambda2 = 2 } = {}) {
+        (0,src_number/* default */.Ay)({ lambda1 }).gt(0);
+        (0,src_number/* default */.Ay)({ lambda2 }).gt(0);
+        const x1 = this.poisson({ lambda: lambda1 });
+        const x2 = this.poisson({ lambda: lambda2 });
+        return x1 + x2;
+    }
+    chiSquared(k = 1) {
+        if (typeof k === 'object') {
+            ({ k = 1 } = k);
+        }
+        (0,src_number/* default */.Ay)({ k }).positive().int();
+        let sum = 0;
+        for (let i = 0; i < k; i++) {
+            const z = Math.sqrt(-2.0 * Math.log(this._random())) * Math.cos(2.0 * Math.PI * this._random());
+            sum += z * z;
+        }
+        return sum;
+    }
+    rayleigh(scale = 1) {
+        if (typeof scale === 'object') {
+            ({ scale = 1 } = scale);
+        }
+        (0,src_number/* default */.Ay)({ scale }).gt(0);
+        return scale * Math.sqrt(-2 * Math.log(this._random()));
+    }
+    logNormal({ mean = 0, stddev = 1 } = {}) {
+        (0,src_number/* default */.Ay)({ stddev }).gt(0);
+        const normal = mean + stddev * Math.sqrt(-2.0 * Math.log(this._random())) * Math.cos(2.0 * Math.PI * this._random());
+        return Math.exp(normal);
+    }
+    cauchy({ median = 0, scale = 1 } = {}) {
+        (0,src_number/* default */.Ay)({ scale }).gt(0);
+        const u = this._random();
+        return median + scale * Math.tan(Math.PI * (u - 0.5));
+    }
+    laplace({ mean = 0, scale = 1 } = {}) {
+        (0,src_number/* default */.Ay)({ scale }).gt(0);
+        const u = this._random() - 0.5;
+        return mean - scale * Math.sign(u) * Math.log(1 - 2 * Math.abs(u));
+    }
+    logistic({ mean = 0, scale = 1 } = {}) {
+        (0,src_number/* default */.Ay)({ scale }).gt(0);
+        const u = this._random();
+        return mean + scale * Math.log(u / (1 - u));
+    }
+    /**
+     * Returns the support of the given distribution.
+     *
+     * @see [Wikipedia - Support (mathematics)](https://en.wikipedia.org/wiki/Support_(mathematics)#In_probability_and_measure_theory)
+     */
+    support(distribution) {
+        const map = {
+            random: '[min, max)',
+            integer: '[min, max]',
+            normal: '(-INF, INF)',
+            boxMuller: '(-INF, INF)',
+            gaussian: '(-INF, INF)',
+            irwinHall: '[0, n]',
+            bates: '[0, 1]',
+            batesgaussian: '(-INF, INF)',
+            bernoulli: '{0, 1}',
+            exponential: '[0, INF)',
+            pareto: '[scale, INF)',
+            poisson: '{1, 2, 3 ...}',
+            hypergeometric: '{max(0, n+K-N), ..., min(n, K)}',
+            rademacher: '{-1, 1}',
+            binomial: '{0, 1, 2, ..., n}',
+            betaBinomial: '{0, 1, 2, ..., n}',
+            beta: '(0, 1)',
+            gamma: '(0, INF)',
+            studentsT: '(-INF, INF)',
+            wignerSemicircle: '[-R; +R]',
+            kumaraswamy: '(0, 1)',
+            hermite: '{0, 1, 2, 3, ...}',
+            chiSquared: '[0, INF)',
+            rayleigh: '[0, INF)',
+            logNormal: '(0, INF)',
+            cauchy: '(-INF, +INF)',
+            laplace: '(-INF, +INF)',
+            logistic: '(-INF, +INF)',
+        };
+        return map[distribution];
+    }
     chancyInt(input) {
         if (typeof input === 'number') {
             return Math.round(input);
         }
-        if (typeof input === 'object') {
-            input.type = 'integer';
+        if (Array.isArray(input)) {
+            for (const el of input) {
+                if (!isNumeric(el)) {
+                    throw new Error('Cannot pass non-numbers to chancyInt');
+                }
+            }
+            let choice = this.choice(input);
+            if (typeof choice !== 'number') {
+                choice = parseFloat(choice);
+            }
+            return Math.round(choice);
         }
-        return this.chancy(input);
+        if (typeof input === 'object') {
+            const type = input.type ?? 'random';
+            if (type === 'random') {
+                input.type = 'integer';
+            }
+            else if (type === 'normal') {
+                input.type = 'normal_integer';
+            }
+        }
+        return Math.round(this.chancy(input));
     }
-    chancy(input) {
+    chancy(input, depth = 0) {
+        if (depth >= MAX_RECURSIONS) {
+            if (this.shouldThrowOnMaxRecursionsReached()) {
+                throw new MaxRecursionsError('Max recursions reached in chancy. Usually a case of badly chosen min/max values.');
+            }
+            else {
+                return 0;
+            }
+        }
+        if (Array.isArray(input)) {
+            return this.choice(input);
+        }
         if (typeof input === 'string') {
             return this.dice(input);
         }
         if (typeof input === 'object') {
-            switch (input.type) {
-                case 'normal':
-                    return this.normal(input);
-                    break;
-                case 'normal_integer':
-                    return Math.floor(this.normal(input));
-                    break;
-                case 'integer':
-                    return this.randInt(input.min ?? 0, input.max ?? 1, input.skew ?? 0);
-                    break;
-                default:
-                    return this.random(input.min ?? 0, input.max ?? 1, input.skew ?? 0);
+            input.type = input.type ?? 'random';
+            if (input.type === 'random' ||
+                input.type === 'int' ||
+                input.type === 'integer') {
+                if (typeof input.min !== 'undefined' && typeof input.max === 'undefined') {
+                    input.max = Number.MAX_SAFE_INTEGER;
+                }
             }
+            switch (input.type) {
+                case 'random':
+                    return this.random(input.min, input.max, input.skew);
+                case 'int':
+                case 'integer':
+                    return this.randInt(input.min, input.max, input.skew);
+                case 'normal_integer':
+                case 'normal_int':
+                    return Math.floor(this.normal(input));
+                case 'dice':
+                    return this.chancyMinMax(this.dice(input.dice ?? input), input, depth);
+                case 'rademacher':
+                    return this.chancyMinMax(this.rademacher(), input, depth);
+                case 'normal':
+                case 'gaussian':
+                case 'boxMuller':
+                case 'irwinHall':
+                case 'bates':
+                case 'batesgaussian':
+                case 'bernoulli':
+                case 'exponential':
+                case 'pareto':
+                case 'poisson':
+                case 'hypergeometric':
+                case 'binomial':
+                case 'betaBinomial':
+                case 'beta':
+                case 'gamma':
+                case 'studentsT':
+                case 'wignerSemicircle':
+                case 'kumaraswamy':
+                case 'hermite':
+                case 'chiSquared':
+                case 'rayleigh':
+                case 'logNormal':
+                case 'cauchy':
+                case 'laplace':
+                case 'logistic':
+                    return this.chancyMinMax(this[input.type](input), input, depth);
+            }
+            throw new Error(`Invalid input type given to chancy: "${input.type}".`);
         }
         if (typeof input === 'number') {
             return input;
         }
         throw new Error('Invalid input given to chancy');
     }
+    chancyMinMax(result, input, depth = 0) {
+        const { min, max } = input;
+        if ((depth + 1) >= MAX_RECURSIONS && !this.shouldThrowOnMaxRecursionsReached()) {
+            if (typeof min !== 'undefined') {
+                result = Math.max(min, result);
+            }
+            if (typeof max !== 'undefined') {
+                result = Math.min(max, result);
+            }
+            // always returns something in bounds.
+            return result;
+        }
+        if (typeof min !== 'undefined' && result < min) {
+            return this.chancy(input, depth + 1);
+        }
+        if (typeof max !== 'undefined' && result > max) {
+            return this.chancy(input, depth + 1);
+        }
+        return result;
+    }
+    /**
+     * {@inheritDoc RngInterface.chancyMin}
+     * @group Result Prediction
+     */
+    chancyMin(input) {
+        const { constructor } = Object.getPrototypeOf(this);
+        return constructor.chancyMin(input);
+    }
+    /**
+     * {@inheritDoc RngInterface.chancyMax}
+     * @group Result Prediction
+     */
+    chancyMax(input) {
+        const { constructor } = Object.getPrototypeOf(this);
+        return constructor.chancyMax(input);
+    }
+    /**
+     * {@inheritDoc RngInterface.chancyMin}
+     * @group Result Prediction
+     */
     static chancyMin(input) {
+        if (Array.isArray(input)) {
+            for (const el of input) {
+                if (!isNumeric(el)) {
+                    throw new Error('Cannot pass non-numbers to chancyMin array input');
+                }
+            }
+            return Math.min(...input);
+        }
         if (typeof input === 'string') {
             return this.diceMin(input);
         }
@@ -514,30 +1697,93 @@ class RngAbstract {
             return input;
         }
         if (typeof input === 'object') {
-            if (typeof input.type === 'undefined') {
-                if (typeof input.skew !== 'undefined') {
-                    // Regular random numbers are evenly distributed, so skew
-                    // only makes sense on normal numbers
-                    input.type = 'normal';
+            input.type = input.type ?? 'random';
+            if (input.type === 'random' || input.type === 'integer') {
+                if (typeof input.min !== 'undefined' && typeof input.max === 'undefined') {
+                    input.max = Number.MAX_SAFE_INTEGER;
                 }
             }
             switch (input.type) {
+                case 'dice':
+                    return this.diceMin(input.dice);
                 case 'normal':
                     return input.min ?? Number.NEGATIVE_INFINITY;
-                    break;
                 case 'normal_integer':
                     return input.min ?? Number.NEGATIVE_INFINITY;
-                    break;
                 case 'integer':
                     return input.min ?? 0;
-                    break;
-                default:
+                case 'random':
                     return input.min ?? 0;
+                case 'boxMuller':
+                    return Number.NEGATIVE_INFINITY;
+                case 'gaussian':
+                    return Number.NEGATIVE_INFINITY;
+                case 'irwinHall':
+                    return 0;
+                case 'bates':
+                    return 0;
+                case 'batesgaussian':
+                    return Number.NEGATIVE_INFINITY;
+                case 'bernoulli':
+                    return 0;
+                case 'exponential':
+                    return 0;
+                case 'pareto':
+                    return input.scale ?? 1;
+                case 'poisson':
+                    return 1;
+                case 'hypergeometric':
+                    // eslint-disable-next-line no-case-declarations
+                    const { N = 50, K = 10, n = 5 } = input;
+                    return Math.max(0, (n + K - N));
+                case 'rademacher':
+                    return -1;
+                case 'binomial':
+                    return 0;
+                case 'betaBinomial':
+                    return 0;
+                case 'beta':
+                    return Number.EPSILON;
+                case 'gamma':
+                    return Number.EPSILON;
+                case 'studentsT':
+                    return Number.NEGATIVE_INFINITY;
+                case 'wignerSemicircle':
+                    return -1 * (input.R ?? 10);
+                case 'kumaraswamy':
+                    return Number.EPSILON;
+                case 'hermite':
+                    return 0;
+                case 'chiSquared':
+                    return 0;
+                case 'rayleigh':
+                    return 0;
+                case 'logNormal':
+                    return Number.EPSILON;
+                case 'cauchy':
+                    return Number.NEGATIVE_INFINITY;
+                case 'laplace':
+                    return Number.NEGATIVE_INFINITY;
+                case 'logistic':
+                    return Number.NEGATIVE_INFINITY;
             }
+            throw new Error(`Invalid input type ${input.type}.`);
         }
-        throw new Error('Invalid input given to chancyMin');
+        throw new Error('Invalid input supplied to chancyMin');
     }
+    /**
+     * {@inheritDoc RngInterface.chancyMax}
+     * @group Result Prediction
+     */
     static chancyMax(input) {
+        if (Array.isArray(input)) {
+            for (const el of input) {
+                if (!isNumeric(el)) {
+                    throw new Error('Cannot pass non-numbers to chancyMax array input');
+                }
+            }
+            return Math.max(...input);
+        }
         if (typeof input === 'string') {
             return this.diceMax(input);
         }
@@ -545,40 +1791,94 @@ class RngAbstract {
             return input;
         }
         if (typeof input === 'object') {
-            if (typeof input.type === 'undefined') {
-                if (typeof input.skew !== 'undefined') {
-                    // Regular random numbers are evenly distributed, so skew
-                    // only makes sense on normal numbers
-                    input.type = 'normal';
+            input.type = input.type ?? 'random';
+            if (input.type === 'random' || input.type === 'integer') {
+                if (typeof input.min !== 'undefined' && typeof input.max === 'undefined') {
+                    input.max = Number.MAX_SAFE_INTEGER;
                 }
             }
             switch (input.type) {
+                case 'dice':
+                    return this.diceMax(input.dice);
                 case 'normal':
                     return input.max ?? Number.POSITIVE_INFINITY;
-                    break;
                 case 'normal_integer':
                     return input.max ?? Number.POSITIVE_INFINITY;
-                    break;
                 case 'integer':
                     return input.max ?? 1;
-                    break;
-                default:
+                case 'random':
                     return input.max ?? 1;
+                case 'boxMuller':
+                    return Number.POSITIVE_INFINITY;
+                case 'gaussian':
+                    return Number.POSITIVE_INFINITY;
+                case 'irwinHall':
+                    return (input.n ?? 6);
+                case 'bates':
+                    return 1;
+                case 'batesgaussian':
+                    return Number.POSITIVE_INFINITY;
+                case 'bernoulli':
+                    return 1;
+                case 'exponential':
+                    return Number.POSITIVE_INFINITY;
+                case 'pareto':
+                    return Number.POSITIVE_INFINITY;
+                case 'poisson':
+                    return Number.MAX_SAFE_INTEGER;
+                case 'hypergeometric':
+                    // eslint-disable-next-line no-case-declarations
+                    const { K = 10, n = 5 } = input;
+                    return Math.min(n, K);
+                case 'rademacher':
+                    return 1;
+                case 'binomial':
+                    return (input.n ?? 1);
+                case 'betaBinomial':
+                    return (input.n ?? 1);
+                case 'beta':
+                    return 1;
+                case 'gamma':
+                    return Number.POSITIVE_INFINITY;
+                case 'studentsT':
+                    return Number.POSITIVE_INFINITY;
+                case 'wignerSemicircle':
+                    return (input.R ?? 10);
+                case 'kumaraswamy':
+                    return 1;
+                case 'hermite':
+                    return Number.MAX_SAFE_INTEGER;
+                case 'chiSquared':
+                    return Number.POSITIVE_INFINITY;
+                case 'rayleigh':
+                    return Number.POSITIVE_INFINITY;
+                case 'logNormal':
+                    return Number.POSITIVE_INFINITY;
+                case 'cauchy':
+                    return Number.POSITIVE_INFINITY;
+                case 'laplace':
+                    return Number.POSITIVE_INFINITY;
+                case 'logistic':
+                    return Number.POSITIVE_INFINITY;
             }
+            throw new Error(`Invalid input type ${input.type}.`);
         }
-        throw new Error('Invalid input given to chancyMax');
+        throw new Error('Invalid input supplied to chancyMax');
     }
     choice(data) {
         return this.weightedChoice(data);
     }
-    /**
-     * data format:
-     * {
-     *   choice1: 1,
-     *   choice2: 2,
-     *   choice3: 3,
-     * }
-     */
+    weights(data) {
+        const chances = new Map();
+        data.forEach(function (a) {
+            let init = 0;
+            if (chances.has(a)) {
+                init = chances.get(a);
+            }
+            chances.set(a, init + 1);
+        });
+        return chances;
+    }
     weightedChoice(data) {
         let total = 0;
         let id;
@@ -590,11 +1890,10 @@ class RngAbstract {
             if (data.length === 1) {
                 return data[0];
             }
-            const chances = new Map();
-            data.forEach(function (a) {
-                chances.set(a, 1);
-            });
-            return this.weightedChoice(chances);
+            const chances = this.weights(data);
+            const result = this.weightedChoice(chances);
+            chances.clear();
+            return result;
         }
         if (data instanceof Map) {
             // Some shortcuts
@@ -646,6 +1945,9 @@ class RngAbstract {
         // random >= total, just return the last id.
         return id;
     }
+    pool(entries) {
+        return new Pool(entries, this);
+    }
     static parseDiceArgs(n = 1, d = 6, plus = 0) {
         if (n === null || typeof n === 'undefined' || arguments.length <= 0) {
             throw new Error('Dice expects at least one argument');
@@ -658,114 +1960,200 @@ class RngAbstract {
                 [n, d, plus] = n;
             }
             else {
-                d = n.d;
-                plus = n.plus;
-                n = n.n;
+                if (typeof n.n === 'undefined' &&
+                    typeof n.d === 'undefined' &&
+                    typeof n.plus === 'undefined') {
+                    throw new Error('Invalid input given to dice related function - dice object must have at least one of n, d or plus properties.');
+                }
+                ({ n = 1, d = 6, plus = 0 } = n);
             }
         }
+        (0,src_number/* default */.Ay)({ n }).int(`Expected n to be an integer, got ${n}`);
+        (0,src_number/* default */.Ay)({ d }).int(`Expected d to be an integer, got ${d}`);
         return { n, d, plus };
     }
     parseDiceArgs(n = 1, d = 6, plus = 0) {
         const { constructor } = Object.getPrototypeOf(this);
         return constructor.parseDiceArgs(n);
     }
+    /**
+     * {@inheritDoc RngInterface.parseDiceString}
+     * @group Utilities
+     */
     static parseDiceString(string) {
         // dice string like 5d10+1
         if (!diceCache[string]) {
+            const trimmed = string.replace(/ +/g, '');
+            if (/^[+-]*[\d.]+$/.test(trimmed)) {
+                return { n: 0, d: 0, plus: parseFloat(trimmed) };
+            }
             if (diceRe.test(string)) {
-                const result = diceRe.exec(string.replace(/ +/g, ''));
+                const result = diceRe.exec(trimmed);
                 if (result !== null) {
                     diceCache[string] = {
-                        n: (parseInt(result[1]) / 1 || 1),
-                        d: (parseInt(result[2]) / 1 || 1),
-                        plus: (parseFloat(result[3]) / 1 || 0),
+                        n: parseInt(result[1]),
+                        d: parseInt(result[2]),
+                        plus: parseFloat(result[3]),
                     };
+                    if (Number.isNaN(diceCache[string].n)) {
+                        diceCache[string].n = 1;
+                    }
+                    if (Number.isNaN(diceCache[string].d)) {
+                        diceCache[string].d = 6;
+                    }
+                    if (Number.isNaN(diceCache[string].plus)) {
+                        diceCache[string].plus = 0;
+                    }
                 }
             }
-            else if (diceReNoInit.test(string)) {
-                const result = diceReNoInit.exec(string.replace(/ +/g, ''));
-                if (result !== null) {
-                    diceCache[string] = {
-                        n: 1,
-                        d: (parseInt(result[1]) / 1 || 1),
-                        plus: (parseFloat(result[2]) / 1 || 0),
-                    };
-                }
+            if (typeof diceCache[string] === 'undefined') {
+                throw new Error(`Could not parse dice string ${string}`);
             }
         }
         return diceCache[string];
     }
+    /**
+     * {@inheritDoc RngInterface.diceMax}
+     * @group Result Prediction
+     */
+    diceMax(n, d, plus) {
+        const { constructor } = Object.getPrototypeOf(this);
+        return constructor.diceMax(n, d, plus);
+    }
+    /**
+     * {@inheritDoc RngInterface.diceMin}
+     * @group Result Prediction
+     */
+    diceMin(n, d, plus) {
+        const { constructor } = Object.getPrototypeOf(this);
+        return constructor.diceMin(n, d, plus);
+    }
+    /**
+     * {@inheritDoc RngInterface.diceMax}
+     * @group Result Prediction
+     */
     static diceMax(n = 1, d = 6, plus = 0) {
         ({ n, d, plus } = this.parseDiceArgs(n, d, plus));
         return (n * d) + plus;
     }
+    /**
+     * {@inheritDoc RngInterface.diceMin}
+     * @group Result Prediction
+     */
     static diceMin(n = 1, d = 6, plus = 0) {
         ({ n, d, plus } = this.parseDiceArgs(n, d, plus));
         return n + plus;
     }
-    dice(n = 1, d = 6, plus = 0) {
+    diceExpanded(n = 1, d = 6, plus = 0) {
         ({ n, d, plus } = this.parseDiceArgs(n, d, plus));
         if (typeof n === 'number') {
-            let nval = Math.max(n, 1);
-            const dval = Math.max(d, 1);
+            let nval = n;
+            const dval = Math.max(d, 0);
             if (d === 1) {
-                return plus + 1;
+                return { dice: Array(n).fill(d), plus, total: (n * d + plus) };
             }
-            let sum = plus || 0;
+            if (n === 0 || d === 0) {
+                return { dice: [], plus, total: plus };
+            }
+            const multiplier = nval < 0 ? -1 : 1;
+            nval *= multiplier;
+            const results = { dice: [], plus, total: plus };
             while (nval > 0) {
-                sum += this.randInt(1, dval);
+                results.dice.push(multiplier * this.randInt(1, dval));
                 nval--;
             }
-            return sum;
+            results.total = sum(results.dice) + plus;
+            return results;
         }
         throw new Error('Invalid arguments given to dice');
     }
+    dice(n, d, plus) {
+        return this.diceExpanded(n, d, plus).total;
+    }
+    /**
+     * {@inheritDoc RngInterface.parseDiceString}
+     * @group Utilities
+     */
     parseDiceString(string) {
         const { constructor } = Object.getPrototypeOf(this);
         return constructor.parseDiceString(string);
     }
     clamp(number, lower, upper) {
-        if (upper !== undefined) {
+        if (typeof upper !== 'undefined') {
             number = number <= upper ? number : upper;
         }
-        if (lower !== undefined) {
+        if (typeof lower !== 'undefined') {
             number = number >= lower ? number : lower;
         }
         return number;
     }
     bin(val, bins, min, max) {
+        (0,src_number/* default */.Ay)({ val }).gt(min).lt(max);
         const spread = max - min;
         return (Math.round(((val - min) / spread) * (bins - 1)) / (bins - 1) * spread) + min;
     }
 }
+/**
+ * @category Main Class
+ */
 class Rng extends RngAbstract {
     #mask;
     #seed = 0;
+    #randFunc;
     #m_z = 0;
     constructor(seed) {
         super(seed);
         this.#mask = 0xffffffff;
         this.#m_z = 987654321;
     }
+    /**
+     * {@inheritDoc RngInterface.predictable}
+     * @group Seeding
+     */
+    static predictable(seed) {
+        return new this(seed ?? PREDICTABLE_SEED);
+    }
     serialize() {
         return {
-            mask: this.#mask,
+            mask: this.getMask(),
             seed: this.getSeed(),
-            m_z: this.#m_z,
+            m_z: this.getMz(),
         };
     }
     sameAs(other) {
-        const s = other.serialize();
-        return this.#seed === s.seed &&
-            this.#mask === s.mask &&
-            this.#m_z === s.m_z;
+        if (other instanceof Rng) {
+            return this.getRandomSource() === other.getRandomSource() &&
+                this.getSeed() === other.getSeed() &&
+                this.getMask() === other.getMask() &&
+                this.getMz() === other.getMz();
+        }
+        return false;
     }
+    /** @hidden */
+    getMask() {
+        return this.#mask;
+    }
+    /** @hidden */
+    getMz() {
+        return this.#m_z;
+    }
+    /** @hidden */
+    setMask(mask) {
+        this.#mask = mask;
+    }
+    /** @hidden */
+    setMz(mz) {
+        this.#m_z = mz;
+    }
+    /**
+     * {@inheritDoc RngConstructor.unserialize}
+     * @group Serialization
+     */
     static unserialize(serialized) {
         const rng = new this();
         rng.setSeed(serialized.seed);
-        rng.#mask = serialized.mask;
-        rng.#seed = serialized.seed;
-        rng.#m_z = serialized.m_z;
+        rng.setMask(serialized.mask);
+        rng.setMz(serialized.m_z);
         return rng;
     }
     seed(i) {
@@ -773,7 +2161,7 @@ class Rng extends RngAbstract {
         this.#m_z = 987654321;
         return this;
     }
-    _random() {
+    _next() {
         this.#m_z = (36969 * (this.#m_z & 65535) + (this.#m_z >> 16)) & this.#mask;
         this.setSeed((18000 * (this.getSeed() & 65535) + (this.getSeed() >> 16)) & this.#mask);
         let result = ((this.#m_z << 16) + this.getSeed()) & this.#mask;
@@ -781,6 +2169,7 @@ class Rng extends RngAbstract {
         return result + 0.5;
     }
 }
+/* harmony default export */ const src_rng = (Rng);
 
 
 /***/ }),
@@ -794,7 +2183,7 @@ class Rng extends RngAbstract {
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(334);
 /* harmony import */ var _table_pool__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(425);
 /* harmony import */ var _table_pool_entry_results__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(219);
-/* harmony import */ var _rng__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(629);
+/* harmony import */ var _rng__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(673);
 
 
 
@@ -829,8 +2218,8 @@ class LootTable {
         this.pools = pools;
         this.fn = fn;
         this.ul = ul;
-        this.rng = rng ?? (ul ? ul.getRng() : new _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A());
-        this.id = id ?? this.rng.uniqstr(6);
+        this.rng = rng ?? (ul ? ul.getRng() : new _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Ay());
+        this.id = id ?? this.rng.randomString(6);
     }
     // Register a function for use in loot pools
     registerFunction(name, fn) {
@@ -999,9 +2388,9 @@ class LootTable {
                     totalWeight += (entry.weight ?? 1);
                 }
             }
-            const rollsMax = _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.chancyMax(pool.rolls);
-            const rollsMin = _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.chancyMin(pool.rolls);
-            const nullsMin = _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.chancyMin(pool.nulls);
+            const rollsMax = _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Ay.chancyMax(pool.rolls);
+            const rollsMin = _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Ay.chancyMin(pool.rolls);
+            const nullsMin = _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Ay.chancyMin(pool.nulls);
             for (const entry of pool.getEntries()) {
                 if (entry instanceof LootTable || entry.isTable()) {
                     let table;
@@ -1029,8 +2418,8 @@ class LootTable {
                     entries.push({
                         entry,
                         weight: entry.weight / totalWeight,
-                        min: nullsMin > 0 ? 0 : (rollsMin * _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.chancyMin(entry.qty)),
-                        max: rollsMax * _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A.chancyMax(entry.qty),
+                        min: nullsMin > 0 ? 0 : (rollsMin * _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Ay.chancyMin(entry.qty)),
+                        max: rollsMax * _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Ay.chancyMax(entry.qty),
                     });
                 }
             }
@@ -1181,7 +2570,7 @@ class LootTable {
 /* harmony import */ var _pool_entry_result__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(668);
 /* harmony import */ var _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(219);
 /* harmony import */ var _table__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(784);
-/* harmony import */ var _rng__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(629);
+/* harmony import */ var _rng__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(673);
 
 
 
@@ -1207,7 +2596,7 @@ class LootPool {
         this.functions = functions ?? [];
         this.rolls = rolls;
         this.nulls = nulls;
-        this.id = id ?? (new _rng__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A()).uniqstr(6);
+        this.id = id ?? (new _rng__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Ay()).randomString(6);
         this.template = template;
         if (entries) {
             for (const entry of entries) {
@@ -1444,7 +2833,7 @@ class LootPool {
 /* harmony export */ });
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(334);
 /* harmony import */ var _table__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(784);
-/* harmony import */ var _rng__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(629);
+/* harmony import */ var _rng__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(673);
 /* harmony import */ var _entry_result__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(668);
 /* harmony import */ var _entry_results__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(219);
 
@@ -1478,7 +2867,7 @@ class LootTableEntry {
         this.conditions = conditions ?? [];
     }
     getRng(rng) {
-        return rng ?? this.rng ?? (this.rng = new _rng__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A());
+        return rng ?? this.rng ?? (this.rng = new _rng__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Ay());
     }
     setRng(rng) {
         this.rng = rng;
@@ -1754,7 +3143,7 @@ class LootTableEntryResults extends Array {
 /* harmony import */ var _table__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(784);
 /* harmony import */ var _table_pool__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(425);
 /* harmony import */ var _table_pool_entry__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(50);
-/* harmony import */ var _rng__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(629);
+/* harmony import */ var _rng__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(673);
 /* harmony import */ var _package_json__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(330);
 /* harmony import */ var _default_functions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(663);
 /* harmony import */ var _default_conditions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(494);
@@ -1892,7 +3281,7 @@ class UltraLoot {
             'chanceTo',
             'randInt',
             'uniqid',
-            'uniqstr',
+            'randomString',
             'randBetween',
             'normal',
             'chancyInt',
@@ -1914,7 +3303,7 @@ class UltraLoot {
         if (this.isRng(rng)) {
             return rng;
         }
-        const RngConstructor = this.rngConstructor ?? _rng__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A;
+        const RngConstructor = this.rngConstructor ?? _rng__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Ay;
         return new RngConstructor(rng);
     }
     registerFunction(name, fn) {
@@ -2288,7 +3677,7 @@ class UltraLoot {
             pools: []
         };
         clone.pools = [];
-        const keyToUse = table.filename ?? this.getRng().uniqstr(6);
+        const keyToUse = table.filename ?? this.getRng().randomString(6);
         had.add(table);
         if (includeRng) {
             clone.rng = table.rng?.serialize() ?? null;
@@ -2320,7 +3709,7 @@ class UltraLoot {
                     entryClone.functions = entry.functions;
                 }
                 if (entryClone.item instanceof _table__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A) {
-                    const subKeyToUse = entryClone.item.filename ?? this.getRng().uniqstr(6);
+                    const subKeyToUse = entryClone.item.filename ?? this.getRng().randomString(6);
                     if (had.has(entryClone.item)) {
                         throw new RecursiveTableError('Recursive requirement detected - cannot serialize recursively required tables.');
                     }
@@ -2715,7 +4104,7 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("fs");
 /***/ 330:
 /***/ ((module) => {
 
-module.exports = {"rE":"0.1.1"};
+module.exports = {"rE":"0.3.0"};
 
 /***/ })
 
@@ -2779,31 +4168,93 @@ var __webpack_exports__ = {};
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
+  Bh: () => (/* reexport */ number/* ArrayNumberValidator */.Bh),
   tS: () => (/* reexport */ src_table/* default */.A),
   dl: () => (/* reexport */ entry/* default */.A),
   uX: () => (/* reexport */ result/* default */.A),
   jQ: () => (/* reexport */ results/* default */.A),
   o3: () => (/* reexport */ LootTableManager),
   DW: () => (/* reexport */ pool/* default */.A),
-  TU: () => (/* reexport */ Rng),
+  YG: () => (/* reexport */ rng/* MaxRecursionsError */.YG),
+  Qs: () => (/* reexport */ rng/* NonRandomRandomError */.Qs),
+  X: () => (/* reexport */ number/* NumberValidationError */.X),
+  Ol: () => (/* reexport */ number/* NumberValidator */.Ol),
+  TU: () => (/* reexport */ PredictableRng),
   Bc: () => (/* reexport */ ultraloot/* RecursiveTableError */.Bc),
-  Kd: () => (/* reexport */ rng/* default */.A),
-  Up: () => (/* reexport */ rng/* RngAbstract */.U),
+  Kd: () => (/* reexport */ rng/* default */.Ay),
+  Up: () => (/* reexport */ rng/* RngAbstract */.Up),
   tZ: () => (/* reexport */ ultraloot/* UltraLoot */.tZ),
   Ay: () => (/* binding */ src)
 });
 
 // EXTERNAL MODULE: ./src/ultraloot.ts
 var ultraloot = __webpack_require__(224);
-// EXTERNAL MODULE: ./src/rng.ts
-var rng = __webpack_require__(629);
+// EXTERNAL MODULE: ./src/number.ts
+var number = __webpack_require__(623);
+// EXTERNAL MODULE: ./src/rng.ts + 2 modules
+var rng = __webpack_require__(673);
 ;// ./src/rng/predictable.ts
 
 /**
+ *
  * An Rng type that can be used to give predictable results
  * for testing purposes, and giving known results.
+ *
+ * You can set an array of results that will be returned from called to _next()
+ *
+ * Note: To avoid unexpected results when using this in place of regular Rng, it is
+ * only allowed to make the results spread from [0, 1)
+ *
+ * The numbers are returned and cycled, so once you reach the end of the list, it will
+ * just keep on going.
+ *
+ * @category Other Rngs
+ *
+ * @example
+ * const prng = new PredictableRng();
+ * prng.results = [0.0];
+ * prng.random(); // 0.0
+ * prng.random(); // 0.0
+ * prng.random(); // 0.0
+ *
+ * @example
+ * const prng = new PredictableRng();
+ * prng.results = [0, 0.5];
+ * prng.random(); // 0.0
+ * prng.random(); // 0.5
+ * prng.random(); // 0.0
+ * prng.random(); // 0.5
+ *
+ * @example
+ * const prng = new PredictableRng();
+ * prng.results = [0.0, 0.1, 0.2, 0.3, 0.4];
+ * prng.random(); // 0.0
+ * prng.random(); // 0.1
+ * prng.random(); // 0.2
+ * prng.random(); // 0.3
+ * prng.random(); // 0.4
+ * prng.random(); // 0.0
+ *
+ * @example
+ * // The setEvenSpread and evenSpread methods can be used to generate
+ * // n numbers between [0, 1) with even gaps between
+ * const prng = new PredictableRng();
+ * prng.results = [0.0, 0.1, 0.2, 0.3, 0.4];
+ * prng.setEvenSpread(11);
+ * prng.random(); // 0.0
+ * prng.random(); // 0.1
+ * prng.random(); // 0.2
+ * prng.random(); // 0.3
+ * prng.random(); // 0.4
+ * prng.random(); // 0.5
+ * prng.random(); // 0.6
+ * prng.random(); // 0.7
+ * prng.random(); // 0.8
+ * prng.random(); // 0.9
+ * prng.random(); // 0.9999999...
+ * prng.random(); // 0.0
  */
-class Rng extends rng/* RngAbstract */.U {
+class PredictableRng extends rng/* RngAbstract */.Up {
     counter = 0;
     _results = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 - Number.EPSILON];
     constructor(seed, results) {
@@ -2843,14 +4294,18 @@ class Rng extends rng/* RngAbstract */.U {
         return this;
     }
     sameAs(other) {
-        return this.results.sort().join(',') === other.results.sort().join(',') &&
-            this.counter === other.counter;
+        if (other instanceof PredictableRng) {
+            return this.results.join(',') === other.results.join(',') &&
+                this.counter === other.counter &&
+                this.getRandomSource() === other.getRandomSource();
+        }
+        return false;
     }
     reset() {
         this.counter = 0;
         return this;
     }
-    _random() {
+    _next() {
         return this.results[this.counter++ % this.results.length];
     }
 }
@@ -2931,21 +4386,28 @@ var result = __webpack_require__(668);
 
 
 
+
+
 // This provides an easy way of using ultraloot in browser.
 // It can be instantiated by new UltraLoot() and submodules can be
 // instantiated by new UltraLoot.LootTable() and whatnot.
 /* harmony default export */ const src = (ultraloot/* UltraLoot */.tZ);
 
+var __webpack_exports__ArrayNumberValidator = __webpack_exports__.Bh;
 var __webpack_exports__LootTable = __webpack_exports__.tS;
 var __webpack_exports__LootTableEntry = __webpack_exports__.dl;
 var __webpack_exports__LootTableEntryResult = __webpack_exports__.uX;
 var __webpack_exports__LootTableEntryResults = __webpack_exports__.jQ;
 var __webpack_exports__LootTableManager = __webpack_exports__.o3;
 var __webpack_exports__LootTablePool = __webpack_exports__.DW;
+var __webpack_exports__MaxRecursionsError = __webpack_exports__.YG;
+var __webpack_exports__NonRandomRandomError = __webpack_exports__.Qs;
+var __webpack_exports__NumberValidationError = __webpack_exports__.X;
+var __webpack_exports__NumberValidator = __webpack_exports__.Ol;
 var __webpack_exports__PredictableRng = __webpack_exports__.TU;
 var __webpack_exports__RecursiveTableError = __webpack_exports__.Bc;
 var __webpack_exports__Rng = __webpack_exports__.Kd;
 var __webpack_exports__RngAbstract = __webpack_exports__.Up;
 var __webpack_exports__UltraLoot = __webpack_exports__.tZ;
 var __webpack_exports__default = __webpack_exports__.Ay;
-export { __webpack_exports__LootTable as LootTable, __webpack_exports__LootTableEntry as LootTableEntry, __webpack_exports__LootTableEntryResult as LootTableEntryResult, __webpack_exports__LootTableEntryResults as LootTableEntryResults, __webpack_exports__LootTableManager as LootTableManager, __webpack_exports__LootTablePool as LootTablePool, __webpack_exports__PredictableRng as PredictableRng, __webpack_exports__RecursiveTableError as RecursiveTableError, __webpack_exports__Rng as Rng, __webpack_exports__RngAbstract as RngAbstract, __webpack_exports__UltraLoot as UltraLoot, __webpack_exports__default as default };
+export { __webpack_exports__ArrayNumberValidator as ArrayNumberValidator, __webpack_exports__LootTable as LootTable, __webpack_exports__LootTableEntry as LootTableEntry, __webpack_exports__LootTableEntryResult as LootTableEntryResult, __webpack_exports__LootTableEntryResults as LootTableEntryResults, __webpack_exports__LootTableManager as LootTableManager, __webpack_exports__LootTablePool as LootTablePool, __webpack_exports__MaxRecursionsError as MaxRecursionsError, __webpack_exports__NonRandomRandomError as NonRandomRandomError, __webpack_exports__NumberValidationError as NumberValidationError, __webpack_exports__NumberValidator as NumberValidator, __webpack_exports__PredictableRng as PredictableRng, __webpack_exports__RecursiveTableError as RecursiveTableError, __webpack_exports__Rng as Rng, __webpack_exports__RngAbstract as RngAbstract, __webpack_exports__UltraLoot as UltraLoot, __webpack_exports__default as default };

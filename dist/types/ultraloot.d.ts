@@ -3,7 +3,7 @@ import { default as LootTablePool, LootTablePoolDefinition } from './table/pool'
 import { default as LootTableEntry, LootTableEntryDefinition, FunctionDefinition, ConditionDefinition } from './table/pool/entry';
 import LootTableEntryResult from './table/pool/entry/result';
 import LootTableEntryResults from './table/pool/entry/results';
-import { Seed, RngInterface, RngConstructor, Chancy } from './rng';
+import { Seed, RngInterface, RngConstructor, ChancyNumeric } from './rng/interface';
 declare const VERSION_KEY = "__version__";
 /**
  * This is for easily creating loot tables using a json like
@@ -25,8 +25,8 @@ export type LootTablePoolEasyDefinition = {
     conditions?: Array<ConditionDefinition>;
     functions?: Array<FunctionDefinition>;
     template?: LootTableEntryDefinition;
-    rolls?: Chancy;
-    nulls?: Chancy;
+    rolls?: ChancyNumeric;
+    nulls?: ChancyNumeric;
     entries?: Array<LootTableEntry | LootTableEntryDefinition | LootTable>;
 };
 /**
@@ -47,8 +47,8 @@ export type LootTablePoolJsonDefinition = {
     id?: string;
     conditions?: Array<ConditionDefinition>;
     functions?: Array<FunctionDefinition>;
-    rolls?: Chancy;
-    nulls?: Chancy;
+    rolls?: ChancyNumeric;
+    nulls?: ChancyNumeric;
     entries: Array<LootTableEntryJsonDefinition>;
 };
 /**
@@ -61,7 +61,7 @@ export type LootTableEntryJsonDefinition = {
     stackable?: boolean;
     weight?: number;
     item?: any;
-    qty?: Chancy;
+    qty?: ChancyNumeric;
     functions?: Array<FunctionDefinition>;
     conditions?: Array<ConditionDefinition>;
 };

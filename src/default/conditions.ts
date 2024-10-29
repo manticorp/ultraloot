@@ -1,4 +1,3 @@
-import { LootTableConditionSignature } from './../table';
 import {
   depend
 } from './../utils';

@@ -3,7 +3,7 @@ import { default as LootTablePool, LootTablePoolDefinition } from './table/pool'
 import { FunctionDefinition, ConditionDefinition } from './table/pool/entry';
 import LootTableEntryResult from './table/pool/entry/result';
 import LootTableEntryResults from './table/pool/entry/results';
-import { RngInterface, Chancy } from './rng';
+import { RngInterface, ChancyNumeric } from './rng/interface';
 /**
  * Object used when creating a loot table.
  */
@@ -36,7 +36,7 @@ export interface TableRollInterface {
     context?: any;
     result?: LootTableEntryResults;
     rng?: RngInterface;
-    n?: Chancy;
+    n?: ChancyNumeric;
 }
 export interface TablePoolRollInterface {
     pool: LootTablePool;
@@ -44,7 +44,7 @@ export interface TablePoolRollInterface {
     context?: any;
     result?: LootTableEntryResults;
     rng?: RngInterface;
-    n?: Chancy;
+    n?: ChancyNumeric;
 }
 export default class LootTable {
     name?: string;

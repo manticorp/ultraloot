@@ -4,7 +4,8 @@ import { default as LootTablePool, LootTablePoolDefinition } from './table/pool'
 import { default as LootTableEntry, LootTableEntryDefinition, FunctionDefinition, ConditionDefinition } from './table/pool/entry';
 import LootTableEntryResult from './table/pool/entry/result';
 import LootTableEntryResults from './table/pool/entry/results';
-import { default as RNG, Seed, RngInterface, RngConstructor, Chancy } from './rng';
+import RNG from './rng';
+import { Seed, RngInterface, RngConstructor, ChancyNumeric } from './rng/interface';
 import { version as CURRENT_VERSION } from './../package.json';
 import * as defaultFunctions from './default/functions';
 import * as defaultConditions from './default/conditions';
@@ -44,8 +45,8 @@ export type LootTablePoolEasyDefinition = {
   conditions?: Array<ConditionDefinition>,
   functions?: Array<FunctionDefinition>,
   template?: LootTableEntryDefinition,
-  rolls?: Chancy,
-  nulls?: Chancy,
+  rolls?: ChancyNumeric,
+  nulls?: ChancyNumeric,
   entries?: Array<LootTableEntry | LootTableEntryDefinition | LootTable>,
 };
 
@@ -68,8 +69,8 @@ export type LootTablePoolJsonDefinition = {
   id?: string,
   conditions?: Array<ConditionDefinition>,
   functions?: Array<FunctionDefinition>,
-  rolls?: Chancy,
-  nulls?: Chancy,
+  rolls?: ChancyNumeric,
+  nulls?: ChancyNumeric,
   entries: Array<LootTableEntryJsonDefinition>,
 };
 
@@ -83,7 +84,7 @@ export type LootTableEntryJsonDefinition = {
   stackable?: boolean,
   weight?: number,
   item?: any,
-  qty?: Chancy,
+  qty?: ChancyNumeric,
   functions?: Array<FunctionDefinition>,
   conditions?: Array<ConditionDefinition>
 };
@@ -228,7 +229,7 @@ export class UltraLoot {
       'chanceTo',
       'randInt',
       'uniqid',
-      'uniqstr',
+      'randomString',
       'randBetween',
       'normal',
       'chancyInt',
@@ -690,7 +691,7 @@ export class UltraLoot {
     };
     clone.pools = [];
 
-    const keyToUse = table.filename ?? this.getRng().uniqstr(6);
+    const keyToUse = table.filename ?? this.getRng().randomString(6);
     had.add(table);
 
     if (includeRng) {
@@ -726,7 +727,7 @@ export class UltraLoot {
         }
 
         if (entryClone.item instanceof LootTable) {
-          const subKeyToUse = entryClone.item.filename ?? this.getRng().uniqstr(6);
+          const subKeyToUse = entryClone.item.filename ?? this.getRng().randomString(6);
           if (had.has(entryClone.item)) {
             throw new RecursiveTableError('Recursive requirement detected - cannot serialize recursively required tables.');
           }

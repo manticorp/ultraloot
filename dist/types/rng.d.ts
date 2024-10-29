@@ -1,136 +1,294 @@
-export interface RandomInterface {
-    random(): number;
-}
-export interface DiceInterface {
-    n: number;
-    d: number;
-    plus: number;
-}
-/**
- * @interface
- * @prop mean   Used for "normal" type chancy results to determine the mean
- * @prop stddev Used for "normal" type chancy results to determine the stddev
- * @prop min    The minimum possible result
- * @prop max    The maximum possible result
- * @prop type   The type of result, can be "normal", "normal_int", "integer" or "random"
- * @prop power  The power factor to pass to the random function - basically skews results one way or the other
- * @prop skew   Skew to use when using a "normal" or "normal_int" distribution
- */
-export interface ChancyInterface {
-    mean?: number;
-    stddev?: number;
-    min?: number;
-    max?: number;
-    type?: string;
-    skew?: number;
-}
-export type Chancy = ChancyInterface | string | number;
-export type Seed = string | number;
-export interface RngInterface {
-    predictable(seed?: Seed): RngInterface;
-    hashStr(str: string): string | number;
-    convertStringToNumber(str: string): number;
-    getSeed(): number;
-    sameAs(other: RngInterface): boolean;
-    seed(seed: Seed): this;
-    percentage(): number;
-    random(from?: number, to?: number, skew?: number): number;
-    chance(n: number, chanceIn?: number): boolean;
-    chanceTo(from: number, to: number): boolean;
-    randInt(from?: number, to?: number, skew?: number): number;
-    uniqid(prefix?: string, random?: boolean): string;
-    uniqstr(len?: number): string;
-    randBetween(from: number, to: number, skew: number): number;
-    normal(args?: NormalArgs): number;
-    chancyInt(input: Chancy): number;
-    chancy(input: Chancy): number;
-    choice(data: Array<any>): any;
-    weightedChoice(data: Record<any, number> | Array<any> | Map<any, number>): any;
-    dice(n: string | DiceInterface | number, d?: number, plus?: number): number;
-    parseDiceString(string: string): DiceInterface;
-    clamp(number: number, lower: number, upper: number): number;
-    bin(val: number, bins: number, min: number, max: number): number;
-    serialize(): any;
-}
-export interface RngConstructor {
-    new (seed?: Seed): RngInterface;
-    unserialize(rng: any): RngInterface;
-    chancyMin(input: Chancy): number;
-    chancyMax(input: Chancy): number;
-    parseDiceString(string: string): DiceInterface;
-    diceMin(n: string | DiceInterface | number, d?: number, plus?: number): number;
-    diceMax(n: string | DiceInterface | number, d?: number, plus?: number): number;
-}
+import Pool from './rng/pool';
+import { DiceInterface, Distribution, Chancy, ChancyNumeric, Seed, Randfunc, RngInterface, RngDistributionsInterface } from './rng/interface';
 export interface SerializedRng {
     mask: number;
     seed: number;
     m_z: number;
 }
-export type NormalArgs = {
-    mean?: number;
-    stddev?: number;
-    max?: number;
-    min?: number;
-    skew?: number;
-    skewtype?: string;
-};
-export declare abstract class RngAbstract implements RngInterface {
+export declare class MaxRecursionsError extends Error {
+}
+export declare class NonRandomRandomError extends Error {
+}
+/**
+ * This abstract class implements most concrete implementations of
+ * functions, as the only underlying changes are likely to be to the
+ * uniform random number generation, and how that is handled.
+ *
+ * All the typedoc documentation for this has been sharded out to RngInterface
+ * in a separate file.
+ */
+export declare abstract class RngAbstract implements RngInterface, RngDistributionsInterface {
     #private;
     constructor(seed?: Seed);
     getSeed(): number;
-    sameAs(other: RngAbstract): boolean;
+    sameAs(other: RngInterface): boolean;
+    randomSource(source?: Randfunc | null): this;
+    getRandomSource(): Randfunc | null | undefined;
     protected setSeed(seed?: Seed): this;
     seed(seed?: Seed): this;
     serialize(): any;
+    /**
+     * {@inheritDoc RngConstructor.unserialize}
+     * @group Serialization
+     */
     static unserialize(serialized: SerializedRng): RngInterface;
     predictable(seed?: Seed): RngInterface;
+    /**
+     * {@inheritDoc RngInterface.predictable}
+     * @group Seeding
+     */
     static predictable<T extends RngAbstract>(this: new (seed: Seed) => T, seed: Seed): T;
-    hashStr(str: string): number;
-    convertStringToNumber(str: string): number;
+    protected hashStr(str: string): number;
+    protected convertStringToNumber(str: string): number;
     protected _random(): number;
+    /**
+     * Internal source of uniformly distributed random numbers between 0 and 1, [0, 1)
+     *
+     * Simplest implementation would be Math.random()
+     */
+    protected abstract _next(): number;
     percentage(): number;
+    probability(): number;
     random(from?: number, to?: number, skew?: number): number;
     chance(n: number, chanceIn?: number): boolean;
     chanceTo(from: number, to: number): boolean;
     randInt(from?: number, to?: number, skew?: number): number;
-    uniqid(prefix?: string, random?: boolean): string;
-    uniqstr(len?: number): string;
+    uniqid(prefix?: string): string;
+    randomString(len?: number): string;
     randBetween(from?: number, to?: number, skew?: number): number;
     scale(number: number, from: number, to: number, min?: number, max?: number): number;
     scaleNorm(number: number, from: number, to: number): number;
     shouldThrowOnMaxRecursionsReached(): boolean;
-    normal({ mean, stddev, max, min, skew }?: NormalArgs, depth?: number): number;
-    boxMuller(mean?: number, stddev?: number): number;
+    shouldThrowOnMaxRecursionsReached(val: boolean): this;
+    /**
+     * Generates a normally distributed number, but with a special clamping and skewing procedure
+     * that is sometimes useful.
+     *
+     * Note that the results of this aren't strictly gaussian normal when min/max are present,
+     * but for our puposes they should suffice.
+     *
+     * Otherwise, without min and max and skew, the results are gaussian normal.
+     *
+     * @example
+     *
+     * rng.normal({ min: 0, max: 1, stddev: 0.1 });
+     * rng.normal({ mean: 0.5, stddev: 0.5 });
+     *
+     * @see [Normal Distribution - Wikipedia](https://en.wikipedia.org/wiki/Normal_distribution)
+     * @group Random Number Generation
+     * @param [options]
+     * @param [options.mean] - The mean value of the distribution
+     * @param [options.stddev] - Must be > 0 if present
+     * @param [options.skew] - The skew to apply. -ve = left, +ve = right
+     * @param [options.min] - Minimum value allowed for the output
+     * @param [options.max] - Maximum value allowed for the output
+     * @param [depth] - used internally to track the recursion depth
+     * @return A normally distributed number
+     * @throws {@link NumberValidationError} If the input parameters are not valid.
+     * @throws {@link MaxRecursionsError} If the function recurses too many times in trying to generate in bounds numbers
+     */
+    normal({ mean, stddev, max, min, skew }?: {
+        mean?: number;
+        stddev?: number;
+        max?: number;
+        min?: number;
+        skew?: number;
+    }, depth?: number): number;
+    gaussian({ mean, stddev, skew }?: {
+        mean?: number;
+        stddev?: number;
+        skew?: number;
+    }): number;
+    boxMuller(mean?: number | {
+        mean?: number;
+        stddev?: number;
+    }, stddev?: number): number;
+    irwinHall(n?: number | {
+        n?: number;
+    }): number;
+    bates(n?: number | {
+        n?: number;
+    }): number;
+    batesgaussian(n?: number | {
+        n?: number;
+    }): number;
+    bernoulli(p?: number | {
+        p?: number;
+    }): number;
+    exponential(rate?: number | {
+        rate?: number;
+    }): number;
+    pareto({ shape, scale, location }?: {
+        shape?: number;
+        scale?: number;
+        location?: number;
+    }): number;
+    poisson(lambda?: number | {
+        lambda?: number;
+    }): number;
+    hypergeometric({ N, K, n, k }?: {
+        N?: number;
+        K?: number;
+        n?: number;
+        k?: number;
+    }): number;
+    rademacher(): -1 | 1;
+    binomial({ n, p }?: {
+        n?: number;
+        p?: number;
+    }): number;
+    betaBinomial({ alpha, beta, n }?: {
+        alpha?: number;
+        beta?: number;
+        n?: number;
+    }): number;
+    beta({ alpha, beta }?: {
+        alpha?: number;
+        beta?: number;
+    }): number;
+    gamma({ shape, rate, scale }?: {
+        shape?: number;
+        rate?: number;
+        scale?: number;
+    }): number;
+    studentsT(nu?: number | {
+        nu?: number;
+    }): number;
+    wignerSemicircle(R?: number | {
+        R?: number;
+    }): number;
+    kumaraswamy({ alpha, beta }?: {
+        alpha?: number;
+        beta?: number;
+    }): number;
+    hermite({ lambda1, lambda2 }?: {
+        lambda1?: number;
+        lambda2?: number;
+    }): number;
+    chiSquared(k?: number | {
+        k?: number;
+    }): number;
+    rayleigh(scale?: number | {
+        scale?: number;
+    }): number;
+    logNormal({ mean, stddev }?: {
+        mean?: number;
+        stddev?: number;
+    }): number;
+    cauchy({ median, scale }?: {
+        median?: number;
+        scale?: number;
+    }): number;
+    laplace({ mean, scale }?: {
+        mean?: number;
+        scale?: number;
+    }): number;
+    logistic({ mean, scale }?: {
+        mean?: number;
+        scale?: number;
+    }): number;
+    /**
+     * Returns the support of the given distribution.
+     *
+     * @see [Wikipedia - Support (mathematics)](https://en.wikipedia.org/wiki/Support_(mathematics)#In_probability_and_measure_theory)
+     */
+    support(distribution: Distribution): string | undefined;
     chancyInt(input: Chancy): number;
-    chancy(input: Chancy): number;
+    chancy<T>(input: T[], depth?: number): T;
+    chancy(input: ChancyNumeric, depth?: number): number;
+    private chancyMinMax;
+    /**
+     * {@inheritDoc RngInterface.chancyMin}
+     * @group Result Prediction
+     */
+    chancyMin(input: Chancy): number;
+    /**
+     * {@inheritDoc RngInterface.chancyMax}
+     * @group Result Prediction
+     */
+    chancyMax(input: Chancy): number;
+    /**
+     * {@inheritDoc RngInterface.chancyMin}
+     * @group Result Prediction
+     */
     static chancyMin(input: Chancy): number;
+    /**
+     * {@inheritDoc RngInterface.chancyMax}
+     * @group Result Prediction
+     */
     static chancyMax(input: Chancy): number;
     choice(data: Array<any>): any;
-    /**
-     * data format:
-     * {
-     *   choice1: 1,
-     *   choice2: 2,
-     *   choice3: 3,
-     * }
-     */
+    weights(data: Array<any>): Map<any, number>;
     weightedChoice(data: Record<any, number> | Array<any> | Map<any, number>): any;
-    protected static parseDiceArgs(n?: string | DiceInterface | number | number[], d?: number, plus?: number): DiceInterface;
-    parseDiceArgs(n?: string | DiceInterface | number | number[], d?: number, plus?: number): DiceInterface;
+    pool<T>(entries?: T[]): Pool<T>;
+    protected static parseDiceArgs(n?: string | Partial<DiceInterface> | number | number[], d?: number, plus?: number): DiceInterface;
+    protected parseDiceArgs(n?: string | Partial<DiceInterface> | number | number[], d?: number, plus?: number): DiceInterface;
+    /**
+     * {@inheritDoc RngInterface.parseDiceString}
+     * @group Utilities
+     */
     static parseDiceString(string: string): DiceInterface;
-    static diceMax(n?: string | DiceInterface | number | number[], d?: number, plus?: number): number;
-    static diceMin(n?: string | DiceInterface | number | number[], d?: number, plus?: number): number;
-    dice(n?: string | DiceInterface | number | number[], d?: number, plus?: number): number;
+    /**
+     * {@inheritDoc RngInterface.diceMax}
+     * @group Result Prediction
+     */
+    diceMax(n?: string | Partial<DiceInterface> | number | number[], d?: number, plus?: number): number;
+    /**
+     * {@inheritDoc RngInterface.diceMin}
+     * @group Result Prediction
+     */
+    diceMin(n?: string | Partial<DiceInterface> | number | number[], d?: number, plus?: number): number;
+    /**
+     * {@inheritDoc RngInterface.diceMax}
+     * @group Result Prediction
+     */
+    static diceMax(n?: string | Partial<DiceInterface> | number | number[], d?: number, plus?: number): number;
+    /**
+     * {@inheritDoc RngInterface.diceMin}
+     * @group Result Prediction
+     */
+    static diceMin(n?: string | Partial<DiceInterface> | number | number[], d?: number, plus?: number): number;
+    diceExpanded(n?: string | Partial<DiceInterface> | number | number[], d?: number, plus?: number): {
+        dice: number[];
+        plus: number;
+        total: number;
+    };
+    dice(n?: string | Partial<DiceInterface> | number | number[], d?: number, plus?: number): number;
+    /**
+     * {@inheritDoc RngInterface.parseDiceString}
+     * @group Utilities
+     */
     parseDiceString(string: string): DiceInterface;
-    clamp(number: number, lower: number, upper: number): number;
+    clamp(number: number, lower?: number, upper?: number): number;
     bin(val: number, bins: number, min: number, max: number): number;
 }
-export default class Rng extends RngAbstract implements RngInterface {
+/**
+ * @category Main Class
+ */
+declare class Rng extends RngAbstract implements RngInterface, RngDistributionsInterface {
     #private;
     constructor(seed?: Seed);
+    /**
+     * {@inheritDoc RngInterface.predictable}
+     * @group Seeding
+     */
+    static predictable<Rng>(this: new (seed: Seed) => Rng, seed: Seed): Rng;
     serialize(): any;
-    sameAs(other: Rng): boolean;
+    sameAs(other: any): boolean;
+    /** @hidden */
+    getMask(): number;
+    /** @hidden */
+    getMz(): number;
+    /** @hidden */
+    setMask(mask: number): void;
+    /** @hidden */
+    setMz(mz: number): void;
+    /**
+     * {@inheritDoc RngConstructor.unserialize}
+     * @group Serialization
+     */
     static unserialize(serialized: SerializedRng): Rng;
     seed(i?: Seed): this;
-    protected _random(): number;
+    protected _next(): number;
 }
+export default Rng;

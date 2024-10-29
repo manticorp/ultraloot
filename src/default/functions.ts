@@ -1,5 +1,4 @@
-import { LootTableFunctionSignature } from './../table';
-import { RngInterface } from './../rng';
+import { RngInterface } from './../rng/interface';
 import LootTableEntryResult from './../table/pool/entry/result';
 import {
   dotSet,

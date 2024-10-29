@@ -2,14 +2,14 @@ import { default as LootTableEntry, LootTableEntryDefinition, ConditionDefinitio
 import LootTableEntryResult from './pool/entry/result';
 import LootTableEntryResults from './pool/entry/results';
 import { default as LootTable } from './../table';
-import { RngInterface, Chancy } from './../rng';
+import { RngInterface, ChancyNumeric } from './../rng/interface';
 export interface LootTablePoolDefinition {
     name?: string;
     id?: string;
     conditions?: Array<ConditionDefinition>;
     functions?: Array<FunctionDefinition>;
-    rolls?: Chancy;
-    nulls?: Chancy;
+    rolls?: ChancyNumeric;
+    nulls?: ChancyNumeric;
     entries?: Array<LootTableEntry | LootTable | LootTableEntryDefinition>;
     template?: Partial<LootTableEntryDefinition>;
 }
@@ -18,8 +18,8 @@ export default class LootPool {
     id?: string;
     conditions: Array<ConditionDefinition>;
     functions: Array<FunctionDefinition>;
-    rolls: Chancy;
-    nulls: Chancy;
+    rolls: ChancyNumeric;
+    nulls: ChancyNumeric;
     entries: Array<LootTableEntry | LootTable>;
     template: Partial<LootTableEntryDefinition>;
     static NULLKEY: string;
