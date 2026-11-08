@@ -25,7 +25,10 @@
     "ci": "npm t && npx typedoc && npm run test-build && copyfiles -f ./dist/*.* ./docs/js",
     "test-build": "npm run build && node test-build-common.cjs && node test-build-module.mjs",
     "test": "jest --coverage",
-    "test-watch": "jest --coverage --watchAll"
+    "test-watch": "jest --coverage --watchAll",
+    "sync:rng": "node scripts/sync-sampling.mjs",
+    "check:embedded": "node scripts/sync-sampling.mjs --check",
+    "test:parity": "node scripts/test-parity.mjs"
   },
   "files": [
     "LICENSE",

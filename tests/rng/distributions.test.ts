@@ -736,8 +736,8 @@ describe('Testing RNG Distributions specifically', () => {
   const distributionsAndRandom : [Distribution, any, number][] = [
     ['beta', { alpha: 100000000 + 1 }, 1 - Number.EPSILON],
     ['poisson', { lambda: 100 }, 1 - Number.EPSILON],
-    ['gamma', { shape: 1 / 2, rate: 2 }, 0.5],
-    ['studentsT', {}, 0.5],
+    ['gamma', { shape: 1 / 2, rate: 2 }, 1 - Number.EPSILON],
+    ['studentsT', {}, 1 - Number.EPSILON],
   ];
 
   test.each(distributionsAndRandom)('Test non-random throws for sculpted values', (distribution: Distribution, args, num: number) => {

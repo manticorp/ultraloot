@@ -1,0 +1,7 @@
+{
+  "package": "@manticorp/gamerng",
+  "version": "0.3.1",
+  "source": "src/sampling.ts",
+  "license": "MIT",
+  "sha256": "cae5992536c9eee1f6734ee97d030f50914ac294e4529e636402b53b0cfb2d8d"
+}
