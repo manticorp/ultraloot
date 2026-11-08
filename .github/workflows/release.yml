@@ -1,0 +1,42 @@
+name: Publish verified release
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag on main, matching package.json (for example v0.4.0)
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: Verify tag belongs to main before running repository code
+        run: git merge-base --is-ancestor HEAD origin/main
+      - run: npm install --global npm@11
+      - run: node scripts/check-release.mjs
+      - run: npm ci
+      - run: npm run check
+      - run: npm audit --audit-level=moderate
+      - run: |
+          npm publish --access public --provenance --tag "$(node -p 'require("./package.json").version.includes("-") ? "next" : "latest"')"
