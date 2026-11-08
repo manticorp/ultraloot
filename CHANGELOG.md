@@ -1,5 +1,12 @@
 # Unreleased
 
+- Isolated callback inheritance per invocation so concurrent parents can share a child table safely.
+- Added optional RNG-preserving roll traces, seeded simulation APIs, probability/quantity statistics, and a cancellable browser balance lab.
+- Added opt-in generic typed engines, callback registries, and distinct synchronous/asynchronous contracts, with packed consumer type assertions.
+- Repaired queue windows and numeric boundary validation with generated property tests.
+- Updated and audited development tooling, removed unused dependencies, and resolved high/moderate advisories. One upstream low-severity Jest dependency issue remains documented in SECURITY.md.
+- Added weekly dependency updates and an OIDC/provenance release workflow guarded by tag/version matching, main-branch ancestry, full validation, and release preflight tests. npm account trust must be configured by a signed-in maintainer when ready to release.
+
 - Fixed disabled and exhausted unique drops, deep/shared table graph serialization, omitted unique flags, default RNG restoration, repeated collapse mutations, and ignored zero/empty seeds.
 - Fixed absolute HTTP/file URLs, HTTP status diagnostics, relative nested references, reference cycles, and native Node module loading. Explicit `path` continues to be the shared base for nested references; without it, references resolve relative to their containing document.
 - Implemented `saveTable()` for complete JSON graphs. It requires an explicit destination directory and refuses overwrites unless `overwrite: true` is supplied. `loadTables()` reads these files; `loadTable()` reads a single definition with external references.

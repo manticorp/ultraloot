@@ -927,3 +927,53 @@ const restored = await new UltraLoot().loadTables(filename);
 Run `npm run check` for source integrity, types, unit tests, production builds, and packed ESM/CJS/browser consumers. PR checks cover Node 22 and 24. `npm run benchmark` records repeatable local measurements after building.
 
 The legacy UltraLoot uniform engine remains unchanged. Corrected distribution sampling and unique/zero-weight handling can change derived seeded outcomes and RNG consumption. Serialized state records `samplingVersion: 2`; old states remain loadable using the corrected samplers. See [CHANGELOG.md](CHANGELOG.md).
+
+## Concurrent rolls and traces
+
+Automatic parent callback inheritance is scoped to a roll, so concurrent parents can share a child table without mixing callback registrations. Definitions are reused. For reproducible concurrent outcomes, give each invocation its own RNG rather than sharing a mutable RNG between asynchronous tasks. A GameRNG named stream can be injected as the `rng` roll option.
+
+```ts
+const events = [];
+const result = await table.roll({ trace: event => events.push(event) });
+```
+
+Trace events describe table boundaries, pool weights, choices, condition results, and modifiers. Table boundaries include RNG snapshots. Tracing does not draw random numbers. The observer runs inline; observer errors propagate. Disabled traces skip event allocation.
+
+## Balance lab and simulation
+
+Open [the balance lab](https://manticorp.github.io/ultraloot/examples/playground/) to edit single-table JSON or saved graphs, compare estimated probabilities/quantities, and inspect roll traces. Locally, run `npm run ci` and serve `docs/` over HTTP, then open `examples/playground/`. Simulations run in a cancellable worker and retain drafts in browser-local storage. JSON is never evaluated as JavaScript.
+
+```ts
+const stats = await ul.simulate(table, { seed: 'experiment-01', iterations: 10000 });
+const syncStats = ul.simulateSync(table, { seed: 'experiment-01', iterations: 10000 });
+```
+
+Standalone `simulateTable` and `simulateTableSync` exports are also available. By default they use a separate seeded built-in RNG and leave the table RNG unchanged; an explicitly supplied `rng` is consumed. They execute the actual registered functions/conditions and reuse provided `looter`/`context`, so supply isolated simulation data for callbacks that mutate it. Items are grouped by ID (or name when no ID is supplied); use distinct IDs for distinct rewards.
+
+Statistics include per-roll probability of at least one drop, total and mean quantity, a 95% Wilson interval, and no-drop probability. The 95% waiting-time estimate assumes independent rolls with stable probabilities; stateful conditions can violate that assumption. Items never observed are not declared impossible. Iterations must be an integer from 1 to 1,000,000. Async simulation yields between chunks and accepts an AbortSignal.
+
+## Typed items, contexts, and callback arguments
+
+The opt-in typed API keeps the original flexible API available:
+
+```ts
+import { createSyncLoot } from '@manticorp/ultraloot';
+type Item = { value: number };
+type Player = { level: number };
+type Context = { multiplier: number };
+type Functions = { scale: { factor: number } };
+const ul = createSyncLoot<Item, Player, Context, Functions, {}>(123);
+ul.registerFunction('scale', ({ looted, context, args }) => {
+  looted.item!.value *= context.multiplier * args.factor;
+});
+const table = ul.createTable({ pools: [{ entries: [{
+  id: 'gold', item: { value: 2 },
+  functions: [{ function: 'scale', args: { factor: 3 } }]
+}]}] });
+const result = table.rollSync({ looter: { level: 1 }, context: { multiplier: 2 } });
+result[0].item!.value; // number
+```
+
+Callback names, arguments, item shapes, looter/context shapes, and execution mode are checked. `createAsyncLoot` allows async callbacks and its tables reject `rollSync()` at compile time. `TypedUltraLoot`/`TypedLootTable` expose `.raw` for explicit interoperation with existing loaders, nested definitions, and simulation. Result collections and entries are generic in their item type. Packed-package fixtures test both valid contracts and expected compile-time errors.
+
+See [SECURITY.md](SECURITY.md) for dependency triage and the verified npm release workflow.
