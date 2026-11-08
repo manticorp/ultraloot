@@ -15,3 +15,16 @@ describe.each(['sync', 'async'])('%s drop correctness', mode => {
 
 });
 
+test.each([0, ''])('accepts the valid falsy seed %p', seed => {
+  const a = new UltraLoot(seed);
+  const b = new UltraLoot(seed);
+  expect(a.getRng().getSeed()).toBe(0);
+  expect(a.getRng().random()).toBe(b.getRng().random());
+});
+
+test('table-specific falsy seeds work without mutating the definition', () => {
+  const ul = new UltraLoot(123);
+  const definition = Object.freeze({ rng: 0, id: 'root', pools: [] });
+  expect(ul.createTable(definition).rng.getSeed()).toBe(0);
+});
+

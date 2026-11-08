@@ -153,7 +153,7 @@ export class UltraLoot {
 
   constructor (rng?: Seed | RngInterface) {
     log.d('UltraLoot initialising');
-    if (rng) {
+    if (rng !== undefined && rng !== null) {
       this.rng = this.makeRng(rng);
     }
   }
@@ -410,33 +410,12 @@ export class UltraLoot {
    */
   public createTable (def: LootTable | LootTableDefinition | LootTableEasyDefinition | LootTableJsonDefinition): LootTable {
     if (def instanceof LootTable || this.isLootTableDefinition(def)) {
-      if (def instanceof LootTable) {
-        log.vv('Creating table from LootTable');
-      } else {
-        log.vv('Creating table from LootTableDefinition');
-      }
-      def.ul = this;
-      if (def.rng) {
-        def.rng = def.rng ?? this.makeRng(def.rng);
-      } else {
-        def.rng = this.getRng();
-      }
-      const lt = new LootTable(def);
-      lt.ultraloot = this;
-      return lt;
-    } else if (this.isEasyLootTableDefinition(def)) {
-      log.vv('Creating table from LootTableEasyDefinition');
-      if (def.rng) {
-        def.rng = def.rng ?? this.makeRng(def.rng);
-      } else {
-        def.rng = this.getRng();
-      }
-      const lt = new LootTable(this.transformEasyToProperLootTableDefinition(def));
-      lt.ultraloot = this;
-      return lt;
-    } else {
-      throw new Error('Cannot create loot table from these params');
+      return new LootTable({ ...def, ul: this, rng: this.makeRng(def.rng ?? this.getRng()) });
     }
+    if (this.isEasyLootTableDefinition(def)) {
+      return new LootTable(this.transformEasyToProperLootTableDefinition({ ...def, rng: def.rng ?? this.getRng() }));
+    }
+    throw new Error('Cannot create loot table from these params');
   }
 
   /**
