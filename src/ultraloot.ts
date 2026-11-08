@@ -162,7 +162,7 @@ export class UltraLoot {
   public throwOnMissingConditions: boolean = true;
 
   constructor (rng?: Seed | RngInterface) {
-    log.d('UltraLoot initialising');
+    if (log.enabled) log.d('UltraLoot initialising');
     if (rng !== undefined && rng !== null) {
       this.rng = this.makeRng(rng);
     }
@@ -295,7 +295,7 @@ export class UltraLoot {
   }
 
   public functionCheck (fn: FunctionDefinition) {
-    log.d(`UL | Applying function ${fn.function}`);
+    if (log.enabled) log.d(`UL | Applying function ${fn.function}`);
     if (typeof this.functions[fn.function] === 'undefined') {
       const err = `Function ${fn.function} has not been defined. Did you forget to register the function with this loot table? UltraLoot.registerFunction(name, function).`;
       if (this.throwOnMissingFunctions) {
@@ -310,7 +310,7 @@ export class UltraLoot {
   }
 
   public conditionCheck (cond: ConditionDefinition) {
-    log.d(`UL | Applying condition ${cond.function}`);
+    if (log.enabled) log.d(`UL | Applying condition ${cond.function}`);
     if (typeof this.conditions[cond.function] === 'undefined') {
       const err = `Condition ${cond.function} has not been defined. Did you forget to register the function with this loot table? UltraLoot.registerCondition(name, condition_function).`;
       if (this.throwOnMissingConditions) {
@@ -433,10 +433,10 @@ export class UltraLoot {
    */
   public createPool (def: LootTablePoolDefinition | LootTablePoolEasyDefinition): LootTablePool {
     if (this.isEasyLootTablePoolDefinition(def)) {
-      log.vv('Creating pool from LootTablePoolEasyDefinition');
+      if (log.enabled) log.vv('Creating pool from LootTablePoolEasyDefinition');
       return new LootTablePool(this.transformEasyToProperLootTablePoolDefinition(def));
     } else {
-      log.vv('Creating pool from LootTablePoolDefinition');
+      if (log.enabled) log.vv('Creating pool from LootTablePoolDefinition');
       return new LootTablePool(def);
     }
   }

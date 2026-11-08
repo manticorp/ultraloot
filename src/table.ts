@@ -177,7 +177,7 @@ export default class LootTable {
   } : Omit<TableRollInterface, 'result'>) : [RngInterface, number] {
     const rngToUse = rng ?? this.rng;
     const rolls = rngToUse.chancy(n);
-    log.gc(`Table: ${this.description} | Rolling table ${rolls} times (from chancy(${JSON.stringify(n)}))`, { looter, context });
+    if (log.enabled) log.gc(`Table: ${this.description} | Rolling table ${rolls} times (from chancy(${JSON.stringify(n)}))`, { looter, context });
     return [rngToUse, rolls];
   }
 
@@ -207,7 +207,7 @@ export default class LootTable {
         result
       });
     }
-    log.ge();
+    if (log.enabled) log.ge();
     return result;
   }
 
@@ -237,7 +237,7 @@ export default class LootTable {
         result
       });
     }
-    log.ge();
+    if (log.enabled) log.ge();
     return result;
   }
 

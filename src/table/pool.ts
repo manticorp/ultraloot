@@ -111,7 +111,7 @@ export default class LootPool {
   }) {
     const numRolls = rng.chancyInt(this.rolls);
 
-    log.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
+    if (log.enabled) log.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
 
     // We store a list of key/value choices with their weights in an array
     const choices : Record<string, number> = {};
@@ -129,27 +129,27 @@ export default class LootPool {
         choices[idx] = 1;
       } else {
         const r = await entry.applyConditions({ rng, table, looter, context, result });
-        log.vv(`Pool ${this.description} | Result of calling await a.applyConditions was ${JSON.stringify(r)}`);
+        if (log.enabled) log.vv(`Pool ${this.description} | Result of calling await a.applyConditions was ${JSON.stringify(r)}`);
         if (r) {
           choices[idx] = rng.chancy(entry.weight ?? 1);
         }
       }
     }
-    log.vv(`Pool ${this.description} | Choices:`, choices);
+    if (log.enabled) log.vv(`Pool ${this.description} | Choices:`, choices);
 
     const overallIntermediate = new LootTableEntryResults();
 
     let add = true;
     for (const cond of this.conditions) {
       const conditionResult = await table.applyCondition(cond, { rng, looter, context, result });
-      log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+      if (log.enabled) log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
       add = add && conditionResult;
       if (!add) {
-        log.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
+        if (log.enabled) log.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
         break;
       }
     }
-    log.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
+    if (log.enabled) log.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
 
     if (add) {
       for (let i = 0; i < numRolls; i++) {
@@ -165,24 +165,24 @@ export default class LootPool {
             overallIntermediate.merge(await entry.roll({ looter, context, rng }));
           } else if (entry instanceof LootTableEntry) {
             // Otherwise, we can roll the entry itself
-            log.g(`Pool ${this.description} | Rolling Loot Table Entry`);
+            if (log.enabled) log.g(`Pool ${this.description} | Rolling Loot Table Entry`);
             overallIntermediate.merge(await entry.roll({ rng, table, looter, context }));
-            log.ge();
+            if (log.enabled) log.ge();
             if (entry.unique) {
               delete choices[choice];
             }
           }
         } else {
-          log.v(`Pool ${this.description} | Got null result`);
+          if (log.enabled) log.v(`Pool ${this.description} | Got null result`);
         }
       }
     } else {
-      log.v(`Pool ${this.description} | Skipping because of conditions`);
+      if (log.enabled) log.v(`Pool ${this.description} | Skipping because of conditions`);
     }
 
     // Then we process all the results
     await this.processEntryResults(overallIntermediate, { rng, table, looter, context, result });
-    log.ge();
+    if (log.enabled) log.ge();
     return result;
   }
 
@@ -201,7 +201,7 @@ export default class LootPool {
   }) {
     const numRolls = rng.chancyInt(this.rolls);
 
-    log.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
+    if (log.enabled) log.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
 
     // We store a list of key/value choices with their weights in an array
     const choices : Record<string, number> = {};
@@ -222,21 +222,21 @@ export default class LootPool {
         }
       }
     });
-    log.vv(`Pool ${this.description} | Choices:`, choices);
+    if (log.enabled) log.vv(`Pool ${this.description} | Choices:`, choices);
 
     const overallIntermediate = new LootTableEntryResults();
 
     let add = true;
     for (const cond of this.conditions) {
       const conditionResult = table.applyConditionSync(cond, { rng, looter, context, result });
-      log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+      if (log.enabled) log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
       add = add && conditionResult;
       if (!add) {
-        log.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
+        if (log.enabled) log.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
         break;
       }
     }
-    log.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
+    if (log.enabled) log.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
 
     if (add) {
       for (let i = 0; i < numRolls; i++) {
@@ -252,24 +252,24 @@ export default class LootPool {
             overallIntermediate.merge(entry.rollSync({ looter, context, rng }));
           } else if (entry instanceof LootTableEntry) {
             // Otherwise, we can roll the entry itself
-            log.g(`Pool ${this.description} | Rolling Loot Table Entry`);
+            if (log.enabled) log.g(`Pool ${this.description} | Rolling Loot Table Entry`);
             overallIntermediate.merge(entry.rollSync({ rng, table, looter, context }));
-            log.ge();
+            if (log.enabled) log.ge();
             if (entry.unique) {
               delete choices[choice];
             }
           }
         } else {
-          log.v(`Pool ${this.description} | Got null result`);
+          if (log.enabled) log.v(`Pool ${this.description} | Got null result`);
         }
       }
     } else {
-      log.v(`Pool ${this.description} | Skipping because of conditions`);
+      if (log.enabled) log.v(`Pool ${this.description} | Skipping because of conditions`);
     }
 
     // Then we process all the results
     this.processEntryResultsSync(overallIntermediate, { rng, table, looter, context, result });
-    log.ge();
+    if (log.enabled) log.ge();
     return result;
   }
 

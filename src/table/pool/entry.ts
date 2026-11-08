@@ -149,7 +149,7 @@ export default class LootTableEntry {
     for (const cond of this.conditions) {
       add = add && await table.applyCondition(cond, { rng: this.getRng(rng), looter, context, result });
       if (!add) {
-        log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
+        if (log.enabled) log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
         break;
       }
     }
@@ -189,7 +189,7 @@ export default class LootTableEntry {
     context: any,
     result: LootTableEntryResults
   }) {
-    log.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
+    if (log.enabled) log.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
     await this.processEntryResults(this.generateBaseResults(this.getRng(rng)), { rng: this.getRng(rng), table, looter, context, result });
     return result;
   }
@@ -284,7 +284,7 @@ export default class LootTableEntry {
     for (const cond of this.conditions) {
       add = add && table.applyConditionSync(cond, { rng: this.getRng(rng), looter, context, result });
       if (!add) {
-        log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
+        if (log.enabled) log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
         break;
       }
     }
@@ -324,7 +324,7 @@ export default class LootTableEntry {
     context: any,
     result: LootTableEntryResults
   }) {
-    log.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
+    if (log.enabled) log.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
     this.processEntryResultsSync(this.generateBaseResults(this.getRng(rng)), { rng: this.getRng(rng), table, looter, context, result });
     return result;
   }
