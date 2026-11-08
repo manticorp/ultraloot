@@ -7,7 +7,7 @@ const unstables = [
   }
 ];
 
-module.exports = {
+export default {
   name: 'JS Test',
   id: 'js_test',
   pools: [
