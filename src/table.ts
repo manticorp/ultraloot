@@ -1,3 +1,4 @@
+import { invokeSync } from './sync';
 import log from './log';
 import { UltraLoot, LootTablePoolEasyDefinition } from './ultraloot';
 import { default as LootTablePool, LootTablePoolDefinition } from './table/pool';
@@ -478,7 +479,7 @@ export default class LootTable {
         console.error(err);
       }
     } else {
-      return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.args });
+      return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: functionDefinition.args ?? functionDefinition.arguments }, 'function');
     }
   }
 
@@ -519,10 +520,6 @@ export default class LootTable {
         return true;
       }
     }
-    const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.args });
-    if (conditionCallResult instanceof Promise) {
-      throw new Error('Cannot return promise from sync condition call');
-    }
-    return conditionCallResult;
+    return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: conditionDefinition.args ?? conditionDefinition.arguments }, 'condition');
   }
 }

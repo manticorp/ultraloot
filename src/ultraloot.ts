@@ -1,3 +1,4 @@
+import { invokeSync } from './sync';
 import log from './log';
 import { default as LootTable, LootTableFunctionSignature, LootTableConditionSignature, LootTableDefinition } from './table';
 import { default as LootTablePool, LootTablePoolDefinition } from './table/pool';
@@ -329,7 +330,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.functionCheck(functionDefinition)) {
-      return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {}) });
+      return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.arguments ?? {}, functionDefinition.args ?? {}) }, 'function');
     }
   }
 
@@ -345,11 +346,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {}) });
-      if (conditionCallResult instanceof Promise) {
-        throw new Error('Cannot return promise from sync condition call');
-      }
-      return conditionCallResult;
+      return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: Object.assign({}, conditionDefinition.arguments ?? {}, conditionDefinition.args ?? {}) }, 'condition');
     }
     return true;
   }
@@ -368,7 +365,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.functionCheck(functionDefinition)) {
-      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {}) });
+      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.arguments ?? {}, functionDefinition.args ?? {}) });
     }
   }
 
@@ -384,7 +381,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {}) });
+      return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.arguments ?? {}, conditionDefinition.args ?? {}) });
     }
     return true;
   }

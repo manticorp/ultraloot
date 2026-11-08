@@ -14,7 +14,13 @@ describe.each(['sync', 'async'])('%s drop correctness', mode => {
     expect(mode === 'sync' ? table.rollSync() : await table.roll()).toHaveLength(0);
   });
 
-
+  test('pool functions observe previously processed results in roll order', async () => {
+    const ul = new UltraLoot(123);
+    ul.registerFunction('ordinal', ({ looted, result }) => { looted.qty = result.length + 1; });
+    const table = ul.createTable({ pools: [{ rolls: 3, functions: [{ function: 'ordinal' }], entries: [{ id: 'one' }] }] });
+    const result = mode === 'sync' ? table.rollSync() : await table.roll();
+    expect(Array.from(result, entry => entry.qty)).toEqual([1, 2, 3]);
+  });
 });
 
 test.each([0, ''])('accepts the valid falsy seed %p', seed => {
@@ -48,9 +54,36 @@ test('result collections keep their methods after native array operations', () =
   expect(new LootTableEntryResults(2)).toHaveLength(2);
 });
 
+test.each(['global', 'table'])('sync rolls reject %s async callbacks before invoking them', scope => {
+  const ul = new UltraLoot(123);
+  let invoked = false;
+  const fn = async () => { invoked = true; };
+  const table = ul.createTable({ pools: [{ entries: [{ id: 'gold', functions: [{ function: 'async' }] }] }] });
+  (scope === 'global' ? ul : table).registerFunction('async', fn);
+  expect(() => table.rollSync()).toThrow(/sync/i);
+  expect(invoked).toBe(false);
+});
+
+test('sync rolls reject thenables returned by ordinary callbacks', () => {
+  const ul = new UltraLoot(123);
+  ul.registerFunction('promise', () => Promise.resolve());
+  const table = ul.createTable({ pools: [{ entries: [{ functions: [{ function: 'promise' }] }] }] });
+  expect(() => table.rollSync()).toThrow(/sync/i);
+});
+
 test('table-specific falsy seeds work without mutating the definition', () => {
   const ul = new UltraLoot(123);
   const definition = Object.freeze({ rng: 0, id: 'root', pools: [] });
   expect(ul.createTable(definition).rng.getSeed()).toBe(0);
 });
 
+test('failed nested rolls release inherited callback state', async () => {
+  const ul = new UltraLoot(123);
+  const child = ul.createTable({ pools: [{ entries: [{ functions: [{ function: 'fail' }] }] }] });
+  const parent = ul.createTable({ pools: [{ entries: [child] }] });
+  parent.registerFunction('fail', () => { throw new Error('failure'); });
+  expect(() => parent.rollSync()).toThrow('failure');
+  expect(child.borrowed.size).toBe(0);
+  await expect(parent.roll()).rejects.toThrow('failure');
+  expect(child.borrowed.size).toBe(0);
+});

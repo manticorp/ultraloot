@@ -287,11 +287,10 @@ export default class LootPool {
       context: any,
       result: LootTableEntryResults
     }) {
-    const results = [];
     for (const entryResult of entryResults) {
-      results.push(this.processEntryResult(entryResult, { rng, table, looter, context, result }));
+      await this.processEntryResult(entryResult, { rng, table, looter, context, result });
     }
-    return Promise.all(results);
+    return entryResults;
   }
 
   processEntryResultsSync (entryResults : LootTableEntryResults,
