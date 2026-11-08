@@ -53,6 +53,8 @@ export type LootTableConditionSignature = ({
 }) => boolean | Promise<boolean>;
 
 export interface TableRollInterface {
+  /** @internal Parent callback scope for a nested roll. */
+  parent?: LootTable,
   looter?: any,
   context?: any,
   result?: LootTableEntryResults,
@@ -94,6 +96,21 @@ export default class LootTable {
    * This is a set, so we don't end up with the same table in there multiple times.
    */
   borrowed: Set<LootTable> = new Set();
+
+  private rollAncestors: LootTable[] = [];
+  private sourceTable?: LootTable;
+
+  private createRollScope (parent?: LootTable): LootTable {
+    const source = this.sourceTable ?? this;
+    const ancestors = parent?.rollAncestors ?? [];
+    if (ancestors.includes(source)) throw new Error('Recursive loot table roll detected');
+    // Only callback lookup state belongs to this invocation. Definitions stay shared.
+    return Object.assign(Object.create(this), {
+      sourceTable: source,
+      rollAncestors: [...ancestors, source],
+      borrowed: new Set([...this.borrowed, ...(parent ? [parent] : [])])
+    });
+  }
 
   /**
    * @param definition The loot table definition
@@ -190,6 +207,7 @@ export default class LootTable {
    * @param rollDefinition
    */
   rollSync ({
+    parent,
     looter,
     context,
     result = new LootTableEntryResults(),
@@ -220,6 +238,7 @@ export default class LootTable {
    * @param rollDefinition
    */
   async roll ({
+    parent,
     looter,
     context,
     result = new LootTableEntryResults(),

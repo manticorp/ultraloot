@@ -209,14 +209,8 @@ export default class LootTableEntry {
   }) {
     // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
     const child: LootTable = this.getItem();
-    const alreadyBorrowed = child.borrowed.has(table);
-    child.borrow(table);
-    try {
-      const entryResults = await child.roll({ looter, context, result: new LootTableEntryResults(), rng, n: this.qty });
-      await this.processEntryResults(entryResults, { rng: this.getRng(rng), table, looter, context, result });
-    } finally {
-      if (!alreadyBorrowed) child.unborrow(table);
-    }
+    const entryResults = await child.roll({ parent: table, looter, context, result: new LootTableEntryResults(), rng, n: this.qty });
+    await this.processEntryResults(entryResults, { rng: this.getRng(rng), table, looter, context, result });
     return result;
   }
 
@@ -344,14 +338,8 @@ export default class LootTableEntry {
   }) {
     // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
     const child: LootTable = this.getItem();
-    const alreadyBorrowed = child.borrowed.has(table);
-    child.borrow(table);
-    try {
-      const entryResults = child.rollSync({ looter, context, result: new LootTableEntryResults(), rng, n: this.qty });
-      this.processEntryResultsSync(entryResults, { rng: this.getRng(rng), table, looter, context, result });
-    } finally {
-      if (!alreadyBorrowed) child.unborrow(table);
-    }
+    const entryResults = child.rollSync({ parent: table, looter, context, result: new LootTableEntryResults(), rng, n: this.qty });
+    this.processEntryResultsSync(entryResults, { rng: this.getRng(rng), table, looter, context, result });
     return result;
   }
 
