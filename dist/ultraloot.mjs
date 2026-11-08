@@ -1,108 +1,64 @@
 import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "node:module";
-/******/ var __webpack_modules__ = ({
-
-/***/ 896:
-/***/ ((module) => {
-
-module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("fs");
-
-/***/ }),
-
-/***/ 928:
-/***/ ((module) => {
-
-module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("path");
-
-/***/ }),
-
-/***/ 16:
-/***/ ((module) => {
-
-module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("url");
-
-/***/ })
-
-/******/ });
-/************************************************************************/
-/******/ // The module cache
-/******/ var __webpack_module_cache__ = {};
-/******/
-/******/ // The require function
-/******/ function __webpack_require__(moduleId) {
-/******/ 	// Check if module is in cache
-/******/ 	var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 	if (cachedModule !== undefined) {
-/******/ 		return cachedModule.exports;
-/******/ 	}
-/******/ 	// Create a new module (and put it into the cache)
-/******/ 	var module = __webpack_module_cache__[moduleId] = {
-/******/ 		// no module.id needed
-/******/ 		// no module.loaded needed
-/******/ 		exports: {}
-/******/ 	};
-/******/
-/******/ 	// Execute the module function
-/******/ 	__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/
-/******/ 	// Return the exports of the module
-/******/ 	return module.exports;
-/******/ }
+const __WEBPACK_EXTERNAL_createRequire_require = __WEBPACK_EXTERNAL_createRequire(import.meta.url);
+/******/ // The require scope
+/******/ const __webpack_require__ = {};
 /******/
 /************************************************************************/
-/******/ /* webpack/runtime/define property getters */
-/******/ (() => {
-/******/ 	// define getter functions for harmony exports
-/******/ 	__webpack_require__.d = (exports, definition) => {
-/******/ 		for(var key in definition) {
-/******/ 			if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 				Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 			}
+/******/ /* webpack/runtime/concatenation wrap */
+/******/ // wrap a concatenated module body as a lazy, memoized accessor; mod is
+/******/ // set before the body runs so re-entrant calls (require cycles) observe
+/******/ // the partial exports like Node.js
+/******/ __webpack_require__.cw = (body) => {
+/******/ 	var mod;
+/******/ 	return () => {
+/******/ 		if (body) {
+/******/ 			var fn = body;
+/******/ 			body = 0;
+/******/ 			mod = { exports: {} };
+/******/ 			fn.call(mod.exports, mod, mod.exports);
 /******/ 		}
+/******/ 		return mod.exports;
 /******/ 	};
-/******/ })();
+/******/ };
+/******/
+/******/ /* webpack/runtime/define property getters */
+/******/ // define getter/value functions for harmony exports
+/******/ __webpack_require__.d = (exports, definition) => {
+/******/ 	for(var key in definition) {
+/******/ 		if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 			Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 		}
+/******/ 	}
+/******/ };
 /******/
 /******/ /* webpack/runtime/hasOwnProperty shorthand */
-/******/ (() => {
-/******/ 	__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ })();
+/******/ __webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop));
 /******/
 /******/ /* webpack/runtime/make namespace object */
-/******/ (() => {
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = (exports) => {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/ })();
+/******/ // define __esModule on exports
+/******/ __webpack_require__.r = (exports) => {
+/******/ 	Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 	Object.defineProperty(exports, '__esModule', { value: true });
+/******/ };
 /******/
 /************************************************************************/
-var __webpack_exports__ = {};
 
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  Bh: () => (/* reexport */ ArrayNumberValidator),
-  tS: () => (/* reexport */ LootTable),
-  dl: () => (/* reexport */ LootTableEntry),
-  uX: () => (/* reexport */ LootTableEntryResult),
-  jQ: () => (/* reexport */ LootTableEntryResults),
-  o3: () => (/* reexport */ LootTableManager),
-  DW: () => (/* reexport */ LootPool),
-  YG: () => (/* reexport */ MaxRecursionsError),
-  Qs: () => (/* reexport */ NonRandomRandomError),
-  X: () => (/* reexport */ NumberValidationError),
-  Ol: () => (/* reexport */ NumberValidator),
-  TU: () => (/* reexport */ PredictableRng),
-  Bc: () => (/* reexport */ RecursiveTableError),
-  Kd: () => (/* reexport */ src_rng),
-  Up: () => (/* reexport */ RngAbstract),
-  tZ: () => (/* reexport */ UltraLoot),
-  Ay: () => (/* binding */ src),
-  zL: () => (/* reexport */ validateTable)
+// MODULE: external "fs"
+var external_fs_namespaceFn = /*#__PURE__*/__webpack_require__.cw((module) => {
+module.exports = __WEBPACK_EXTERNAL_createRequire_require("fs");
 });
 
-// NAMESPACE OBJECT: ./src/default/functions.ts
+// MODULE: external "path"
+var external_path_namespaceFn = /*#__PURE__*/__webpack_require__.cw((module) => {
+module.exports = __WEBPACK_EXTERNAL_createRequire_require("path");
+});
+
+// MODULE: external "url"
+var external_url_namespaceFn = /*#__PURE__*/__webpack_require__.cw((module) => {
+module.exports = __WEBPACK_EXTERNAL_createRequire_require("url");
+});
+
+// NAMESPACE OBJECT (decoupled): ./src/default/functions.ts
 var functions_namespaceObject = {};
 __webpack_require__.r(functions_namespaceObject);
 __webpack_require__.d(functions_namespaceObject, {
@@ -111,258 +67,13 @@ __webpack_require__.d(functions_namespaceObject, {
   setToRandomChoice: () => (setToRandomChoice)
 });
 
-// NAMESPACE OBJECT: ./src/default/conditions.ts
+// NAMESPACE OBJECT (decoupled): ./src/default/conditions.ts
 var conditions_namespaceObject = {};
 __webpack_require__.r(conditions_namespaceObject);
 __webpack_require__.d(conditions_namespaceObject, {
   dependContext: () => (dependContext),
   dependLooter: () => (dependLooter)
 });
-
-;// ./src/validation.ts
-const distributions = new Set(['random', 'integer', 'normal_integer', 'dice', 'normal', 'gaussian', 'boxMuller', 'irwinHall', 'bates', 'batesgaussian', 'bernoulli', 'exponential', 'pareto', 'poisson', 'hypergeometric', 'rademacher', 'binomial', 'betaBinomial', 'beta', 'gamma', 'studentsT', 'wignerSemicircle', 'kumaraswamy', 'hermite', 'chiSquared', 'rayleigh', 'logNormal', 'cauchy', 'laplace', 'logistic']);
-const record = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
-/** Validate structure and references without rolling, invoking callbacks, or consuming RNG. */
-function validateTable(definition, options = {}) {
-    const errors = [];
-    const active = new Set();
-    let visited = 0;
-    const issue = (path, code, message) => { errors.push({ path, code, message }); };
-    const chancy = (value, path) => {
-        if (value === undefined)
-            return;
-        if (typeof value === 'number') {
-            if (!Number.isFinite(value) || value < 0)
-                issue(path, 'number.range', 'Expected a finite, non-negative number');
-        }
-        else if (typeof value === 'string') {
-            if (!/^\s*(?:\d+(?:\.\d+)?|\d*\s*[dD]\s*\d+\s*(?:[+-]\s*\d+(?:\.\d+)?)?)\s*$/.test(value))
-                issue(path, 'chancy.dice', 'Expected a number or dice expression');
-        }
-        else if (Array.isArray(value)) {
-            if (!value.length)
-                issue(path, 'chancy.empty', 'A choice list must not be empty');
-            value.forEach((entry, index) => {
-                if (typeof entry !== 'number' || !Number.isFinite(entry) || entry < 0)
-                    issue(`${path}[${index}]`, 'number.range', 'Expected a finite, non-negative number');
-            });
-        }
-        else if (record(value)) {
-            if (value.type !== undefined && !distributions.has(value.type))
-                issue(`${path}.type`, 'chancy.type', 'Unknown distribution type');
-            for (const key of ['min', 'max']) {
-                if (value[key] !== undefined && (typeof value[key] !== 'number' || !Number.isFinite(value[key]) || value[key] < 0))
-                    issue(`${path}.${key}`, 'number.range', 'Expected a finite, non-negative bound');
-            }
-            if (typeof value.min === 'number' && typeof value.max === 'number' && value.min > value.max)
-                issue(path, 'chancy.bounds', 'Minimum must not exceed maximum');
-            if (value.type === 'dice' && value.dice === undefined)
-                issue(`${path}.dice`, 'chancy.dice', 'A dice distribution requires dice');
-        }
-        else {
-            issue(path, 'chancy.type', 'Expected a number, dice expression, numeric choices, or distribution');
-        }
-    };
-    const callbacks = (value, path, registry) => {
-        if (value === undefined)
-            return;
-        if (!Array.isArray(value)) {
-            issue(path, 'callbacks.type', 'Expected an array of callbacks');
-            return;
-        }
-        value.forEach((entry, index) => {
-            const at = `${path}[${index}].function`;
-            if (!record(entry) || typeof entry.function !== 'string' || !entry.function) {
-                issue(at, 'callback.name', 'Expected a callback function name');
-            }
-            else if (registry) {
-                const fn = Object.prototype.hasOwnProperty.call(registry, entry.function) ? registry[entry.function] : undefined;
-                if (typeof fn !== 'function')
-                    issue(at, 'callback.missing', `Callback ${entry.function} is not registered`);
-                else if (options.mode === 'sync' && Object.prototype.toString.call(fn) === '[object AsyncFunction]')
-                    issue(at, 'callback.async', 'Async callbacks require an async roll');
-            }
-        });
-    };
-    const table = (value, path, inherited, depth) => {
-        if (!record(value)) {
-            issue(path, 'table.type', 'Expected a table object');
-            return;
-        }
-        if (active.has(value)) {
-            issue(path, 'table.cycle', 'Recursive table reference');
-            return;
-        }
-        if (depth > 128 || ++visited > 10000) {
-            issue(path, 'table.limit', 'Table graph exceeds validation limits');
-            return;
-        }
-        active.add(value);
-        const local = {
-            ...inherited,
-            functions: record(value.functions) ? { ...inherited.functions, ...value.functions } : inherited.functions,
-            conditions: record(value.conditions) ? { ...inherited.conditions, ...value.conditions } : inherited.conditions
-        };
-        if (value.pools !== undefined && !Array.isArray(value.pools))
-            issue(`${path}.pools`, 'pools.type', 'Expected an array of pools');
-        else {
-            (value.pools ?? []).forEach((pool, index) => {
-                const at = `${path}.pools[${index}]`;
-                if (!record(pool)) {
-                    issue(at, 'pool.type', 'Expected a pool object');
-                    return;
-                }
-                chancy(pool.rolls, `${at}.rolls`);
-                chancy(pool.nulls, `${at}.nulls`);
-                callbacks(pool.functions, `${at}.functions`, local.functions);
-                callbacks(pool.conditions, `${at}.conditions`, local.conditions);
-                if (pool.entries !== undefined && !Array.isArray(pool.entries))
-                    issue(`${at}.entries`, 'entries.type', 'Expected an array of entries');
-                else {
-                    (pool.entries ?? []).forEach((entry, position) => {
-                        const here = `${at}.entries[${position}]`;
-                        if (!record(entry)) {
-                            issue(here, 'entry.type', 'Expected an entry object');
-                            return;
-                        }
-                        if (Array.isArray(entry.pools)) {
-                            table(entry, here, local, depth + 1);
-                            return;
-                        }
-                        const effective = { ...(record(pool.template) ? pool.template : {}), ...entry };
-                        chancy(effective.weight, `${here}.weight`);
-                        chancy(effective.qty, `${here}.qty`);
-                        for (const key of ['unique', 'stackable']) {
-                            if (effective[key] !== undefined && typeof effective[key] !== 'boolean')
-                                issue(`${here}.${key}`, 'boolean.type', 'Expected a boolean');
-                        }
-                        callbacks(effective.functions, `${here}.functions`, local.functions);
-                        callbacks(effective.conditions, `${here}.conditions`, local.conditions);
-                        if (effective.type === 'table') {
-                            if (record(effective.item))
-                                table(effective.item, `${here}.item`, local, depth + 1);
-                            else if (typeof effective.item !== 'string')
-                                issue(`${here}.item`, 'reference.type', 'Expected a table name');
-                            else if (options.tables && Object.prototype.hasOwnProperty.call(options.tables, effective.item))
-                                table(options.tables[effective.item], `${here}.item(${effective.item})`, local, depth + 1);
-                            else if (!options.allowExternalReferences)
-                                issue(`${here}.item`, 'reference.missing', `Table ${effective.item} was not supplied`);
-                        }
-                        else if (record(effective.item) && typeof effective.item.rollSync === 'function')
-                            table(effective.item, `${here}.item`, local, depth + 1);
-                    });
-                }
-            });
-        }
-        active.delete(value);
-    };
-    table(definition, '$', options, 0);
-    return { valid: errors.length === 0, errors };
-}
-
-;// ./src/sync.ts
-/** Invoke a synchronous extension without silently accepting asynchronous work. */
-function invokeSync(fn, args, label) {
-    if (Object.prototype.toString.call(fn) === '[object AsyncFunction]') {
-        throw new Error(`Cannot use an async ${label} in a sync roll`);
-    }
-    const value = fn(args);
-    if (value != null && typeof value.then === 'function') {
-        // Observe rejected promises before throwing our synchronous contract error.
-        Promise.resolve(value).catch(() => { });
-        throw new Error(`Cannot return a promise from a sync ${label} call`);
-    }
-    return value;
-}
-
-;// ./src/log.ts
-let debug = false;
-if (true) {
-    debug = !true;
-}
-/**
- * Logging functions that disappears in production,
- * and still give accurate line numbers in dev.
- */
-/**
- * Trigger verbose logs
- */
-// debug = false;
-const verbose = true;
-const ultraverbose = true;
-const voidFunc = (...args) => { };
-let r = {
-    enabled: debug,
-    debug: voidFunc,
-    v: voidFunc,
-    vv: voidFunc,
-    vi: voidFunc,
-    ve: voidFunc,
-    vg: voidFunc,
-    vge: voidFunc,
-    vgc: voidFunc,
-    vt: voidFunc,
-    d: voidFunc,
-    g: voidFunc,
-    ge: voidFunc,
-    gc: voidFunc,
-    t: voidFunc,
-    te: voidFunc,
-    time: voidFunc,
-    timeEnd: voidFunc,
-    group: voidFunc,
-    groupEnd: voidFunc,
-    groupCollapsed: voidFunc,
-    log: voidFunc,
-    error: voidFunc,
-    table: voidFunc,
-    info: voidFunc,
-};
-if (debug) {
-    r = {
-        ...r,
-        ...{
-            debug: function (fn) {
-                if (debug) {
-                    fn();
-                }
-            },
-            d: console.log,
-            g: console.group,
-            ge: console.groupEnd,
-            gc: console.groupCollapsed,
-            group: console.group,
-            groupEnd: console.groupEnd,
-            groupCollapsed: console.groupCollapsed,
-            log: console.log,
-            error: console.error,
-            table: console.table,
-            info: console.info
-        }
-    };
-    if (verbose) {
-        r = {
-            ...r,
-            ...{
-                v: console.log,
-                vi: console.info,
-                ve: console.error,
-                vg: console.group,
-                vge: console.groupEnd,
-                vgc: console.groupCollapsed,
-                vt: console.table,
-                t: console.time,
-                te: console.timeEnd,
-                time: console.time,
-                timeEnd: console.timeEnd,
-            }
-        };
-    }
-    if (ultraverbose) {
-        r.vv = console.log;
-    }
-}
-/* harmony default export */ const log = (r);
 
 ;// ./src/rng/sampling.ts
 // Generated from GameRNG src/sampling.ts; update with npm run sync:rng -- --source ../gamerng
@@ -880,6 +591,8 @@ class Pool {
      * @throws {@link PoolNotEnoughElementsError} if the pool does not have enough elements to draw n values
      */
     drawMany(n) {
+        if (!Number.isSafeInteger(n))
+            throw new Error('Draw count must be a safe integer');
         if (n < 0) {
             throw new Error('Cannot draw < 0 elements from pool');
         }
@@ -904,10 +617,12 @@ class Dequeue {
     elements = [];
     constructor(length = 1) {
         if (Array.isArray(length)) {
-            this.elements = length;
+            this.elements = [...length];
             this.size = this.elements.length;
         }
         else {
+            if (!Number.isSafeInteger(length) || length < 1)
+                throw new Error('Queue size must be a positive safe integer');
             this.size = length;
         }
     }
@@ -917,7 +632,7 @@ class Dequeue {
     push(el) {
         this.elements.push(el);
         if (this.elements.length > this.size) {
-            return this.pop();
+            return this.elements.shift();
         }
     }
     pop() {
@@ -963,7 +678,7 @@ class NonRandomDetector extends Dequeue {
         this.detectLoop();
         this.elements.push(el);
         if (this.elements.length > this.size) {
-            return this.pop();
+            return this.elements.shift();
         }
     }
     detectLoop(msg) {
@@ -1101,6 +816,8 @@ class RngAbstract {
     }
     setSeed(seed) {
         if (typeof seed !== 'undefined' && seed !== null) {
+            if (typeof seed === 'number' && !Number.isFinite(seed))
+                throw new Error('Seed must be finite');
             if (typeof seed === 'string') {
                 seed = this.convertStringToNumber(seed);
             }
@@ -1118,7 +835,7 @@ class RngAbstract {
     serialize() {
         return {
             seed: this.#seed,
-            samplingVersion: SAMPLING_VERSION,
+            samplingVersion: (/* inlined export .SAMPLING_VERSION */2),
         };
     }
     /**
@@ -1126,14 +843,14 @@ class RngAbstract {
      * @group Serialization
      */
     static unserialize(serialized) {
-        const { constructor } = Object.getPrototypeOf(this);
-        const rng = new constructor(serialized.seed);
+        const { constructor: Constructor } = Object.getPrototypeOf(this);
+        const rng = new Constructor(serialized.seed);
         rng.setSeed(serialized.seed);
         return rng;
     }
     predictable(seed) {
-        const { constructor } = Object.getPrototypeOf(this);
-        const newSelf = new constructor(seed ?? PREDICTABLE_SEED);
+        const { constructor: Constructor } = Object.getPrototypeOf(this);
+        const newSelf = new Constructor(seed ?? PREDICTABLE_SEED);
         return newSelf;
     }
     /**
@@ -2156,7 +1873,7 @@ class Rng extends RngAbstract {
         return {
             mask: this.getMask(),
             seed: this.getSeed(),
-            samplingVersion: SAMPLING_VERSION,
+            samplingVersion: (/* inlined export .SAMPLING_VERSION */2),
             m_z: this.getMz(),
         };
     }
@@ -2210,6 +1927,331 @@ class Rng extends RngAbstract {
     }
 }
 /* harmony default export */ const src_rng = (Rng);
+
+;// ./src/simulation.ts
+
+function accumulator(options) {
+    const iterations = options.iterations ?? 10000;
+    if (!Number.isSafeInteger(iterations) || iterations < 1 || iterations > 1000000)
+        throw new Error('Iterations must be an integer from 1 to 1000000');
+    const rng = options.rng ?? new src_rng(options.seed ?? 123);
+    const items = new Map();
+    let empty = 0;
+    return {
+        iterations,
+        rng,
+        record(results) {
+            const quantities = new Map();
+            for (const entry of results) {
+                if (!Number.isFinite(entry.qty))
+                    throw new Error(`Cannot simulate non-finite quantity for ${entry.id ?? entry.name ?? 'unidentified item'}`);
+                if (entry.qty <= 0)
+                    continue;
+                const key = entry.id === undefined ? `name:${entry.name ?? '<unidentified>'}` : `${typeof entry.id}:${entry.id}`;
+                if (!items.has(key))
+                    items.set(key, { id: entry.id, name: entry.name, hits: 0, total: 0 });
+                quantities.set(key, (quantities.get(key) ?? 0) + entry.qty);
+            }
+            if (quantities.size === 0)
+                empty++;
+            for (const [key, quantity] of quantities) {
+                const item = items.get(key);
+                item.hits++;
+                item.total += quantity;
+            }
+        },
+        result() {
+            return {
+                iterations,
+                emptyRolls: empty,
+                noDropProbability: empty / iterations,
+                items: Array.from(items, ([key, item]) => {
+                    const probability = item.hits / iterations;
+                    const z2 = 1.959963984540054 ** 2;
+                    const centre = (probability + z2 / (2 * iterations)) / (1 + z2 / iterations);
+                    const radius = Math.sqrt(z2 * probability * (1 - probability) / iterations + z2 ** 2 / (4 * iterations ** 2)) / (1 + z2 / iterations);
+                    return {
+                        key,
+                        id: item.id,
+                        name: item.name,
+                        hits: item.hits,
+                        probability,
+                        probability95: [Math.max(0, centre - radius), Math.min(1, centre + radius)],
+                        meanQuantity: item.total / iterations,
+                        totalQuantity: item.total,
+                        rollsFor95Percent: probability === 1 ? 1 : Math.ceil(Math.log(0.05) / Math.log1p(-probability))
+                    };
+                }).sort((a, b) => b.probability - a.probability)
+            };
+        }
+    };
+}
+/** Execute actual modifiers/conditions. IDs identify items; names group entries without IDs. */
+function simulateTableSync(table, options = {}) {
+    const state = accumulator(options);
+    for (let i = 0; i < state.iterations; i++) {
+        if (options.signal?.aborted)
+            throw new Error('Simulation aborted');
+        state.record(table.rollSync({ rng: state.rng, looter: options.looter, context: options.context }));
+    }
+    return state.result();
+}
+async function simulateTable(table, options = {}) {
+    const state = accumulator(options);
+    for (let i = 0; i < state.iterations; i++) {
+        if (options.signal?.aborted)
+            throw new Error('Simulation aborted');
+        state.record(await table.roll({ rng: state.rng, looter: options.looter, context: options.context }));
+        if (i % 1000 === 999)
+            await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    return state.result();
+}
+
+;// ./src/validation.ts
+const distributions = new Set(['random', 'integer', 'normal_integer', 'dice', 'normal', 'gaussian', 'boxMuller', 'irwinHall', 'bates', 'batesgaussian', 'bernoulli', 'exponential', 'pareto', 'poisson', 'hypergeometric', 'rademacher', 'binomial', 'betaBinomial', 'beta', 'gamma', 'studentsT', 'wignerSemicircle', 'kumaraswamy', 'hermite', 'chiSquared', 'rayleigh', 'logNormal', 'cauchy', 'laplace', 'logistic']);
+const record = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+/** Validate structure and references without rolling, invoking callbacks, or consuming RNG. */
+function validateTable(definition, options = {}) {
+    const errors = [];
+    const active = new Set();
+    let visited = 0;
+    const issue = (path, code, message) => { errors.push({ path, code, message }); };
+    const chancy = (value, path) => {
+        if (value === undefined)
+            return;
+        if (typeof value === 'number') {
+            if (!Number.isFinite(value) || value < 0)
+                issue(path, 'number.range', 'Expected a finite, non-negative number');
+        }
+        else if (typeof value === 'string') {
+            if (!/^\s*(?:\d+(?:\.\d+)?|\d*\s*[dD]\s*\d+\s*(?:[+-]\s*\d+(?:\.\d+)?)?)\s*$/.test(value))
+                issue(path, 'chancy.dice', 'Expected a number or dice expression');
+        }
+        else if (Array.isArray(value)) {
+            if (!value.length)
+                issue(path, 'chancy.empty', 'A choice list must not be empty');
+            value.forEach((entry, index) => {
+                if (typeof entry !== 'number' || !Number.isFinite(entry) || entry < 0)
+                    issue(`${path}[${index}]`, 'number.range', 'Expected a finite, non-negative number');
+            });
+        }
+        else if (record(value)) {
+            if (value.type !== undefined && !distributions.has(value.type))
+                issue(`${path}.type`, 'chancy.type', 'Unknown distribution type');
+            for (const key of ['min', 'max']) {
+                if (value[key] !== undefined && (typeof value[key] !== 'number' || !Number.isFinite(value[key]) || value[key] < 0))
+                    issue(`${path}.${key}`, 'number.range', 'Expected a finite, non-negative bound');
+            }
+            if (typeof value.min === 'number' && typeof value.max === 'number' && value.min > value.max)
+                issue(path, 'chancy.bounds', 'Minimum must not exceed maximum');
+            if (value.type === 'dice' && value.dice === undefined)
+                issue(`${path}.dice`, 'chancy.dice', 'A dice distribution requires dice');
+        }
+        else {
+            issue(path, 'chancy.type', 'Expected a number, dice expression, numeric choices, or distribution');
+        }
+    };
+    const callbacks = (value, path, registry) => {
+        if (value === undefined)
+            return;
+        if (!Array.isArray(value)) {
+            issue(path, 'callbacks.type', 'Expected an array of callbacks');
+            return;
+        }
+        value.forEach((entry, index) => {
+            const at = `${path}[${index}].function`;
+            if (!record(entry) || typeof entry.function !== 'string' || !entry.function) {
+                issue(at, 'callback.name', 'Expected a callback function name');
+            }
+            else if (registry) {
+                const fn = Object.prototype.hasOwnProperty.call(registry, entry.function) ? registry[entry.function] : undefined;
+                if (typeof fn !== 'function')
+                    issue(at, 'callback.missing', `Callback ${entry.function} is not registered`);
+                else if (options.mode === 'sync' && Object.prototype.toString.call(fn) === '[object AsyncFunction]')
+                    issue(at, 'callback.async', 'Async callbacks require an async roll');
+            }
+        });
+    };
+    const table = (value, path, inherited, depth) => {
+        if (!record(value)) {
+            issue(path, 'table.type', 'Expected a table object');
+            return;
+        }
+        if (active.has(value)) {
+            issue(path, 'table.cycle', 'Recursive table reference');
+            return;
+        }
+        if (depth > 128 || ++visited > 10000) {
+            issue(path, 'table.limit', 'Table graph exceeds validation limits');
+            return;
+        }
+        active.add(value);
+        const local = {
+            ...inherited,
+            functions: record(value.functions) ? { ...inherited.functions, ...value.functions } : inherited.functions,
+            conditions: record(value.conditions) ? { ...inherited.conditions, ...value.conditions } : inherited.conditions
+        };
+        if (value.pools !== undefined && !Array.isArray(value.pools))
+            issue(`${path}.pools`, 'pools.type', 'Expected an array of pools');
+        else {
+            (value.pools ?? []).forEach((pool, index) => {
+                const at = `${path}.pools[${index}]`;
+                if (!record(pool)) {
+                    issue(at, 'pool.type', 'Expected a pool object');
+                    return;
+                }
+                chancy(pool.rolls, `${at}.rolls`);
+                chancy(pool.nulls, `${at}.nulls`);
+                callbacks(pool.functions, `${at}.functions`, local.functions);
+                callbacks(pool.conditions, `${at}.conditions`, local.conditions);
+                if (pool.entries !== undefined && !Array.isArray(pool.entries))
+                    issue(`${at}.entries`, 'entries.type', 'Expected an array of entries');
+                else {
+                    (pool.entries ?? []).forEach((entry, position) => {
+                        const here = `${at}.entries[${position}]`;
+                        if (!record(entry)) {
+                            issue(here, 'entry.type', 'Expected an entry object');
+                            return;
+                        }
+                        if (Array.isArray(entry.pools)) {
+                            table(entry, here, local, depth + 1);
+                            return;
+                        }
+                        const effective = { ...(record(pool.template) ? pool.template : {}), ...entry };
+                        chancy(effective.weight, `${here}.weight`);
+                        chancy(effective.qty, `${here}.qty`);
+                        for (const key of ['unique', 'stackable']) {
+                            if (effective[key] !== undefined && typeof effective[key] !== 'boolean')
+                                issue(`${here}.${key}`, 'boolean.type', 'Expected a boolean');
+                        }
+                        callbacks(effective.functions, `${here}.functions`, local.functions);
+                        callbacks(effective.conditions, `${here}.conditions`, local.conditions);
+                        if (effective.type === 'table') {
+                            if (record(effective.item))
+                                table(effective.item, `${here}.item`, local, depth + 1);
+                            else if (typeof effective.item !== 'string')
+                                issue(`${here}.item`, 'reference.type', 'Expected a table name');
+                            else if (options.tables && Object.prototype.hasOwnProperty.call(options.tables, effective.item))
+                                table(options.tables[effective.item], `${here}.item(${effective.item})`, local, depth + 1);
+                            else if (!options.allowExternalReferences)
+                                issue(`${here}.item`, 'reference.missing', `Table ${effective.item} was not supplied`);
+                        }
+                        else if (record(effective.item) && typeof effective.item.rollSync === 'function')
+                            table(effective.item, `${here}.item`, local, depth + 1);
+                    });
+                }
+            });
+        }
+        active.delete(value);
+    };
+    table(definition, '$', options, 0);
+    return { valid: errors.length === 0, errors };
+}
+
+;// ./src/sync.ts
+/** Invoke a synchronous extension without silently accepting asynchronous work. */
+function invokeSync(fn, args, label) {
+    if (Object.prototype.toString.call(fn) === '[object AsyncFunction]') {
+        throw new Error(`Cannot use an async ${label} in a sync roll`);
+    }
+    const value = fn(args);
+    if (value != null && typeof value.then === 'function') {
+        // Observe rejected promises before throwing our synchronous contract error.
+        Promise.resolve(value).catch(() => { });
+        throw new Error(`Cannot return a promise from a sync ${label} call`);
+    }
+    return value;
+}
+
+;// ./src/log.ts
+let debug = false;
+if (true) {
+    debug = !true;
+}
+/**
+ * Logging functions that disappears in production,
+ * and still give accurate line numbers in dev.
+ */
+/**
+ * Trigger verbose logs
+ */
+// debug = false;
+const verbose = true;
+const ultraverbose = true;
+const voidFunc = (...args) => { };
+let r = {
+    enabled: debug,
+    debug: voidFunc,
+    v: voidFunc,
+    vv: voidFunc,
+    vi: voidFunc,
+    ve: voidFunc,
+    vg: voidFunc,
+    vge: voidFunc,
+    vgc: voidFunc,
+    vt: voidFunc,
+    d: voidFunc,
+    g: voidFunc,
+    ge: voidFunc,
+    gc: voidFunc,
+    t: voidFunc,
+    te: voidFunc,
+    time: voidFunc,
+    timeEnd: voidFunc,
+    group: voidFunc,
+    groupEnd: voidFunc,
+    groupCollapsed: voidFunc,
+    log: voidFunc,
+    error: voidFunc,
+    table: voidFunc,
+    info: voidFunc,
+};
+if (debug) {
+    r = {
+        ...r,
+        ...{
+            debug: function (fn) {
+                if (debug) {
+                    fn();
+                }
+            },
+            d: console.log,
+            g: console.group,
+            ge: console.groupEnd,
+            gc: console.groupCollapsed,
+            group: console.group,
+            groupEnd: console.groupEnd,
+            groupCollapsed: console.groupCollapsed,
+            log: console.log,
+            error: console.error,
+            table: console.table,
+            info: console.info
+        }
+    };
+    if (true) {
+        r = {
+            ...r,
+            ...{
+                v: console.log,
+                vi: console.info,
+                ve: console.error,
+                vg: console.group,
+                vge: console.groupEnd,
+                vgc: console.groupCollapsed,
+                vt: console.table,
+                t: console.time,
+                te: console.timeEnd,
+                time: console.time,
+                timeEnd: console.timeEnd,
+            }
+        };
+    }
+    if (true) {
+        r.vv = console.log;
+    }
+}
+/* harmony default export */ const log = (r);
 
 ;// ./src/table/pool/entry/result.ts
 class LootTableEntryResult {
@@ -2385,7 +2427,10 @@ class LootTableEntry {
     async applyConditions({ rng, table, looter, context, result = new LootTableEntryResults(), }) {
         let add = true;
         for (const cond of this.conditions) {
-            add = add && await table.applyCondition(cond, { rng: this.getRng(rng), looter, context, result });
+            const passed = await table.applyCondition(cond, { rng: this.getRng(rng), looter, context, result });
+            if (table.tracing)
+                table.emitTrace({ type: 'condition', entryId: this.id, name: cond.function, passed });
+            add = add && passed;
             if (!add) {
                 if (log.enabled)
                     log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
@@ -2411,16 +2456,8 @@ class LootTableEntry {
     async rollTable({ rng, table, looter, context, result = new LootTableEntryResults() }) {
         // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
         const child = this.getItem();
-        const alreadyBorrowed = child.borrowed.has(table);
-        child.borrow(table);
-        try {
-            const entryResults = await child.roll({ looter, context, result: new LootTableEntryResults(), rng, n: this.qty });
-            await this.processEntryResults(entryResults, { rng: this.getRng(rng), table, looter, context, result });
-        }
-        finally {
-            if (!alreadyBorrowed)
-                child.unborrow(table);
-        }
+        const entryResults = await child.roll({ parent: table, looter, context, result: new LootTableEntryResults(), rng, n: this.qty });
+        await this.processEntryResults(entryResults, { rng: this.getRng(rng), table, looter, context, result });
         return result;
     }
     async processEntryResults(entryResults, { rng, table, looter, context, result = new LootTableEntryResults() }) {
@@ -2432,6 +2469,8 @@ class LootTableEntry {
     async processEntryResult(entryResult, { rng, table, looter, context, result = new LootTableEntryResults() }) {
         for (const fn of this.functions) {
             await table.applyFunction(fn, { rng: this.getRng(rng), looted: entryResult, looter, context, result });
+            if (table.tracing)
+                table.emitTrace({ type: 'modifier', entryId: this.id, name: fn.function, quantity: entryResult.qty });
         }
         if (entryResult.qty > 0) {
             if (entryResult.stackable) {
@@ -2447,7 +2486,10 @@ class LootTableEntry {
     applyConditionsSync({ rng, table, looter, context, result = new LootTableEntryResults(), }) {
         let add = true;
         for (const cond of this.conditions) {
-            add = add && table.applyConditionSync(cond, { rng: this.getRng(rng), looter, context, result });
+            const passed = table.applyConditionSync(cond, { rng: this.getRng(rng), looter, context, result });
+            if (table.tracing)
+                table.emitTrace({ type: 'condition', entryId: this.id, name: cond.function, passed });
+            add = add && passed;
             if (!add) {
                 if (log.enabled)
                     log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
@@ -2473,16 +2515,8 @@ class LootTableEntry {
     rollTableSync({ rng, table, looter, context, result = new LootTableEntryResults() }) {
         // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
         const child = this.getItem();
-        const alreadyBorrowed = child.borrowed.has(table);
-        child.borrow(table);
-        try {
-            const entryResults = child.rollSync({ looter, context, result: new LootTableEntryResults(), rng, n: this.qty });
-            this.processEntryResultsSync(entryResults, { rng: this.getRng(rng), table, looter, context, result });
-        }
-        finally {
-            if (!alreadyBorrowed)
-                child.unborrow(table);
-        }
+        const entryResults = child.rollSync({ parent: table, looter, context, result: new LootTableEntryResults(), rng, n: this.qty });
+        this.processEntryResultsSync(entryResults, { rng: this.getRng(rng), table, looter, context, result });
         return result;
     }
     processEntryResultsSync(entryResults, { rng, table, looter, context, result = new LootTableEntryResults() }) {
@@ -2494,6 +2528,8 @@ class LootTableEntry {
     processEntryResultSync(looted, { rng, table, looter, context, result = new LootTableEntryResults() }) {
         for (const fn of this.functions) {
             table.applyFunctionSync(fn, { rng: this.getRng(rng), looted, looter, context, result });
+            if (table.tracing)
+                table.emitTrace({ type: 'modifier', entryId: this.id, name: fn.function, quantity: looted.qty });
         }
         if (looted.qty > 0) {
             if (looted.stackable || looted.qty === 1) {
@@ -2606,12 +2642,16 @@ class LootPool {
         }
         if (log.enabled)
             log.vv(`Pool ${this.description} | Choices:`, choices);
+        if (table.tracing)
+            table.emitTrace({ type: 'pool', poolId: this.id, rolls: numRolls, weights: { ...choices } });
         const overallIntermediate = new LootTableEntryResults();
         let add = true;
         for (const cond of this.conditions) {
             const conditionResult = await table.applyCondition(cond, { rng, looter, context, result });
             if (log.enabled)
                 log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+            if (table.tracing)
+                table.emitTrace({ type: 'condition', poolId: this.id, name: cond.function, passed: conditionResult });
             add = add && conditionResult;
             if (!add) {
                 if (log.enabled)
@@ -2625,6 +2665,8 @@ class LootPool {
             for (let i = 0; i < numRolls; i++) {
                 // This is our choice from the choices table
                 const choice = rng.weightedChoice(choices);
+                if (table.tracing)
+                    table.emitTrace({ type: 'choice', poolId: this.id, entryId: choice == null || choice === LootPool.NULLKEY ? null : this.entries[choice]?.id, choice: choice === LootPool.NULLKEY ? null : choice });
                 // Then, unless it is the null key, we extract it!
                 if (choice === null)
                     break;
@@ -2686,12 +2728,16 @@ class LootPool {
         });
         if (log.enabled)
             log.vv(`Pool ${this.description} | Choices:`, choices);
+        if (table.tracing)
+            table.emitTrace({ type: 'pool', poolId: this.id, rolls: numRolls, weights: { ...choices } });
         const overallIntermediate = new LootTableEntryResults();
         let add = true;
         for (const cond of this.conditions) {
             const conditionResult = table.applyConditionSync(cond, { rng, looter, context, result });
             if (log.enabled)
                 log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+            if (table.tracing)
+                table.emitTrace({ type: 'condition', poolId: this.id, name: cond.function, passed: conditionResult });
             add = add && conditionResult;
             if (!add) {
                 if (log.enabled)
@@ -2705,6 +2751,8 @@ class LootPool {
             for (let i = 0; i < numRolls; i++) {
                 // This is our choice from the choices table
                 const choice = rng.weightedChoice(choices);
+                if (table.tracing)
+                    table.emitTrace({ type: 'choice', poolId: this.id, entryId: choice == null || choice === LootPool.NULLKEY ? null : this.entries[choice]?.id, choice: choice === LootPool.NULLKEY ? null : choice });
                 // Then, unless it is the null key, we extract it!
                 if (choice === null)
                     break;
@@ -2757,6 +2805,8 @@ class LootPool {
     async processEntryResult(looted, { rng, table, looter, context, result = new LootTableEntryResults() }) {
         for (const fn of this.functions) {
             await table.applyFunction(fn, { rng, looted, looter, context, result });
+            if (table.tracing)
+                table.emitTrace({ type: 'modifier', poolId: this.id, name: fn.function, entryId: looted.id, quantity: looted.qty });
         }
         if (looted.qty > 0) {
             if (looted.stackable) {
@@ -2772,6 +2822,8 @@ class LootPool {
     processEntryResultSync(looted, { rng, table, looter, context, result = new LootTableEntryResults() }) {
         for (const fn of this.functions) {
             table.applyFunctionSync(fn, { rng, looted, looter, context, result });
+            if (table.tracing)
+                table.emitTrace({ type: 'modifier', poolId: this.id, name: fn.function, entryId: looted.id, quantity: looted.qty });
         }
         if (looted.qty > 0) {
             if (looted.stackable) {
@@ -2814,6 +2866,28 @@ class LootTable {
      * This is a set, so we don't end up with the same table in there multiple times.
      */
     borrowed = new Set();
+    rollAncestors = [];
+    sourceTable;
+    traceSink;
+    createRollScope(parent, trace) {
+        const source = this.sourceTable ?? this;
+        const ancestors = parent?.rollAncestors ?? [];
+        if (ancestors.includes(source))
+            throw new Error('Recursive loot table roll detected');
+        // Only callback lookup state belongs to this invocation. Definitions stay shared.
+        return Object.assign(Object.create(this), {
+            sourceTable: source,
+            traceSink: trace ?? parent?.traceSink,
+            rollAncestors: [...ancestors, source],
+            borrowed: new Set([...this.borrowed, ...(parent ? [parent] : [])])
+        });
+    }
+    get tracing() { return this.traceSink !== undefined; }
+    /** @internal Emit an observation without drawing random numbers. */
+    emitTrace(event) {
+        if (this.traceSink)
+            this.traceSink({ ...event, tableId: this.id });
+    }
     /**
      * @param definition The loot table definition
      */
@@ -2890,10 +2964,13 @@ class LootTable {
      *
      * @param rollDefinition
      */
-    rollSync({ looter, context, result = new LootTableEntryResults(), rng, n = 1 } = {}) {
-        const [rngToUse, rolls] = this.rollBasics({ rng, n, looter, context });
+    rollSync({ parent, trace, looter, context, result = new LootTableEntryResults(), rng, n = 1 } = {}) {
+        const scope = this.createRollScope(parent, trace);
+        const [rngToUse, rolls] = scope.rollBasics({ rng, n, looter, context });
+        if (scope.tracing)
+            scope.emitTrace({ type: 'table:start', state: scope.tracing ? { ...rngToUse.serialize() } : undefined });
         for (const pool of this.pools) {
-            this.rollPoolSync({
+            scope.rollPoolSync({
                 n: rolls,
                 pool,
                 rng: rngToUse,
@@ -2902,6 +2979,8 @@ class LootTable {
                 result
             });
         }
+        if (scope.tracing)
+            scope.emitTrace({ type: 'table:end', quantity: result.reduce((sum, entry) => sum + entry.qty, 0), state: scope.tracing ? { ...rngToUse.serialize() } : undefined });
         if (log.enabled)
             log.ge();
         return result;
@@ -2914,10 +2993,13 @@ class LootTable {
      *
      * @param rollDefinition
      */
-    async roll({ looter, context, result = new LootTableEntryResults(), rng, n = 1 } = {}) {
-        const [rngToUse, rolls] = this.rollBasics({ rng, n, looter, context });
+    async roll({ parent, trace, looter, context, result = new LootTableEntryResults(), rng, n = 1 } = {}) {
+        const scope = this.createRollScope(parent, trace);
+        const [rngToUse, rolls] = scope.rollBasics({ rng, n, looter, context });
+        if (scope.tracing)
+            scope.emitTrace({ type: 'table:start', state: scope.tracing ? { ...rngToUse.serialize() } : undefined });
         for (const pool of this.pools) {
-            await this.rollPool({
+            await scope.rollPool({
                 n: rolls,
                 pool,
                 rng: rngToUse,
@@ -2926,6 +3008,8 @@ class LootTable {
                 result
             });
         }
+        if (scope.tracing)
+            scope.emitTrace({ type: 'table:end', quantity: result.reduce((sum, entry) => sum + entry.qty, 0), state: scope.tracing ? { ...rngToUse.serialize() } : undefined });
         if (log.enabled)
             log.ge();
         return result;
@@ -3392,20 +3476,21 @@ const dependLooter = ({ looter, args }) => {
 
 
 
+
 const CURRENT_VERSION = package_namespaceObject.rE;
 
 
 // Set fs properly if we are in node environment
-let fs;
+let ultraloot_fs;
 let nodePath;
 let nodeUrl;
 let isNode = false;
 if (typeof process === 'object') {
     if (typeof process.versions === 'object') {
         if (typeof process.versions.node !== 'undefined') {
-            fs = __webpack_require__(896);
-            nodePath = __webpack_require__(928);
-            nodeUrl = __webpack_require__(16);
+            ultraloot_fs = (external_fs_namespaceFn());
+            nodePath = (external_path_namespaceFn());
+            nodeUrl = (external_url_namespaceFn());
             isNode = true;
         }
     }
@@ -3649,6 +3734,12 @@ class UltraLoot {
      *   }
      * ]);
      */
+    simulate(table, options = {}) {
+        return simulateTable(table, options);
+    }
+    simulateSync(table, options = {}) {
+        return simulateTableSync(table, options);
+    }
     validateTable(definition, options = {}) {
         return validateTable(definition, { functions: this.functions, conditions: this.conditions, ...options });
     }
@@ -3971,8 +4062,8 @@ class UltraLoot {
         const destination = this.location(filename ?? String(table.filename ?? table.id), path, defaultExtension);
         if (/^https?:/i.test(destination))
             throw new Error('saveTable requires a filesystem destination');
-        await fs.promises.mkdir(nodePath.dirname(destination), { recursive: true });
-        await fs.promises.writeFile(destination, this.toJson(table, { includeRng }), { encoding: 'utf8', flag: overwrite ? 'w' : 'wx' });
+        await ultraloot_fs.promises.mkdir(nodePath.dirname(destination), { recursive: true });
+        await ultraloot_fs.promises.writeFile(destination, this.toJson(table, { includeRng }), { encoding: 'utf8', flag: overwrite ? 'w' : 'wx' });
         return destination;
     }
     location(filename, path = '', extension = '.json') {
@@ -4027,7 +4118,7 @@ class UltraLoot {
             const loaded = await import(/* webpackIgnore: true */ nodeUrl.pathToFileURL(location).href);
             return loaded.default ?? loaded;
         }
-        const text = await fs.promises.readFile(location, 'utf8');
+        const text = await ultraloot_fs.promises.readFile(location, 'utf8');
         try {
             return JSON.parse(text);
         }
@@ -4038,10 +4129,10 @@ class UltraLoot {
     async loadTableInternal(filename, options, state) {
         let location = this.location(filename, options.path, options.defaultExtension);
         // Preserve extension discovery for local module tables.
-        if (isNode && !/^https?:/i.test(location) && !this.getExtension(filename) && !fs.existsSync(location)) {
+        if (isNode && !/^https?:/i.test(location) && !this.getExtension(filename) && !ultraloot_fs.existsSync(location)) {
             const candidates = [this.location(filename, options.path, ''), ...['.json', '.js', '.cjs', '.mjs'].map(extension => this.finishWithExtension(location, extension))];
             for (const candidate of candidates) {
-                if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
+                if (ultraloot_fs.existsSync(candidate) && ultraloot_fs.statSync(candidate).isFile()) {
                     location = candidate;
                     break;
                 }
@@ -4158,7 +4249,58 @@ class UltraLoot {
         return result;
     }
 }
-/* harmony default export */ const ultraloot = ((/* unused pure expression or super */ null && (UltraLoot)));
+/* harmony default export */ const ultraloot = (UltraLoot);
+
+;// ./src/typed.ts
+
+/** An opt-in typed boundary over the existing extensible loot engine. */
+class TypedLootTable {
+    raw;
+    mode;
+    constructor(raw, mode) {
+        this.raw = raw;
+        this.mode = mode;
+    }
+    registerFunction(name, fn) {
+        this.raw.registerFunction(name, value => fn({ ...value, args: value.args }));
+        return this;
+    }
+    registerCondition(name, fn) {
+        this.raw.registerCondition(name, value => fn({ ...value, args: value.args }));
+        return this;
+    }
+    roll(options) {
+        return this.raw.roll(options);
+    }
+    rollSync(options) {
+        return this.raw.rollSync(options);
+    }
+}
+class TypedUltraLoot {
+    mode;
+    raw;
+    constructor(mode, seed) {
+        this.mode = mode;
+        this.raw = new ultraloot(seed);
+    }
+    registerFunction(name, fn) {
+        this.raw.registerFunction(name, value => fn({ ...value, args: value.args }));
+        return this;
+    }
+    registerCondition(name, fn) {
+        this.raw.registerCondition(name, value => fn({ ...value, args: value.args }));
+        return this;
+    }
+    createTable(definition) {
+        return new TypedLootTable(this.raw.createTable(definition), this.mode);
+    }
+}
+function createSyncLoot(seed) {
+    return new TypedUltraLoot('sync', seed);
+}
+function createAsyncLoot(seed) {
+    return new TypedUltraLoot('async', seed);
+}
 
 ;// ./src/rng/predictable.ts
 
@@ -4231,13 +4373,15 @@ class PredictableRng extends RngAbstract {
         }
     }
     get results() {
-        return this._results;
+        return [...this._results];
     }
     set results(results) {
         if (results.length <= 0) {
             throw new Error('Must provide some fake results.');
         }
         for (const r of results) {
+            if (!Number.isFinite(r))
+                throw new Error('Predictable results must be finite');
             if (r < 0) {
                 throw new Error(`Results must be greater than or equal to 0, got '${r}'`);
             }
@@ -4245,10 +4389,12 @@ class PredictableRng extends RngAbstract {
                 throw new Error(`Results must be less than 1, got '${r}'`);
             }
         }
-        this._results = results;
+        this._results = [...results];
         this.reset();
     }
     evenSpread(n) {
+        if (!Number.isSafeInteger(n) || n < 1)
+            throw new Error('Spread size must be a positive safe integer');
         const p = [];
         for (let i = 0; i < (n - 1); i++) {
             p.push(i / (n - 1));
@@ -4273,7 +4419,7 @@ class PredictableRng extends RngAbstract {
         return this;
     }
     _next() {
-        return this.results[this.counter++ % this.results.length];
+        return this._results[this.counter++ % this._results.length];
     }
 }
 
@@ -4346,27 +4492,12 @@ class LootTableManager {
 
 
 
+
+
+
 // This provides an easy way of using ultraloot in browser.
 // It can be instantiated by new UltraLoot() and submodules can be
 // instantiated by new UltraLoot.LootTable() and whatnot.
 /* harmony default export */ const src = (UltraLoot);
 
-var __webpack_exports__ArrayNumberValidator = __webpack_exports__.Bh;
-var __webpack_exports__LootTable = __webpack_exports__.tS;
-var __webpack_exports__LootTableEntry = __webpack_exports__.dl;
-var __webpack_exports__LootTableEntryResult = __webpack_exports__.uX;
-var __webpack_exports__LootTableEntryResults = __webpack_exports__.jQ;
-var __webpack_exports__LootTableManager = __webpack_exports__.o3;
-var __webpack_exports__LootTablePool = __webpack_exports__.DW;
-var __webpack_exports__MaxRecursionsError = __webpack_exports__.YG;
-var __webpack_exports__NonRandomRandomError = __webpack_exports__.Qs;
-var __webpack_exports__NumberValidationError = __webpack_exports__.X;
-var __webpack_exports__NumberValidator = __webpack_exports__.Ol;
-var __webpack_exports__PredictableRng = __webpack_exports__.TU;
-var __webpack_exports__RecursiveTableError = __webpack_exports__.Bc;
-var __webpack_exports__Rng = __webpack_exports__.Kd;
-var __webpack_exports__RngAbstract = __webpack_exports__.Up;
-var __webpack_exports__UltraLoot = __webpack_exports__.tZ;
-var __webpack_exports__default = __webpack_exports__.Ay;
-var __webpack_exports__validateTable = __webpack_exports__.zL;
-export { __webpack_exports__ArrayNumberValidator as ArrayNumberValidator, __webpack_exports__LootTable as LootTable, __webpack_exports__LootTableEntry as LootTableEntry, __webpack_exports__LootTableEntryResult as LootTableEntryResult, __webpack_exports__LootTableEntryResults as LootTableEntryResults, __webpack_exports__LootTableManager as LootTableManager, __webpack_exports__LootTablePool as LootTablePool, __webpack_exports__MaxRecursionsError as MaxRecursionsError, __webpack_exports__NonRandomRandomError as NonRandomRandomError, __webpack_exports__NumberValidationError as NumberValidationError, __webpack_exports__NumberValidator as NumberValidator, __webpack_exports__PredictableRng as PredictableRng, __webpack_exports__RecursiveTableError as RecursiveTableError, __webpack_exports__Rng as Rng, __webpack_exports__RngAbstract as RngAbstract, __webpack_exports__UltraLoot as UltraLoot, __webpack_exports__default as default, __webpack_exports__validateTable as validateTable };
+export { ArrayNumberValidator, LootTable, LootTableEntry, LootTableEntryResult, LootTableEntryResults, LootTableManager, LootPool as LootTablePool, MaxRecursionsError, NonRandomRandomError, NumberValidationError, NumberValidator, PredictableRng, RecursiveTableError, src_rng as Rng, RngAbstract, TypedLootTable, TypedUltraLoot, UltraLoot, createAsyncLoot, createSyncLoot, src as default, simulateTable, simulateTableSync, validateTable };

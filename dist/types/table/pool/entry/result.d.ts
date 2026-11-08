@@ -1,14 +1,14 @@
-export default class LootTableEntryResult {
+export default class LootTableEntryResult<Item = any> {
     id?: number | string;
     stackable: boolean;
     name?: string;
-    item?: any;
+    item?: Item;
     qty: number;
     constructor({ id, stackable, name, item, qty }?: {
         id?: number | string;
         stackable?: boolean;
         name?: string;
-        item?: any;
+        item?: Item;
         qty?: number;
     });
     get description(): string;

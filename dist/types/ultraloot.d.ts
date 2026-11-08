@@ -1,3 +1,4 @@
+import { SimulationOptions, SimulationResult } from './simulation';
 import { TableValidationOptions, TableValidationResult } from './validation';
 import { default as LootTable, LootTableFunctionSignature, LootTableConditionSignature, LootTableDefinition } from './table';
 import { default as LootTablePool, LootTablePoolDefinition } from './table/pool';
@@ -197,6 +198,8 @@ export declare class UltraLoot {
      *   }
      * ]);
      */
+    simulate(table: LootTable, options?: SimulationOptions): Promise<SimulationResult>;
+    simulateSync(table: LootTable, options?: SimulationOptions): SimulationResult;
     validateTable(definition: unknown, options?: TableValidationOptions): TableValidationResult;
     createTable(def: LootTable | LootTableDefinition | LootTableEasyDefinition | LootTableJsonDefinition): LootTable;
     /**

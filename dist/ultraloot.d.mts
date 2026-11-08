@@ -1,21 +1,51 @@
-interface TableValidationIssue {
-    path: string;
-    code: string;
-    message: string;
+interface RollTraceEvent {
+    type: 'table:start' | 'table:end' | 'pool' | 'choice' | 'condition' | 'modifier';
+    tableId: string | number;
+    poolId?: string;
+    entryId?: string | number | null;
+    choice?: string | number | null;
+    name?: string;
+    passed?: boolean;
+    quantity?: number;
+    rolls?: number;
+    weights?: Record<string, number>;
+    state?: unknown;
 }
-interface TableValidationOptions {
-    mode?: 'sync' | 'async';
-    tables?: Record<string, unknown>;
-    allowExternalReferences?: boolean;
-    functions?: Record<string, unknown>;
-    conditions?: Record<string, unknown>;
+type RollTraceSink = (event: RollTraceEvent) => void;
+
+/**
+ * Allows for randomly drawing from a pool of entries without replacement
+ * @category Pool
+ */
+declare class Pool<EntryType> {
+    #private;
+    rng: RngInterface;
+    constructor(entries?: EntryType[], rng?: RngInterface);
+    private copyArray;
+    setEntries(entries: EntryType[]): this;
+    getEntries(): EntryType[];
+    set entries(entries: EntryType[]);
+    get entries(): EntryType[];
+    get length(): number;
+    setRng(rng: RngInterface): this;
+    getRng(): RngInterface;
+    add(entry: EntryType): void;
+    empty(): this;
+    isEmpty(): boolean;
+    /**
+     * Draw an element from the pool, without replacement.
+     *
+     * @throws {@link PoolEmptyError} if the pool is empty
+     */
+    draw(): EntryType;
+    /**
+     * Draw n elements from the pool, without replacement.
+     *
+     * @throws {@link PoolEmptyError} if the pool is empty
+     * @throws {@link PoolNotEnoughElementsError} if the pool does not have enough elements to draw n values
+     */
+    drawMany(n: number): EntryType[];
 }
-interface TableValidationResult {
-    valid: boolean;
-    errors: TableValidationIssue[];
-}
-/** Validate structure and references without rolling, invoking callbacks, or consuming RNG. */
-declare function validateTable(definition: unknown, options?: TableValidationOptions): TableValidationResult;
 
 interface DiceInterface {
     n: number;
@@ -1624,40 +1654,6 @@ interface RngConstructor {
     diceMax(n: string | DiceInterface | number, d?: number, plus?: number): number;
 }
 
-/**
- * Allows for randomly drawing from a pool of entries without replacement
- * @category Pool
- */
-declare class Pool<EntryType> {
-    #private;
-    rng: RngInterface;
-    constructor(entries?: EntryType[], rng?: RngInterface);
-    private copyArray;
-    setEntries(entries: EntryType[]): this;
-    getEntries(): EntryType[];
-    set entries(entries: EntryType[]);
-    get entries(): EntryType[];
-    get length(): number;
-    setRng(rng: RngInterface): this;
-    getRng(): RngInterface;
-    add(entry: EntryType): void;
-    empty(): this;
-    isEmpty(): boolean;
-    /**
-     * Draw an element from the pool, without replacement.
-     *
-     * @throws {@link PoolEmptyError} if the pool is empty
-     */
-    draw(): EntryType;
-    /**
-     * Draw n elements from the pool, without replacement.
-     *
-     * @throws {@link PoolEmptyError} if the pool is empty
-     * @throws {@link PoolNotEnoughElementsError} if the pool does not have enough elements to draw n values
-     */
-    drawMany(n: number): EntryType[];
-}
-
 interface SerializedRng {
     samplingVersion?: number;
     mask: number;
@@ -1951,17 +1947,17 @@ declare class Rng extends RngAbstract implements RngInterface, RngDistributionsI
     protected _next(): number;
 }
 
-declare class LootTableEntryResult {
+declare class LootTableEntryResult<Item = any> {
     id?: number | string;
     stackable: boolean;
     name?: string;
-    item?: any;
+    item?: Item;
     qty: number;
     constructor({ id, stackable, name, item, qty }?: {
         id?: number | string;
         stackable?: boolean;
         name?: string;
-        item?: any;
+        item?: Item;
         qty?: number;
     });
     get description(): string;
@@ -1971,12 +1967,12 @@ declare class LootTableEntryResult {
     addQty(n: number): void;
 }
 
-declare class LootTableEntryResults extends Array<LootTableEntryResult> {
-    constructor(documents?: Array<LootTableEntryResult> | number);
-    merge(other: LootTableEntryResults): this;
-    merged(other: LootTableEntryResults): LootTableEntryResults;
-    protected entrySignature(entry: LootTableEntryResult): string;
-    collapsed(): LootTableEntryResults;
+declare class LootTableEntryResults<Item = any> extends Array<LootTableEntryResult<Item>> {
+    constructor(documents?: Array<LootTableEntryResult<Item>> | number);
+    merge(other: LootTableEntryResults<Item>): this;
+    merged(other: LootTableEntryResults<Item>): LootTableEntryResults<Item>;
+    protected entrySignature(entry: LootTableEntryResult<Item>): string;
+    collapsed(): LootTableEntryResults<Item>;
 }
 
 type LootTableEntryDefinition = {
@@ -2030,7 +2026,7 @@ declare class LootTableEntry {
         item: any;
         qty: number;
     };
-    generateBaseResults(rng: RngInterface): LootTableEntryResults;
+    generateBaseResults(rng: RngInterface): LootTableEntryResults<any>;
     applyConditions({ rng, table, looter, context, result, }: {
         rng?: RngInterface;
         table: LootTable;
@@ -2051,21 +2047,21 @@ declare class LootTableEntry {
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): Promise<LootTableEntryResults>;
+    }): Promise<LootTableEntryResults<any>>;
     rollTable({ rng, table, looter, context, result }: {
         rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): Promise<LootTableEntryResults>;
+    }): Promise<LootTableEntryResults<any>>;
     processEntryResults(entryResults: LootTableEntryResults, { rng, table, looter, context, result }: {
         rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): Promise<LootTableEntryResults>;
+    }): Promise<LootTableEntryResults<any>>;
     processEntryResult(entryResult: LootTableEntryResult, { rng, table, looter, context, result }: {
         rng?: RngInterface;
         table: LootTable;
@@ -2093,21 +2089,21 @@ declare class LootTableEntry {
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): LootTableEntryResults;
+    }): LootTableEntryResults<any>;
     rollTableSync({ rng, table, looter, context, result }: {
         rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): LootTableEntryResults;
+    }): LootTableEntryResults<any>;
     processEntryResultsSync(entryResults: LootTableEntryResults, { rng, table, looter, context, result }: {
         rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): LootTableEntryResults;
+    }): LootTableEntryResults<any>;
     processEntryResultSync(looted: LootTableEntryResult, { rng, table, looter, context, result }: {
         rng?: RngInterface;
         table: LootTable;
@@ -2145,35 +2141,35 @@ declare class LootPool {
     describe(): string;
     createEntry(def: LootTableEntryDefinition): LootTableEntry;
     addEntry(entry: LootTableEntry | LootTable | LootTableEntryDefinition, def?: Omit<LootTableEntryDefinition, 'id'>): this;
-    getEntries(): (LootTableEntry | LootTable)[];
+    getEntries(): (LootTable | LootTableEntry)[];
     roll({ rng, table, looter, context, result }: {
         rng: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): Promise<LootTableEntryResults>;
+    }): Promise<LootTableEntryResults<any>>;
     rollSync({ rng, table, looter, context, result }: {
         rng: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): LootTableEntryResults;
+    }): LootTableEntryResults<any>;
     processEntryResults(entryResults: LootTableEntryResults, { rng, table, looter, context, result }: {
         rng: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): Promise<LootTableEntryResults>;
+    }): Promise<LootTableEntryResults<any>>;
     processEntryResultsSync(entryResults: LootTableEntryResults, { rng, table, looter, context, result }: {
         rng: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): LootTableEntryResults;
+    }): LootTableEntryResults<any>;
     processEntryResult(looted: LootTableEntryResult, { rng, table, looter, context, result }: {
         rng: RngInterface;
         table: LootTable;
@@ -2218,6 +2214,9 @@ type LootTableConditionSignature = ({ rng, looted, looter, context, result, args
     args?: any;
 }) => boolean | Promise<boolean>;
 interface TableRollInterface {
+    /** @internal Parent callback scope for a nested roll. */
+    parent?: LootTable;
+    trace?: RollTraceSink;
     looter?: any;
     context?: any;
     result?: LootTableEntryResults;
@@ -2254,6 +2253,13 @@ declare class LootTable {
      * This is a set, so we don't end up with the same table in there multiple times.
      */
     borrowed: Set<LootTable>;
+    private rollAncestors;
+    private sourceTable?;
+    private traceSink?;
+    private createRollScope;
+    get tracing(): boolean;
+    /** @internal Emit an observation without drawing random numbers. */
+    emitTrace(event: Omit<RollTraceEvent, 'tableId'>): void;
     /**
      * @param definition The loot table definition
      */
@@ -2285,7 +2291,7 @@ declare class LootTable {
      *
      * @param rollDefinition
      */
-    rollSync({ looter, context, result, rng, n }?: TableRollInterface): LootTableEntryResults;
+    rollSync({ parent, trace, looter, context, result, rng, n }?: TableRollInterface): LootTableEntryResults;
     /**
      * Roll for loot on this table
      *
@@ -2294,7 +2300,7 @@ declare class LootTable {
      *
      * @param rollDefinition
      */
-    roll({ looter, context, result, rng, n }?: TableRollInterface): Promise<LootTableEntryResults>;
+    roll({ parent, trace, looter, context, result, rng, n }?: TableRollInterface): Promise<LootTableEntryResults>;
     /**
      * Roll for loot on a pool
      *
@@ -2365,6 +2371,55 @@ declare class LootTable {
         result: LootTableEntryResults;
     }): boolean;
 }
+
+interface SimulationOptions {
+    iterations?: number;
+    seed?: Seed;
+    rng?: RngInterface;
+    looter?: any;
+    context?: any;
+    signal?: AbortSignal;
+}
+interface ItemStatistics {
+    key: string;
+    id?: string | number;
+    name?: string;
+    hits: number;
+    probability: number;
+    probability95: [number, number];
+    meanQuantity: number;
+    totalQuantity: number;
+    /** Geometric estimate assuming independent rolls with a stationary probability. */
+    rollsFor95Percent: number;
+}
+interface SimulationResult {
+    iterations: number;
+    emptyRolls: number;
+    noDropProbability: number;
+    items: ItemStatistics[];
+}
+/** Execute actual modifiers/conditions. IDs identify items; names group entries without IDs. */
+declare function simulateTableSync(table: LootTable, options?: SimulationOptions): SimulationResult;
+declare function simulateTable(table: LootTable, options?: SimulationOptions): Promise<SimulationResult>;
+
+interface TableValidationIssue {
+    path: string;
+    code: string;
+    message: string;
+}
+interface TableValidationOptions {
+    mode?: 'sync' | 'async';
+    tables?: Record<string, unknown>;
+    allowExternalReferences?: boolean;
+    functions?: Record<string, unknown>;
+    conditions?: Record<string, unknown>;
+}
+interface TableValidationResult {
+    valid: boolean;
+    errors: TableValidationIssue[];
+}
+/** Validate structure and references without rolling, invoking callbacks, or consuming RNG. */
+declare function validateTable(definition: unknown, options?: TableValidationOptions): TableValidationResult;
 
 declare const VERSION_KEY = "__version__";
 /**
@@ -2558,6 +2613,8 @@ declare class UltraLoot {
      *   }
      * ]);
      */
+    simulate(table: LootTable, options?: SimulationOptions): Promise<SimulationResult>;
+    simulateSync(table: LootTable, options?: SimulationOptions): SimulationResult;
     validateTable(definition: unknown, options?: TableValidationOptions): TableValidationResult;
     createTable(def: LootTable | LootTableDefinition | LootTableEasyDefinition | LootTableJsonDefinition): LootTable;
     /**
@@ -2695,6 +2752,75 @@ declare class UltraLoot {
      */
     unserialize(tables: SerializedTables): Record<string, LootTable>;
 }
+
+type CallbackRegistry = Record<string, any>;
+type ExecutionMode = 'sync' | 'async';
+type TypedCallbackDefinition<Args extends CallbackRegistry> = {
+    [Name in keyof Args & string]: {
+        function: Name;
+    } & (undefined extends Args[Name] ? {
+        args?: Args[Name];
+    } : {
+        args: Args[Name];
+    });
+}[keyof Args & string];
+interface TypedCallbackContext<Item, Looter, Context, Args> {
+    rng: RngInterface;
+    looted: LootTableEntryResult<Item>;
+    looter: Looter;
+    context: Context;
+    result: LootTableEntryResults<Item>;
+    args: Args;
+}
+type TypedModifier<Item, Looter, Context, Args, Execution extends ExecutionMode> = (value: TypedCallbackContext<Item, Looter, Context, Args>) => Execution extends 'sync' ? undefined : void | Promise<void>;
+type TypedCondition<Item, Looter, Context, Args, Execution extends ExecutionMode> = (value: Omit<TypedCallbackContext<Item, Looter, Context, Args>, 'looted'>) => Execution extends 'sync' ? boolean : boolean | Promise<boolean>;
+type TypedEntry<Item, Functions extends CallbackRegistry, Conditions extends CallbackRegistry> = Omit<LootTableEntryDefinition, 'item' | 'functions' | 'conditions'> & {
+    item?: Item;
+    functions?: Array<TypedCallbackDefinition<Functions>>;
+    conditions?: Array<TypedCallbackDefinition<Conditions>>;
+};
+interface TypedTableDefinition<Item, Functions extends CallbackRegistry, Conditions extends CallbackRegistry> {
+    id?: string;
+    name?: string;
+    rng?: Seed | RngInterface;
+    pools?: Array<{
+        id?: string;
+        name?: string;
+        rolls?: ChancyNumeric;
+        nulls?: ChancyNumeric;
+        template?: Partial<TypedEntry<Item, Functions, Conditions>>;
+        entries?: Array<TypedEntry<Item, Functions, Conditions>>;
+        functions?: Array<TypedCallbackDefinition<Functions>>;
+        conditions?: Array<TypedCallbackDefinition<Conditions>>;
+    }>;
+}
+interface TypedRollOptions<Looter, Context> {
+    trace?: RollTraceSink;
+    looter: Looter;
+    context: Context;
+    rng?: RngInterface;
+    n?: ChancyNumeric;
+}
+/** An opt-in typed boundary over the existing extensible loot engine. */
+declare class TypedLootTable<Item, Looter, Context, Functions extends CallbackRegistry, Conditions extends CallbackRegistry, Execution extends ExecutionMode> {
+    readonly raw: LootTable;
+    readonly mode: Execution;
+    constructor(raw: LootTable, mode: Execution);
+    registerFunction<Name extends keyof Functions & string>(name: Name, fn: TypedModifier<Item, Looter, Context, Functions[Name], Execution>): this;
+    registerCondition<Name extends keyof Conditions & string>(name: Name, fn: TypedCondition<Item, Looter, Context, Conditions[Name], Execution>): this;
+    roll(options: TypedRollOptions<Looter, Context>): Promise<LootTableEntryResults<Item>>;
+    rollSync(this: TypedLootTable<Item, Looter, Context, Functions, Conditions, 'sync'>, options: TypedRollOptions<Looter, Context>): LootTableEntryResults<Item>;
+}
+declare class TypedUltraLoot<Item, Looter, Context, Functions extends CallbackRegistry = CallbackRegistry, Conditions extends CallbackRegistry = CallbackRegistry, Execution extends ExecutionMode = 'sync'> {
+    readonly mode: Execution;
+    readonly raw: UltraLoot;
+    constructor(mode: Execution, seed?: Seed | RngInterface);
+    registerFunction<Name extends keyof Functions & string>(name: Name, fn: TypedModifier<Item, Looter, Context, Functions[Name], Execution>): this;
+    registerCondition<Name extends keyof Conditions & string>(name: Name, fn: TypedCondition<Item, Looter, Context, Conditions[Name], Execution>): this;
+    createTable(definition: TypedTableDefinition<Item, Functions, Conditions>): TypedLootTable<Item, Looter, Context, Functions, Conditions, Execution>;
+}
+declare function createSyncLoot<Item, Looter, Context, Functions extends CallbackRegistry = CallbackRegistry, Conditions extends CallbackRegistry = CallbackRegistry>(seed?: Seed | RngInterface): TypedUltraLoot<Item, Looter, Context, Functions, Conditions, 'sync'>;
+declare function createAsyncLoot<Item, Looter, Context, Functions extends CallbackRegistry = CallbackRegistry, Conditions extends CallbackRegistry = CallbackRegistry>(seed?: Seed | RngInterface): TypedUltraLoot<Item, Looter, Context, Functions, Conditions, 'async'>;
 
 /**
  * @category Number Validator
@@ -2992,4 +3118,5 @@ declare class LootTableManager {
     getTable(name: string): LootTable;
 }
 
-export { ArrayNumberValidator, type Chancy, type ChancyInterface, type ChancyNumeric, type ConditionDefinition, type DiceInterface, type DiceReturnInterface, type Distribution, type FunctionDefinition, type LoadSaveArgs, LootTable, type LootTableConditionSignature, type LootTableDefinition, type LootTableEasyDefinition, type LootTableEntries, LootTableEntry, type LootTableEntryDefinition, type LootTableEntryJsonDefinition, LootTableEntryResult, LootTableEntryResults, type LootTableFunctionSignature, type LootTableJsonDefinition, LootTableManager, LootPool as LootTablePool, type LootTablePoolDefinition, type LootTablePoolEasyDefinition, type LootTablePoolJsonDefinition, MaxRecursionsError, NonRandomRandomError, NumberValidationError, NumberValidator, PredictableRng, type Randfunc, RecursiveTableError, Rng, RngAbstract, type RngConstructor, type RngDistributionsInterface, type RngInterface, type SaveTableArgs, type Seed, type SerializedRng, type SerializedTables, type TablePoolRollInterface, type TableRollInterface, type TableValidationIssue, type TableValidationOptions, type TableValidationResult, UltraLoot, UltraLoot as default, validateTable };
+export { ArrayNumberValidator, LootTable, LootTableEntry, LootTableEntryResult, LootTableEntryResults, LootTableManager, LootPool as LootTablePool, MaxRecursionsError, NonRandomRandomError, NumberValidationError, NumberValidator, PredictableRng, RecursiveTableError, Rng, RngAbstract, TypedLootTable, TypedUltraLoot, UltraLoot, createAsyncLoot, createSyncLoot, UltraLoot as default, simulateTable, simulateTableSync, validateTable };
+export type { CallbackRegistry, Chancy, ChancyInterface, ChancyNumeric, ConditionDefinition, DiceInterface, DiceReturnInterface, Distribution, ExecutionMode, FunctionDefinition, ItemStatistics, LoadSaveArgs, LootTableConditionSignature, LootTableDefinition, LootTableEasyDefinition, LootTableEntries, LootTableEntryDefinition, LootTableEntryJsonDefinition, LootTableFunctionSignature, LootTableJsonDefinition, LootTablePoolDefinition, LootTablePoolEasyDefinition, LootTablePoolJsonDefinition, Randfunc, RngConstructor, RngDistributionsInterface, RngInterface, RollTraceEvent, RollTraceSink, SaveTableArgs, Seed, SerializedRng, SerializedTables, SimulationOptions, SimulationResult, TablePoolRollInterface, TableRollInterface, TableValidationIssue, TableValidationOptions, TableValidationResult, TypedCallbackContext, TypedCallbackDefinition, TypedCondition, TypedEntry, TypedModifier, TypedRollOptions, TypedTableDefinition };
