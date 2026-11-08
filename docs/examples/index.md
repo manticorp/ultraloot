@@ -2,6 +2,7 @@
 
 Welcome to the advanced documentation for UltraLoot
 
+* [Balance lab](playground/index.html) — edit tables, simulate drops, and trace rolls
 * [Simple HTML Example](html/simple_html_example.html)
 * [Lootbox Game](html/lootbox_game.html) made with [Pixi.js](https://pixijs.com/)
 
