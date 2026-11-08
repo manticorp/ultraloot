@@ -137,12 +137,14 @@ export default class LootPool {
     }
     if (log.enabled) log.vv(`Pool ${this.description} | Choices:`, choices);
 
+    if (table.tracing) table.emitTrace({ type: 'pool', poolId: this.id, rolls: numRolls, weights: { ...choices } });
     const overallIntermediate = new LootTableEntryResults();
 
     let add = true;
     for (const cond of this.conditions) {
       const conditionResult = await table.applyCondition(cond, { rng, looter, context, result });
       if (log.enabled) log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+      if (table.tracing) table.emitTrace({ type: 'condition', poolId: this.id, name: cond.function, passed: conditionResult });
       add = add && conditionResult;
       if (!add) {
         if (log.enabled) log.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
@@ -155,6 +157,7 @@ export default class LootPool {
       for (let i = 0; i < numRolls; i++) {
         // This is our choice from the choices table
         const choice = rng.weightedChoice(choices);
+        if (table.tracing) table.emitTrace({ type: 'choice', poolId: this.id, entryId: choice == null || choice === LootPool.NULLKEY ? null : this.entries[choice]?.id, choice: choice === LootPool.NULLKEY ? null : choice });
 
         // Then, unless it is the null key, we extract it!
         if (choice === null) break;
@@ -224,12 +227,14 @@ export default class LootPool {
     });
     if (log.enabled) log.vv(`Pool ${this.description} | Choices:`, choices);
 
+    if (table.tracing) table.emitTrace({ type: 'pool', poolId: this.id, rolls: numRolls, weights: { ...choices } });
     const overallIntermediate = new LootTableEntryResults();
 
     let add = true;
     for (const cond of this.conditions) {
       const conditionResult = table.applyConditionSync(cond, { rng, looter, context, result });
       if (log.enabled) log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+      if (table.tracing) table.emitTrace({ type: 'condition', poolId: this.id, name: cond.function, passed: conditionResult });
       add = add && conditionResult;
       if (!add) {
         if (log.enabled) log.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
@@ -242,6 +247,7 @@ export default class LootPool {
       for (let i = 0; i < numRolls; i++) {
         // This is our choice from the choices table
         const choice = rng.weightedChoice(choices);
+        if (table.tracing) table.emitTrace({ type: 'choice', poolId: this.id, entryId: choice == null || choice === LootPool.NULLKEY ? null : this.entries[choice]?.id, choice: choice === LootPool.NULLKEY ? null : choice });
 
         // Then, unless it is the null key, we extract it!
         if (choice === null) break;
@@ -328,6 +334,7 @@ export default class LootPool {
   }) {
     for (const fn of this.functions) {
       await table.applyFunction(fn, { rng, looted, looter, context, result });
+      if (table.tracing) table.emitTrace({ type: 'modifier', poolId: this.id, name: fn.function, entryId: looted.id, quantity: looted.qty });
     }
     if (looted.qty > 0) {
       if (looted.stackable) {
@@ -355,6 +362,7 @@ export default class LootPool {
   }) {
     for (const fn of this.functions) {
       table.applyFunctionSync(fn, { rng, looted, looter, context, result });
+      if (table.tracing) table.emitTrace({ type: 'modifier', poolId: this.id, name: fn.function, entryId: looted.id, quantity: looted.qty });
     }
     if (looted.qty > 0) {
       if (looted.stackable) {

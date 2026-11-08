@@ -147,7 +147,9 @@ export default class LootTableEntry {
   }) {
     let add = true;
     for (const cond of this.conditions) {
-      add = add && await table.applyCondition(cond, { rng: this.getRng(rng), looter, context, result });
+      const passed = await table.applyCondition(cond, { rng: this.getRng(rng), looter, context, result });
+      if (table.tracing) table.emitTrace({ type: 'condition', entryId: this.id, name: cond.function, passed });
+      add = add && passed;
       if (!add) {
         if (log.enabled) log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
         break;
@@ -249,6 +251,7 @@ export default class LootTableEntry {
   }) {
     for (const fn of this.functions) {
       await table.applyFunction(fn, { rng: this.getRng(rng), looted: entryResult, looter, context, result });
+      if (table.tracing) table.emitTrace({ type: 'modifier', entryId: this.id, name: fn.function, quantity: entryResult.qty });
     }
     if (entryResult.qty > 0) {
       if (entryResult.stackable) {
@@ -276,7 +279,9 @@ export default class LootTableEntry {
   }) {
     let add = true;
     for (const cond of this.conditions) {
-      add = add && table.applyConditionSync(cond, { rng: this.getRng(rng), looter, context, result });
+      const passed = table.applyConditionSync(cond, { rng: this.getRng(rng), looter, context, result });
+      if (table.tracing) table.emitTrace({ type: 'condition', entryId: this.id, name: cond.function, passed });
+      add = add && passed;
       if (!add) {
         if (log.enabled) log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
         break;
@@ -378,6 +383,7 @@ export default class LootTableEntry {
   }) {
     for (const fn of this.functions) {
       table.applyFunctionSync(fn, { rng: this.getRng(rng), looted, looter, context, result });
+      if (table.tracing) table.emitTrace({ type: 'modifier', entryId: this.id, name: fn.function, quantity: looted.qty });
     }
     if (looted.qty > 0) {
       if (looted.stackable || looted.qty === 1) {

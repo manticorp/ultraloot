@@ -1,3 +1,4 @@
+import { simulateTable, simulateTableSync, SimulationOptions, SimulationResult } from './simulation';
 import { validateTable as validateDefinition, TableValidationOptions, TableValidationResult } from './validation';
 import { invokeSync } from './sync';
 import log from './log';
@@ -414,6 +415,14 @@ export class UltraLoot {
    *   }
    * ]);
    */
+  simulate (table: LootTable, options: SimulationOptions = {}): Promise<SimulationResult> {
+    return simulateTable(table, options);
+  }
+
+  simulateSync (table: LootTable, options: SimulationOptions = {}): SimulationResult {
+    return simulateTableSync(table, options);
+  }
+
   public validateTable (definition: unknown, options: TableValidationOptions = {}): TableValidationResult {
     return validateDefinition(definition, { functions: this.functions, conditions: this.conditions, ...options });
   }
