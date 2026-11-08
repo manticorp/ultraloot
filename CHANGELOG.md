@@ -1,5 +1,7 @@
 # Unreleased
 
+- Added Forest Bandit, a playable woodland scavenging example with original pixel artwork, seeded saves, neighbour requests, upgrades, and live UltraLoot traces.
+
 - Isolated callback inheritance per invocation so concurrent parents can share a child table safely.
 - Added optional RNG-preserving roll traces, seeded simulation APIs, probability/quantity statistics, and a cancellable browser balance lab.
 - Added opt-in generic typed engines, callback registries, and distinct synchronous/asynchronous contracts, with packed consumer type assertions.

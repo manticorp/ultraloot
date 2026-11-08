@@ -889,6 +889,8 @@ const parentTable = new LootTable({
 
 ## Examples
 
+Play [Forest Bandit](https://manticorp.github.io/ultraloot/examples/forest-bandit/), a complete woodland scavenging example: explore as a tiny raccoon, pack treasures, help four neighbours, and upgrade your den. Its real UltraLoot tables demonstrate nested rewards, weather conditions, item modifiers, reproducible saves, and roll tracing. See the [game README](docs/examples/forest-bandit/README.md) for local setup and controls.
+
 There are numerous examples in the docs/examples folder - I encourage you to explore!
 ## Validation before rolling
 
