@@ -1,7 +1,7 @@
 {
   "name": "@manticorp/ultraloot",
   "version": "0.3.0",
-  "description": "",
+  "description": "Seedable, serializable loot tables for games, with nested pools and synchronous or asynchronous conditions and modifiers.",
   "main": "./dist/ultraloot.cjs",
   "browser": "dist/ultraloot.cjs",
   "module": "dist/ultraloot.mjs",
@@ -44,9 +44,19 @@
     "README.md",
     "package.json",
     "./dist/",
-    "ultraloot.schema.json"
+    "ultraloot.schema.json",
+    "CHANGELOG.md"
   ],
-  "keywords": [],
+  "keywords": [
+    "loot",
+    "loot-table",
+    "game",
+    "rng",
+    "random",
+    "typescript",
+    "seedable",
+    "rpg"
+  ],
   "author": "Harry Mustoe-Playfair <harry@mustoeplayfair.com>",
   "license": "MIT",
   "devDependencies": {
@@ -77,5 +87,13 @@
     "val-loader": "^6.0.0",
     "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manticorp/ultraloot.git"
+  },
+  "homepage": "https://manticorp.github.io/ultraloot/",
+  "bugs": {
+    "url": "https://github.com/manticorp/ultraloot/issues"
   }
 }

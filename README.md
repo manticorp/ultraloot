@@ -42,13 +42,13 @@ const ul = new UltraLoot();
 ### Node
 
 ```javascript
-const { UltraLoot } = require('@manticorp/ultraLoot');
+const { UltraLoot } = require('@manticorp/ultraloot');
 ```
 
 ### ES Module
 
 ```javascript
-import UltraLoot from '@manticorp/ultraLoot';
+import UltraLoot from '@manticorp/ultraloot';
 ```
 
 ## Use cases
@@ -71,7 +71,7 @@ The loot generated depends on what tool the player was mining with. If they mine
 ```javascript
 // Prep the tables
 const ul = new UltraLoot();
-const miningTable = ul.loadTable('mining');
+const miningTable = await ul.loadTable('mining');
 
 // Looters in your app
 const weakLooter = new Player().equip({id: 'axe', level: 'stone'});
@@ -890,3 +890,40 @@ const parentTable = new LootTable({
 ## Examples
 
 There are numerous examples in the docs/examples folder - I encourage you to explore!
+## Validation before rolling
+
+Use the instance method to check registered functions and conditions as well as table structure. Validation returns diagnostics without rolling, invoking callbacks, or advancing the RNG:
+
+```javascript
+const ul = new UltraLoot(0).registerDefaults();
+const definition = { pools: [{ entries: [{ id: 'gold', weight: 1 }] }] };
+const diagnostics = ul.validateTable(definition, { mode: 'sync' });
+if (!diagnostics.valid) {
+  console.log(diagnostics.errors); // [{ path, code, message }]
+}
+```
+
+For `type: 'table'` references, provide known definitions in the `tables` option. Shared references are accepted; cycles and missing references are reported. Use `allowExternalReferences: true` when references will be resolved later by file/URL loading. A standalone `validateTable` export performs the same structural checks; pass `functions` and `conditions` maps to check callback registration. Sync mode detects declared async callbacks; an ordinary function returning a Promise is rejected when it runs.
+
+The JSON schema is published at `@manticorp/ultraloot/schema.json` and in `ultraloot.schema.json`. It checks JSON structure; graph resolution and callback diagnostics come from `validateTable()`.
+
+## Saving and loading
+
+```javascript
+const filename = await ul.saveTable(table, {
+  path: './saves',
+  filename: 'loot.json',
+  includeRng: true
+});
+const restored = await new UltraLoot().loadTables(filename);
+```
+
+`saveTable()` writes a complete serialized graph in Node and requires an explicit destination directory. Set `overwrite: true` to replace an existing file. In browsers, use `toJson()` and your application's download/storage mechanism.
+
+`loadTable()` loads a single table definition and resolves external references. It accepts HTTP(S) URLs and, in Node, file paths, file URLs, and native `.js`/`.mjs`/`.cjs` modules. Module exports follow Node's package/module rules. When `path` is supplied, it remains the common base for all references. Otherwise nested references resolve relative to the containing document. Failed HTTP responses and recursive references produce errors with the failing location.
+
+## Development and seeded compatibility
+
+Run `npm run check` for source integrity, types, unit tests, production builds, and packed ESM/CJS/browser consumers. PR checks cover Node 22 and 24. `npm run benchmark` records repeatable local measurements after building.
+
+The legacy UltraLoot uniform engine remains unchanged. Corrected distribution sampling and unique/zero-weight handling can change derived seeded outcomes and RNG consumption. Serialized state records `samplingVersion: 2`; old states remain loadable using the corrected samplers. See [CHANGELOG.md](CHANGELOG.md).
