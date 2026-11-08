@@ -5,7 +5,6 @@ export default class LootTableEntryResults extends Array<LootTableEntryResult> {
     if (documents instanceof Array) super(...documents);
     else if (documents) super(documents);
     else super();
-    Object.setPrototypeOf(this, Object.create(LootTableEntryResults.prototype));
   }
 
   merge (other: LootTableEntryResults) {
@@ -36,12 +35,12 @@ export default class LootTableEntryResults extends Array<LootTableEntryResult> {
       if (ob.stackable) {
         const sig = this.entrySignature(ob);
         if (typeof map[sig] === 'undefined') {
-          map[sig] = ob;
+          map[sig] = Object.assign(Object.create(Object.getPrototypeOf(ob)), ob);
         } else {
           map[sig].addQty(ob.qty);
         }
       } else {
-        other.push(ob);
+        other.push(Object.assign(Object.create(Object.getPrototypeOf(ob)), ob));
       }
     }
     return new LootTableEntryResults([...other, ...Object.values(map)]);
