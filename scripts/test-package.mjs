@@ -19,7 +19,21 @@ try {
   const named = rng ? 'GameRng, PredictableRng' : 'UltraLoot, LootTable, validateTable';
   const esm = `import Main, { ${named} } from '${pkg.name}';\nconst instance = new Main(0);\nconsole.log(instance);\n`;
   const cjs = `import { ${named} } from '${pkg.name}';\nconsole.log(new ${rng ? 'GameRng' : 'UltraLoot'}(0));\n`;
-  await writeFile(join(directory, 'consumer.mts'), esm);
+  const typed = `
+import { TypedUltraLoot } from '${pkg.name}';
+type Item = { power: number };
+const sync = new TypedUltraLoot<Item, {level:number}, {zone:string}, {scale:{factor:number}}, {}>('sync');
+sync.registerFunction('scale', ({looted,args}) => { looted.item!.power *= args.factor; });
+// @ts-expect-error sync callbacks cannot be async
+sync.registerFunction('scale', async () => {});
+// @ts-expect-error callback args must match the declared registry
+sync.createTable({pools:[{entries:[{functions:[{function:'scale',args:{factor:'bad'}}]}]}]});
+const table = sync.createTable({pools:[{entries:[{item:{power:1}}]}]});
+table.rollSync({looter:{level:1},context:{zone:'forest'}})[0].item!.power.toFixed();
+// @ts-expect-error looter shape must match
+table.rollSync({looter:{level:'bad'},context:{zone:'forest'}});
+`;
+  await writeFile(join(directory, 'consumer.mts'), esm + (rng ? '' : typed));
   await writeFile(join(directory, 'consumer.cts'), cjs);
   run(process.execPath, [join(root, 'node_modules/typescript/bin/tsc'), '--strict', '--noEmit', '--module', 'NodeNext', '--moduleResolution', 'NodeNext', '--target', 'ES2022', 'consumer.mts', 'consumer.cts']);
 

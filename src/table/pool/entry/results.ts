@@ -1,24 +1,24 @@
 import LootTableEntryResult from './result';
 
-export default class LootTableEntryResults extends Array<LootTableEntryResult> {
-  constructor (documents?: Array<LootTableEntryResult> | number) {
+export default class LootTableEntryResults<Item = any> extends Array<LootTableEntryResult<Item>> {
+  constructor (documents?: Array<LootTableEntryResult<Item>> | number) {
     if (documents instanceof Array) super(...documents);
     else if (documents) super(documents);
     else super();
   }
 
-  merge (other: LootTableEntryResults) {
+  merge (other: LootTableEntryResults<Item>) {
     for (const entry of other) {
       this.push(entry);
     }
     return this;
   }
 
-  merged (other: LootTableEntryResults) {
-    return new LootTableEntryResults([...this, ...other]);
+  merged (other: LootTableEntryResults<Item>) {
+    return new LootTableEntryResults<Item>([...this, ...other]);
   }
 
-  protected entrySignature (entry: LootTableEntryResult) {
+  protected entrySignature (entry: LootTableEntryResult<Item>) {
     const entryWithoutQty: Record<string, any> = {};
     for (const [k, v] of Object.entries(entry)) {
       if (k !== 'qty') {
@@ -29,8 +29,8 @@ export default class LootTableEntryResults extends Array<LootTableEntryResult> {
   }
 
   collapsed () {
-    const map: Record<string, LootTableEntryResult> = {};
-    const other: LootTableEntryResult[] = [];
+    const map: Record<string, LootTableEntryResult<Item>> = {};
+    const other: LootTableEntryResult<Item>[] = [];
     for (const ob of this) {
       if (ob.stackable) {
         const sig = this.entrySignature(ob);
@@ -43,6 +43,6 @@ export default class LootTableEntryResults extends Array<LootTableEntryResult> {
         other.push(Object.assign(Object.create(Object.getPrototypeOf(ob)), ob));
       }
     }
-    return new LootTableEntryResults([...other, ...Object.values(map)]);
+    return new LootTableEntryResults<Item>([...other, ...Object.values(map)]);
   }
 }
