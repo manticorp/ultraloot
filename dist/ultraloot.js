@@ -12,271 +12,9 @@ return /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 494:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ 623
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   dependContext: () => (/* binding */ dependContext),
-/* harmony export */   dependLooter: () => (/* binding */ dependLooter)
-/* harmony export */ });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(185);
-
-/**
- * Returns true or false depending on value set in looter
- * @param args
- * @example
- * const context = { a: { b: 'foo', c: true, d: false } };
- * dependContext({ context, args: { property: 'a.b' } }); // true
- * dependContext({ context, args: { property: 'a.b', tobe: 'foo' } }); // true
- * dependContext({ context, args: { property: 'a.c', tobe: 'foo' } }); // false
- * dependContext({ context, args: { property: 'a.c' } }); // true
- * dependContext({ context, args: { property: 'a.d' } }); // false
- *
- * @example
- * // Use in a json file:
- * {
- *   "pools": [
- *     {
- *       "conditions": [
- *         {
- *           "function": "dependContext",
- *           "args": {
- *             "property": "physical.wet"
- *           }
- *         }
- *       ],
- *       "entries": [
- *         {
- *           "id": "soggy_newspaper"
- *         }
- *       ]
- *     }
- *   ]
- * }
- */
-const dependContext = ({ context, args }) => {
-    if (args) {
-        return (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .depend */ .fE)(context, args);
-    }
-    return true;
-};
-/**
- * Returns true or false depending on value set in looter
- * @param args
- * @example
- * const looter = { a: { b: 'foo', c: true, d: false } };
- * dependLooter({ looter, args: { property: 'a.b' } }); // true
- * dependLooter({ looter, args: { property: 'a.b', tobe: 'foo' } }); // true
- * dependLooter({ looter, args: { property: 'a.c', tobe: 'foo' } }); // false
- * dependLooter({ looter, args: { property: 'a.c' } }); // true
- * dependLooter({ looter, args: { property: 'a.d' } }); // false
- *
- * @example
- * // Use in a json file:
- * {
- *   "pools": [
- *     {
- *       "conditions": [
- *         {
- *           "function": "dependLooter",
- *           "args": {
- *             "property": "status.sickness",
- *             "min": 0.5
- *           }
- *         }
- *       ],
- *       "entries": [
- *         {
- *           "id": "sickness_healing_pack"
- *         }
- *       ]
- *     }
- *   ]
- * }
- */
-const dependLooter = ({ looter, args }) => {
-    if (args) {
-        return (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .depend */ .fE)(looter, args);
-    }
-    return true;
-};
-
-
-/***/ }),
-
-/***/ 663:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   inheritContext: () => (/* binding */ inheritContext),
-/* harmony export */   inheritLooter: () => (/* binding */ inheritLooter),
-/* harmony export */   setToRandomChoice: () => (/* binding */ setToRandomChoice)
-/* harmony export */ });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(185);
-
-/**
- * Inherits some property from looter to looted
- * @param args
- * @example
- * inheritLooter({looted, looter, {
- *   looterProperty: 'equipped.color',
- *   lootedProperty: 'item.color'
- *   default: 'red',
- * }})
- */
-const inheritLooter = ({ looted, looter, args }) => {
-    args = args ?? {};
-    args.lootedProperty = args.lootedProperty ?? args.property;
-    args.looterProperty = args.looterProperty ?? args.property;
-    if (args.looterProperty && args.lootedProperty) {
-        (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotSet */ ._c)(looted, args.lootedProperty, (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotGet */ .m0)(looter, args.looterProperty, args.default));
-    }
-};
-/**
- * Inherits some property from context to looted
- * @param args
- * @example
- * inheritContext({looted, looter, {
- *   contextProperty: 'dyed.color',
- *   lootedProperty: 'item.color'
- *   default: 'brown',
- * }})
- */
-const inheritContext = ({ looted, context, args }) => {
-    args = args ?? {};
-    args.lootedProperty = args.lootedProperty ?? args.property;
-    args.contextProperty = args.contextProperty ?? args.property;
-    if (args.contextProperty && args.lootedProperty) {
-        (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotSet */ ._c)(looted, args.lootedProperty, (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotGet */ .m0)(context, args.contextProperty, args.default));
-    }
-};
-/**
- * Sets a property of looted to some random choice from choices list
- *
- * Choices can be a simple array, or a map of anything => weight.
- *
- * @param args
- * @example
- * setToRandomChoice({rng, looted, {
- *   property: 'item.color',
- *   choices: ['red', 'green', 'blue']
- * }}); // looted.item.color will be one of red, green or blue.
- */
-const setToRandomChoice = ({ rng, looted, args }) => {
-    args = args ?? {};
-    const { property, choices } = args;
-    if (property && looted && choices) {
-        (0,_utils__WEBPACK_IMPORTED_MODULE_0__/* .dotSet */ ._c)(looted, property, rng.weightedChoice(choices));
-    }
-};
-
-
-/***/ }),
-
-/***/ 334:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-let debug = false;
-if (true) {
-    debug = !true;
-}
-/**
- * Logging functions that disappears in production,
- * and still give accurate line numbers in dev.
- */
-/**
- * Trigger verbose logs
- */
-// debug = false;
-const verbose = true;
-const ultraverbose = true;
-const voidFunc = (...args) => { };
-let r = {
-    debug: voidFunc,
-    v: voidFunc,
-    vv: voidFunc,
-    vi: voidFunc,
-    ve: voidFunc,
-    vg: voidFunc,
-    vge: voidFunc,
-    vgc: voidFunc,
-    vt: voidFunc,
-    d: voidFunc,
-    g: voidFunc,
-    ge: voidFunc,
-    gc: voidFunc,
-    t: voidFunc,
-    te: voidFunc,
-    time: voidFunc,
-    timeEnd: voidFunc,
-    group: voidFunc,
-    groupEnd: voidFunc,
-    groupCollapsed: voidFunc,
-    log: voidFunc,
-    error: voidFunc,
-    table: voidFunc,
-    info: voidFunc,
-};
-if (debug) {
-    r = {
-        ...r,
-        ...{
-            debug: function (fn) {
-                if (debug) {
-                    fn();
-                }
-            },
-            d: console.log,
-            g: console.group,
-            ge: console.groupEnd,
-            gc: console.groupCollapsed,
-            group: console.group,
-            groupEnd: console.groupEnd,
-            groupCollapsed: console.groupCollapsed,
-            log: console.log,
-            error: console.error,
-            table: console.table,
-            info: console.info
-        }
-    };
-    if (verbose) {
-        r = {
-            ...r,
-            ...{
-                v: console.log,
-                vi: console.info,
-                ve: console.error,
-                vg: console.group,
-                vge: console.groupEnd,
-                vgc: console.groupCollapsed,
-                vt: console.table,
-                t: console.time,
-                te: console.timeEnd,
-                time: console.time,
-                timeEnd: console.timeEnd,
-            }
-        };
-    }
-    if (ultraverbose) {
-        r.vv = console.log;
-    }
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (r);
-
-
-/***/ }),
-
-/***/ 623:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Ay: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
 /* unused harmony exports NumberValidationError, ArrayNumberValidator, NumberValidator */
 /**
  * @category Number Validator
@@ -643,20 +381,234 @@ function validate(number) {
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (validate);
 
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "Ay", 0, __WEBPACK_DEFAULT_EXPORT__
+/* harmony export */ ]);
 
-/***/ }),
 
-/***/ 673:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ },
 
+/***/ 668
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (/* binding */ LootTableEntryResult)
+/* harmony export */ });
+class LootTableEntryResult {
+    id;
+    stackable = true;
+    name;
+    item;
+    qty = 1;
+    constructor({ id, stackable = true, name, item, qty = 1 } = {}) {
+        this.id = id;
+        this.name = name;
+        this.item = item;
+        this.qty = qty;
+        this.stackable = stackable;
+    }
+    get description() {
+        return this.describe();
+    }
+    describe() {
+        if (this.name) {
+            return `${this.name} [${this.id}]`;
+        }
+        return `[${this.id}]`;
+    }
+    getQty() {
+        return this.qty;
+    }
+    setQty(n) {
+        this.qty = n;
+    }
+    addQty(n) {
+        this.qty = this.qty + n;
+    }
+}
+
+
+/***/ }
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	const __webpack_module_cache__ = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		const cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		const module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/************************************************************************/
+/******/ 	/* webpack/runtime/concatenation wrap */
+/******/ 	// wrap a concatenated module body as a lazy, memoized accessor; mod is
+/******/ 	// set before the body runs so re-entrant calls (require cycles) observe
+/******/ 	// the partial exports like Node.js
+/******/ 	__webpack_require__.cw = (body) => {
+/******/ 		var mod;
+/******/ 		return () => {
+/******/ 			if (body) {
+/******/ 				var fn = body;
+/******/ 				body = 0;
+/******/ 				mod = { exports: {} };
+/******/ 				fn.call(mod.exports, mod, mod.exports);
+/******/ 			}
+/******/ 			return mod.exports;
+/******/ 		};
+/******/ 	};
+/******/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	// define getter/value functions for harmony exports
+/******/ 	__webpack_require__.d = (exports, definition) => {
+/******/ 		if(Array.isArray(definition)) {
+/******/ 			var i = 0;
+/******/ 			while(i < definition.length) {
+/******/ 				var key = definition[i++];
+/******/ 				var binding = definition[i++];
+/******/ 				var descriptor = binding === 0 ? { enumerable: true, value: definition[i++] } : { enumerable: true, get: binding };
+/******/ 				if(!__webpack_require__.o(exports, key)) Object.defineProperty(exports, key, descriptor);
+/******/ 			}
+/******/ 		} else {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop));
+/******/
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = (exports) => {
+/******/ 		Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/************************************************************************/
+let __webpack_exports__ = {};
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  Up: () => (/* binding */ RngAbstract),
-  Ay: () => (/* binding */ src_rng)
+  "default": () => (/* binding */ src)
 });
 
-// UNUSED EXPORTS: MaxRecursionsError, NonRandomRandomError
+// UNUSED EXPORTS: ArrayNumberValidator, LootTable, LootTableEntry, LootTableEntryResult, LootTableEntryResults, LootTableManager, LootTablePool, MaxRecursionsError, NonRandomRandomError, NumberValidationError, NumberValidator, PredictableRng, RecursiveTableError, Rng, RngAbstract, TypedLootTable, TypedUltraLoot, UltraLoot, createAsyncLoot, createSyncLoot, simulateTable, simulateTableSync, validateTable
+
+// MODULE: external "fs"
+var external_fs_namespaceFn = /*#__PURE__*/__webpack_require__.cw((module) => {
+module.exports = require("fs");
+});
+
+// MODULE: external "path"
+var external_path_namespaceFn = /*#__PURE__*/__webpack_require__.cw((module) => {
+module.exports = require("path");
+});
+
+// MODULE: external "url"
+var external_url_namespaceFn = /*#__PURE__*/__webpack_require__.cw((module) => {
+module.exports = require("url");
+});
+
+// NAMESPACE OBJECT (decoupled): ./src/default/functions.ts
+var functions_namespaceObject = {};
+__webpack_require__.r(functions_namespaceObject);
+__webpack_require__.d(functions_namespaceObject, {
+  inheritContext: () => (inheritContext),
+  inheritLooter: () => (inheritLooter),
+  setToRandomChoice: () => (setToRandomChoice)
+});
+
+// NAMESPACE OBJECT (decoupled): ./src/default/conditions.ts
+var conditions_namespaceObject = {};
+__webpack_require__.r(conditions_namespaceObject);
+__webpack_require__.d(conditions_namespaceObject, {
+  dependContext: () => (dependContext),
+  dependLooter: () => (dependLooter)
+});
+
+;// ./src/rng/sampling.ts
+// Generated from GameRNG src/sampling.ts; update with npm run sync:rng -- --source ../gamerng
+/** Dependency-free sampling algorithms embedded in UltraLoot at build time. */
+const SAMPLING_VERSION = 2;
+/** Marsaglia–Tsang sampling, with shape boosting below one, in log space. */
+function gammaLog(random, normal, shape) {
+    if (shape < 1) {
+        return gammaLog(random, normal, shape + 1) + Math.log1p(-random()) / shape;
+    }
+    const d = shape - 1 / 3;
+    const c = 1 / (3 * Math.sqrt(d));
+    for (let attempt = 0; attempt < 10000; attempt++) {
+        const x = normal();
+        const base = 1 + c * x;
+        if (base <= 0)
+            continue;
+        const v = base * base * base;
+        const u = random();
+        if (u < 1 - 0.0331 * x ** 4 || Math.log(u) < x * x / 2 + d * (1 - v + Math.log(v))) {
+            return Math.log(d) + 3 * Math.log(base);
+        }
+    }
+    throw new Error('Gamma sampling could not converge; check the random source and parameters');
+}
+function betaSample(random, normal, alpha, beta) {
+    const difference = gammaLog(random, normal, alpha) - gammaLog(random, normal, beta);
+    if (Number.isNaN(difference)) {
+        throw new Error('Beta parameters exceed the supported numeric range');
+    }
+    // Log space avoids 0/0 when both fractional Gamma samples underflow.
+    return difference >= 0 ? 1 / (1 + Math.exp(-difference)) : Math.exp(difference) / (1 + Math.exp(difference));
+}
+function semicircleSample(random, radius) {
+    // The x coordinate of a uniform point in a disk has a semicircle density.
+    return radius * Math.sqrt(random()) * Math.cos(2 * Math.PI * random());
+}
+function weightedChoice(entries, random) {
+    let largest = 0;
+    for (const [, weight] of entries) {
+        if (!Number.isFinite(weight) || weight < 0) {
+            throw new Error('Probability weights must be finite, non-negative numbers');
+        }
+        largest = Math.max(largest, weight);
+    }
+    if (largest === 0)
+        return null;
+    if (entries.length === 1)
+        return entries[0][0];
+    // Scaling prevents overflow when individually finite weights have a huge sum.
+    const total = entries.reduce((sum, [, weight]) => sum + weight / largest, 0);
+    const target = random() * total;
+    let cumulative = 0;
+    let lastPositive = null;
+    for (const [key, weight] of entries) {
+        if (weight === 0)
+            continue;
+        lastPositive = key;
+        cumulative += weight / largest;
+        if (target < cumulative)
+            return key;
+    }
+    return lastPositive;
+}
 
 // EXTERNAL MODULE: ./src/number.ts
 var src_number = __webpack_require__(623);
@@ -746,6 +698,8 @@ class Pool {
      * @throws {@link PoolNotEnoughElementsError} if the pool does not have enough elements to draw n values
      */
     drawMany(n) {
+        if (!Number.isSafeInteger(n))
+            throw new Error('Draw count must be a safe integer');
         if (n < 0) {
             throw new Error('Cannot draw < 0 elements from pool');
         }
@@ -770,10 +724,12 @@ class Dequeue {
     elements = [];
     constructor(length = 1) {
         if (Array.isArray(length)) {
-            this.elements = length;
+            this.elements = [...length];
             this.size = this.elements.length;
         }
         else {
+            if (!Number.isSafeInteger(length) || length < 1)
+                throw new Error('Queue size must be a positive safe integer');
             this.size = length;
         }
     }
@@ -783,7 +739,7 @@ class Dequeue {
     push(el) {
         this.elements.push(el);
         if (this.elements.length > this.size) {
-            return this.pop();
+            return this.elements.shift();
         }
     }
     pop() {
@@ -829,7 +785,7 @@ class NonRandomDetector extends Dequeue {
         this.detectLoop();
         this.elements.push(el);
         if (this.elements.length > this.size) {
-            return this.pop();
+            return this.elements.shift();
         }
     }
     detectLoop(msg) {
@@ -869,6 +825,7 @@ class NonRandomDetector extends Dequeue {
 }
 
 ;// ./src/rng.ts
+
 
 
 
@@ -966,6 +923,8 @@ class RngAbstract {
     }
     setSeed(seed) {
         if (typeof seed !== 'undefined' && seed !== null) {
+            if (typeof seed === 'number' && !Number.isFinite(seed))
+                throw new Error('Seed must be finite');
             if (typeof seed === 'string') {
                 seed = this.convertStringToNumber(seed);
             }
@@ -983,6 +942,7 @@ class RngAbstract {
     serialize() {
         return {
             seed: this.#seed,
+            samplingVersion: (/* inlined export .SAMPLING_VERSION */2),
         };
     }
     /**
@@ -990,14 +950,14 @@ class RngAbstract {
      * @group Serialization
      */
     static unserialize(serialized) {
-        const { constructor } = Object.getPrototypeOf(this);
-        const rng = new constructor(serialized.seed);
+        const { constructor: Constructor } = Object.getPrototypeOf(this);
+        const rng = new Constructor(serialized.seed);
         rng.setSeed(serialized.seed);
         return rng;
     }
     predictable(seed) {
-        const { constructor } = Object.getPrototypeOf(this);
-        const newSelf = new constructor(seed ?? PREDICTABLE_SEED);
+        const { constructor: Constructor } = Object.getPrototypeOf(this);
+        const newSelf = new Constructor(seed ?? PREDICTABLE_SEED);
         return newSelf;
     }
     /**
@@ -1044,7 +1004,7 @@ class RngAbstract {
         return this.randBetween(from, to, skew);
     }
     chance(n, chanceIn = 1) {
-        (0,src_number/* default */.Ay)({ chanceIn }).positive();
+        ;(0,src_number/* default */.Ay)({ chanceIn }).positive();
         (0,src_number/* default */.Ay)({ n }).positive();
         const chance = n / chanceIn;
         return this._random() <= chance;
@@ -1054,7 +1014,7 @@ class RngAbstract {
         return this.chance(from, from + to);
     }
     randInt(from = 0, to = 1, skew = 0) {
-        (0,src_number/* default */.Ay)({ from }).int();
+        ;(0,src_number/* default */.Ay)({ from }).int();
         (0,src_number/* default */.Ay)({ to }).int();
         if (from === to) {
             return from;
@@ -1083,7 +1043,7 @@ class RngAbstract {
         return `${prefix}${id}`;
     }
     randomString(len = 6) {
-        (0,src_number/* default */.Ay)({ len }).gt(0);
+        ;(0,src_number/* default */.Ay)({ len }).gt(0);
         const str = [];
         const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         const alen = 61;
@@ -1107,14 +1067,14 @@ class RngAbstract {
         return this.scaleNorm(rand, from, to);
     }
     scale(number, from, to, min = 0, max = 1) {
-        (0,src_number/* default */.Ay)({ number }).lteq(max);
+        ;(0,src_number/* default */.Ay)({ number }).lteq(max);
         (0,src_number/* default */.Ay)({ number }).gteq(min);
         // First we scale the number in the range [0-1)
         number = (number - min) / (max - min);
         return this.scaleNorm(number, from, to);
     }
     scaleNorm(number, from, to) {
-        (0,src_number/* default */.Ay)({ number }).betweenEq(0, 1);
+        ;(0,src_number/* default */.Ay)({ number }).betweenEq(0, 1);
         return (number * (to - from)) + from;
     }
     shouldThrowOnMaxRecursionsReached(val) {
@@ -1217,7 +1177,7 @@ class RngAbstract {
         return num;
     }
     gaussian({ mean = 0, stddev = 1, skew = 0 } = {}) {
-        (0,src_number/* default */.Ay)({ stddev }).positive();
+        ;(0,src_number/* default */.Ay)({ stddev }).positive();
         if (skew === 0) {
             return this.boxMuller({ mean, stddev });
         }
@@ -1238,7 +1198,7 @@ class RngAbstract {
         if (typeof mean === 'object') {
             ({ mean = 0, stddev = 1 } = mean);
         }
-        (0,src_number/* default */.Ay)({ stddev }).gteq(0);
+        ;(0,src_number/* default */.Ay)({ stddev }).gteq(0);
         const u = 1 - this._random(); // Converting [0,1) to (0,1]
         const v = this._random();
         const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
@@ -1249,7 +1209,7 @@ class RngAbstract {
         if (typeof n === 'object') {
             ({ n = 6 } = n);
         }
-        (0,src_number/* default */.Ay)({ n }).int().positive();
+        ;(0,src_number/* default */.Ay)({ n }).int().positive();
         let sum = 0;
         for (let i = 0; i < n; i++) {
             sum += this._random();
@@ -1260,32 +1220,32 @@ class RngAbstract {
         if (typeof n === 'object') {
             ({ n = 6 } = n);
         }
-        (0,src_number/* default */.Ay)({ n }).int().positive();
+        ;(0,src_number/* default */.Ay)({ n }).int().positive();
         return this.irwinHall({ n }) / n;
     }
     batesgaussian(n = 6) {
         if (typeof n === 'object') {
             ({ n = 6 } = n);
         }
-        (0,src_number/* default */.Ay)({ n }).int().gt(1);
+        ;(0,src_number/* default */.Ay)({ n }).int().gt(1);
         return (this.irwinHall({ n }) / Math.sqrt(n)) - ((1 / Math.sqrt(1 / n)) / 2);
     }
     bernoulli(p = 0.5) {
         if (typeof p === 'object') {
             ({ p = 0.5 } = p);
         }
-        (0,src_number/* default */.Ay)({ p }).lteq(1).gteq(0);
+        ;(0,src_number/* default */.Ay)({ p }).lteq(1).gteq(0);
         return this._random() < p ? 1 : 0;
     }
     exponential(rate = 1) {
         if (typeof rate === 'object') {
             ({ rate = 1 } = rate);
         }
-        (0,src_number/* default */.Ay)({ rate }).gt(0);
+        ;(0,src_number/* default */.Ay)({ rate }).gt(0);
         return -Math.log(1 - this._random()) / rate;
     }
     pareto({ shape = 0.5, scale = 1, location = 0 } = {}) {
-        (0,src_number/* default */.Ay)({ shape }).gteq(0);
+        ;(0,src_number/* default */.Ay)({ shape }).gteq(0);
         (0,src_number/* default */.Ay)({ scale }).positive();
         const u = this._random();
         if (shape !== 0) {
@@ -1299,7 +1259,7 @@ class RngAbstract {
         if (typeof lambda === 'object') {
             ({ lambda = 1 } = lambda);
         }
-        (0,src_number/* default */.Ay)({ lambda }).positive();
+        ;(0,src_number/* default */.Ay)({ lambda }).positive();
         const L = Math.exp(-lambda);
         let k = 0;
         let p = 1;
@@ -1318,13 +1278,13 @@ class RngAbstract {
         return k - 1;
     }
     hypergeometric({ N = 50, K = 10, n = 5, k } = {}) {
-        (0,src_number/* default */.Ay)({ N }).int().positive();
+        ;(0,src_number/* default */.Ay)({ N }).int().positive();
         (0,src_number/* default */.Ay)({ K }).int().positive().lteq(N);
         (0,src_number/* default */.Ay)({ n }).int().positive().lteq(N);
         if (typeof k === 'undefined') {
             k = this.randInt(0, Math.min(K, n));
         }
-        (0,src_number/* default */.Ay)({ k }).int().betweenEq(0, Math.min(K, n));
+        ;(0,src_number/* default */.Ay)({ k }).int().betweenEq(0, Math.min(K, n));
         function logFactorial(x) {
             let res = 0;
             for (let i = 2; i <= x; i++) {
@@ -1342,7 +1302,7 @@ class RngAbstract {
         return this._random() < 0.5 ? -1 : 1;
     }
     binomial({ n = 1, p = 0.5 } = {}) {
-        (0,src_number/* default */.Ay)({ n }).int().positive();
+        ;(0,src_number/* default */.Ay)({ n }).int().positive();
         (0,src_number/* default */.Ay)({ p }).betweenEq(0, 1);
         let successes = 0;
         for (let i = 0; i < n; i++) {
@@ -1353,17 +1313,12 @@ class RngAbstract {
         return successes;
     }
     betaBinomial({ alpha = 1, beta = 1, n = 1 } = {}) {
-        (0,src_number/* default */.Ay)({ alpha }).positive();
+        ;(0,src_number/* default */.Ay)({ alpha }).positive();
         (0,src_number/* default */.Ay)({ beta }).positive();
+        if (![alpha, beta].every(Number.isFinite))
+            throw new Error('Beta parameters must be finite');
         (0,src_number/* default */.Ay)({ n }).int().positive();
-        const bd = (alpha, beta) => {
-            let x = this._random();
-            let y = this._random();
-            x = Math.pow(x, 1 / alpha);
-            y = Math.pow(y, 1 / beta);
-            return x / (x + y);
-        };
-        const p = bd(alpha, beta);
+        const p = this.beta({ alpha, beta });
         let k = 0;
         for (let i = 0; i < n; i++) {
             if (this._random() < p) {
@@ -1373,25 +1328,14 @@ class RngAbstract {
         return k;
     }
     beta({ alpha = 0.5, beta = 0.5 } = {}) {
-        (0,src_number/* default */.Ay)({ alpha }).positive();
+        ;(0,src_number/* default */.Ay)({ alpha }).positive();
         (0,src_number/* default */.Ay)({ beta }).positive();
-        const gamma = (alpha) => {
-            let x = 0;
-            for (let i = 0; i < alpha; i++) {
-                const r = this._random();
-                x += -Math.log(r);
-                if ((i + 1) >= LOOP_MAX) {
-                    throw new Error('LOOP_MAX reached in beta - bailing out - possible parameter error, or using non-random source?');
-                }
-            }
-            return x;
-        };
-        const x = gamma(alpha);
-        const y = gamma(beta);
-        return x / (x + y);
+        if (![alpha, beta].every(Number.isFinite))
+            throw new Error('Beta parameters must be finite');
+        return betaSample(() => this._random(), () => this.boxMuller(), alpha, beta);
     }
     gamma({ shape = 1, rate, scale } = {}) {
-        (0,src_number/* default */.Ay)({ shape }).positive();
+        ;(0,src_number/* default */.Ay)({ shape }).positive();
         if (typeof scale !== 'undefined' && typeof rate !== 'undefined' && rate !== 1 / scale) {
             throw new Error('Cannot supply rate and scale');
         }
@@ -1405,71 +1349,36 @@ class RngAbstract {
         if (rate) {
             (0,src_number/* default */.Ay)({ rate }).positive();
         }
-        let flg;
-        let x2;
-        let v0;
-        let v1;
-        let x;
-        let u;
-        let v = 1;
-        const d = shape - 1 / 3;
-        const c = 1.0 / Math.sqrt(9.0 * d);
-        let i = 0;
-        flg = true;
-        const nq1 = new NonRandomDetector(SAMERANDOM_MAX);
-        while (flg && i++ < LOOP_MAX) {
-            let j = 0;
-            const nq2 = new NonRandomDetector(SAMERANDOM_MAX);
-            do {
-                x = this.normal();
-                nq2.push(x);
-                nq2.detectLoop(`Loop detected in randomly generated numbers over the last ${SAMERANDOM_MAX} generations. This is incompatible with the gamma distribution. Try either using a spread of non-random numbers or fine tune the number to not fall foul ofthe looped way of generating.`);
-                v = 1.0 + (c * x);
-            } while (v <= 0.0 && j++ < LOOP_MAX);
-            if ((j + 1) >= LOOP_MAX) {
-                throw new Error(`LOOP_MAX reached inside gamma inner loop - bailing out - possible parameter error, or using non-random source? had shape = ${shape}, rate = ${rate}, scale = ${scale}`);
-            }
-            v *= Math.pow(v, 2);
-            x2 = Math.pow(x, 2);
-            v0 = 1.0 - (0.331 * x2 * x2);
-            v1 = (0.5 * x2) + (d * (1.0 - v + Math.log(v)));
-            u = this._random();
-            nq1.push(u);
-            nq1.detectLoop(`Loop detected in randomly generated numbers over the last ${SAMERANDOM_MAX} generations. This is incompatible with the gamma distribution. Try either using a spread of non-random numbers or fine tune the number to not fall foul of the looped way of generating. Last random number was ${u}`);
-            if (u < v0 || Math.log(u) < v1) {
-                flg = false;
-            }
+        ;(0,src_number/* default */.Ay)({ rate }).positive();
+        if (![shape, rate].every(Number.isFinite)) {
+            throw new Error('Gamma shape and rate must be finite');
         }
-        if ((i + 1) >= LOOP_MAX) {
-            throw new Error(`LOOP_MAX reached inside gamma - bailing out - possible parameter error, or using non-random source? had shape = ${shape}, rate = ${rate}, scale = ${scale}`);
-        }
-        return rate * d * v;
+        return Math.exp(gammaLog(() => this._random(), () => this.boxMuller(), shape) - Math.log(rate));
     }
     studentsT(nu = 1) {
         if (typeof nu === 'object') {
             ({ nu = 1 } = nu);
         }
-        (0,src_number/* default */.Ay)({ nu }).positive();
-        const normal = Math.sqrt(-2.0 * Math.log(this._random())) * Math.cos(2.0 * Math.PI * this._random());
-        const chiSquared = this.gamma({ shape: nu / 2, rate: 2 });
+        ;(0,src_number/* default */.Ay)({ nu }).positive();
+        const normal = this.boxMuller();
+        const chiSquared = this.gamma({ shape: nu / 2, rate: 0.5 });
         return normal / Math.sqrt(chiSquared / nu);
     }
     wignerSemicircle(R = 1) {
         if (typeof R === 'object') {
             ({ R = 1 } = R);
         }
-        (0,src_number/* default */.Ay)({ R }).gt(0);
-        const theta = this._random() * 2 * Math.PI;
-        return R * Math.cos(theta);
+        ;(0,src_number/* default */.Ay)({ R }).gt(0);
+        return semicircleSample(() => this._random(), R);
     }
     kumaraswamy({ alpha = 0.5, beta = 0.5 } = {}) {
-        (0,src_number/* default */.Ay)({ alpha }).gt(0);
+        ;(0,src_number/* default */.Ay)({ alpha }).gt(0);
         (0,src_number/* default */.Ay)({ beta }).gt(0);
         const u = this._random();
         return Math.pow(1 - Math.pow(1 - u, 1 / beta), 1 / alpha);
     }
     hermite({ lambda1 = 1, lambda2 = 2 } = {}) {
-        (0,src_number/* default */.Ay)({ lambda1 }).gt(0);
+        ;(0,src_number/* default */.Ay)({ lambda1 }).gt(0);
         (0,src_number/* default */.Ay)({ lambda2 }).gt(0);
         const x1 = this.poisson({ lambda: lambda1 });
         const x2 = this.poisson({ lambda: lambda2 });
@@ -1479,7 +1388,7 @@ class RngAbstract {
         if (typeof k === 'object') {
             ({ k = 1 } = k);
         }
-        (0,src_number/* default */.Ay)({ k }).positive().int();
+        ;(0,src_number/* default */.Ay)({ k }).positive().int();
         let sum = 0;
         for (let i = 0; i < k; i++) {
             const z = Math.sqrt(-2.0 * Math.log(this._random())) * Math.cos(2.0 * Math.PI * this._random());
@@ -1491,26 +1400,26 @@ class RngAbstract {
         if (typeof scale === 'object') {
             ({ scale = 1 } = scale);
         }
-        (0,src_number/* default */.Ay)({ scale }).gt(0);
+        ;(0,src_number/* default */.Ay)({ scale }).gt(0);
         return scale * Math.sqrt(-2 * Math.log(this._random()));
     }
     logNormal({ mean = 0, stddev = 1 } = {}) {
-        (0,src_number/* default */.Ay)({ stddev }).gt(0);
+        ;(0,src_number/* default */.Ay)({ stddev }).gt(0);
         const normal = mean + stddev * Math.sqrt(-2.0 * Math.log(this._random())) * Math.cos(2.0 * Math.PI * this._random());
         return Math.exp(normal);
     }
     cauchy({ median = 0, scale = 1 } = {}) {
-        (0,src_number/* default */.Ay)({ scale }).gt(0);
+        ;(0,src_number/* default */.Ay)({ scale }).gt(0);
         const u = this._random();
         return median + scale * Math.tan(Math.PI * (u - 0.5));
     }
     laplace({ mean = 0, scale = 1 } = {}) {
-        (0,src_number/* default */.Ay)({ scale }).gt(0);
+        ;(0,src_number/* default */.Ay)({ scale }).gt(0);
         const u = this._random() - 0.5;
         return mean - scale * Math.sign(u) * Math.log(1 - 2 * Math.abs(u));
     }
     logistic({ mean = 0, scale = 1 } = {}) {
-        (0,src_number/* default */.Ay)({ scale }).gt(0);
+        ;(0,src_number/* default */.Ay)({ scale }).gt(0);
         const u = this._random();
         return mean + scale * Math.log(u / (1 - u));
     }
@@ -1889,70 +1798,15 @@ class RngAbstract {
         return chances;
     }
     weightedChoice(data) {
-        let total = 0;
-        let id;
         if (Array.isArray(data)) {
-            // Some shortcuts
-            if (data.length === 0) {
+            if (data.length === 0)
                 return null;
-            }
-            if (data.length === 1) {
+            if (data.length === 1)
                 return data[0];
-            }
-            const chances = this.weights(data);
-            const result = this.weightedChoice(chances);
-            chances.clear();
-            return result;
+            return this.weightedChoice(this.weights(data));
         }
-        if (data instanceof Map) {
-            // Some shortcuts
-            if (data.size === 0) {
-                return null;
-            }
-            if (data.size === 1) {
-                return data.keys().next().value;
-            }
-            data.forEach((value, key) => {
-                total += value;
-            });
-        }
-        else {
-            // Some shortcuts
-            const entries = Object.keys(data);
-            if (entries.length === 0) {
-                return null;
-            }
-            if (entries.length === 1) {
-                return entries[0];
-            }
-            for (id in data) {
-                if (data[id] < 0) {
-                    throw new Error('Probability cannot be negative');
-                }
-                total += data[id];
-            }
-        }
-        const random = this._random() * total;
-        let part = 0;
-        if (data instanceof Map) {
-            for (const [id, value] of data) {
-                part += value;
-                if (random < part) {
-                    return id;
-                }
-            }
-        }
-        else {
-            for (id in data) {
-                part += data[id];
-                if (random < part) {
-                    return id;
-                }
-            }
-        }
-        // If by some floating-point annoyance we have
-        // random >= total, just return the last id.
-        return id;
+        const entries = data instanceof Map ? Array.from(data.entries()) : Object.entries(data);
+        return weightedChoice(entries, () => this._random());
     }
     pool(entries) {
         return new Pool(entries, this);
@@ -1977,7 +1831,7 @@ class RngAbstract {
                 ({ n = 1, d = 6, plus = 0 } = n);
             }
         }
-        (0,src_number/* default */.Ay)({ n }).int(`Expected n to be an integer, got ${n}`);
+        ;(0,src_number/* default */.Ay)({ n }).int(`Expected n to be an integer, got ${n}`);
         (0,src_number/* default */.Ay)({ d }).int(`Expected d to be an integer, got ${d}`);
         return { n, d, plus };
     }
@@ -2097,7 +1951,7 @@ class RngAbstract {
         return number;
     }
     bin(val, bins, min, max) {
-        (0,src_number/* default */.Ay)({ val }).gt(min).lt(max);
+        ;(0,src_number/* default */.Ay)({ val }).gt(min).lt(max);
         const spread = max - min;
         return (Math.round(((val - min) / spread) * (bins - 1)) / (bins - 1) * spread) + min;
     }
@@ -2126,6 +1980,7 @@ class Rng extends RngAbstract {
         return {
             mask: this.getMask(),
             seed: this.getSeed(),
+            samplingVersion: (/* inlined export .SAMPLING_VERSION */2),
             m_z: this.getMz(),
         };
     }
@@ -2180,19 +2035,886 @@ class Rng extends RngAbstract {
 }
 /* harmony default export */ const src_rng = (Rng);
 
+;// ./src/simulation.ts
 
-/***/ }),
+function accumulator(options) {
+    const iterations = options.iterations ?? 10000;
+    if (!Number.isSafeInteger(iterations) || iterations < 1 || iterations > 1000000)
+        throw new Error('Iterations must be an integer from 1 to 1000000');
+    const rng = options.rng ?? new src_rng(options.seed ?? 123);
+    const items = new Map();
+    let empty = 0;
+    return {
+        iterations,
+        rng,
+        record(results) {
+            const quantities = new Map();
+            for (const entry of results) {
+                if (!Number.isFinite(entry.qty))
+                    throw new Error(`Cannot simulate non-finite quantity for ${entry.id ?? entry.name ?? 'unidentified item'}`);
+                if (entry.qty <= 0)
+                    continue;
+                const key = entry.id === undefined ? `name:${entry.name ?? '<unidentified>'}` : `${typeof entry.id}:${entry.id}`;
+                if (!items.has(key))
+                    items.set(key, { id: entry.id, name: entry.name, hits: 0, total: 0 });
+                quantities.set(key, (quantities.get(key) ?? 0) + entry.qty);
+            }
+            if (quantities.size === 0)
+                empty++;
+            for (const [key, quantity] of quantities) {
+                const item = items.get(key);
+                item.hits++;
+                item.total += quantity;
+            }
+        },
+        result() {
+            return {
+                iterations,
+                emptyRolls: empty,
+                noDropProbability: empty / iterations,
+                items: Array.from(items, ([key, item]) => {
+                    const probability = item.hits / iterations;
+                    const z2 = 1.959963984540054 ** 2;
+                    const centre = (probability + z2 / (2 * iterations)) / (1 + z2 / iterations);
+                    const radius = Math.sqrt(z2 * probability * (1 - probability) / iterations + z2 ** 2 / (4 * iterations ** 2)) / (1 + z2 / iterations);
+                    return {
+                        key,
+                        id: item.id,
+                        name: item.name,
+                        hits: item.hits,
+                        probability,
+                        probability95: [Math.max(0, centre - radius), Math.min(1, centre + radius)],
+                        meanQuantity: item.total / iterations,
+                        totalQuantity: item.total,
+                        rollsFor95Percent: probability === 1 ? 1 : Math.ceil(Math.log(0.05) / Math.log1p(-probability))
+                    };
+                }).sort((a, b) => b.probability - a.probability)
+            };
+        }
+    };
+}
+/** Execute actual modifiers/conditions. IDs identify items; names group entries without IDs. */
+function simulateTableSync(table, options = {}) {
+    const state = accumulator(options);
+    for (let i = 0; i < state.iterations; i++) {
+        if (options.signal?.aborted)
+            throw new Error('Simulation aborted');
+        state.record(table.rollSync({ rng: state.rng, looter: options.looter, context: options.context }));
+    }
+    return state.result();
+}
+async function simulateTable(table, options = {}) {
+    const state = accumulator(options);
+    for (let i = 0; i < state.iterations; i++) {
+        if (options.signal?.aborted)
+            throw new Error('Simulation aborted');
+        state.record(await table.roll({ rng: state.rng, looter: options.looter, context: options.context }));
+        if (i % 1000 === 999)
+            await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    return state.result();
+}
 
-/***/ 784:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+;// ./src/validation.ts
+const distributions = new Set(['random', 'integer', 'normal_integer', 'dice', 'normal', 'gaussian', 'boxMuller', 'irwinHall', 'bates', 'batesgaussian', 'bernoulli', 'exponential', 'pareto', 'poisson', 'hypergeometric', 'rademacher', 'binomial', 'betaBinomial', 'beta', 'gamma', 'studentsT', 'wignerSemicircle', 'kumaraswamy', 'hermite', 'chiSquared', 'rayleigh', 'logNormal', 'cauchy', 'laplace', 'logistic']);
+const record = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+/** Validate structure and references without rolling, invoking callbacks, or consuming RNG. */
+function validateTable(definition, options = {}) {
+    const errors = [];
+    const active = new Set();
+    let visited = 0;
+    const issue = (path, code, message) => { errors.push({ path, code, message }); };
+    const chancy = (value, path) => {
+        if (value === undefined)
+            return;
+        if (typeof value === 'number') {
+            if (!Number.isFinite(value) || value < 0)
+                issue(path, 'number.range', 'Expected a finite, non-negative number');
+        }
+        else if (typeof value === 'string') {
+            if (!/^\s*(?:\d+(?:\.\d+)?|\d*\s*[dD]\s*\d+\s*(?:[+-]\s*\d+(?:\.\d+)?)?)\s*$/.test(value))
+                issue(path, 'chancy.dice', 'Expected a number or dice expression');
+        }
+        else if (Array.isArray(value)) {
+            if (!value.length)
+                issue(path, 'chancy.empty', 'A choice list must not be empty');
+            value.forEach((entry, index) => {
+                if (typeof entry !== 'number' || !Number.isFinite(entry) || entry < 0)
+                    issue(`${path}[${index}]`, 'number.range', 'Expected a finite, non-negative number');
+            });
+        }
+        else if (record(value)) {
+            if (value.type !== undefined && !distributions.has(value.type))
+                issue(`${path}.type`, 'chancy.type', 'Unknown distribution type');
+            for (const key of ['min', 'max']) {
+                if (value[key] !== undefined && (typeof value[key] !== 'number' || !Number.isFinite(value[key]) || value[key] < 0))
+                    issue(`${path}.${key}`, 'number.range', 'Expected a finite, non-negative bound');
+            }
+            if (typeof value.min === 'number' && typeof value.max === 'number' && value.min > value.max)
+                issue(path, 'chancy.bounds', 'Minimum must not exceed maximum');
+            if (value.type === 'dice' && value.dice === undefined)
+                issue(`${path}.dice`, 'chancy.dice', 'A dice distribution requires dice');
+        }
+        else {
+            issue(path, 'chancy.type', 'Expected a number, dice expression, numeric choices, or distribution');
+        }
+    };
+    const callbacks = (value, path, registry) => {
+        if (value === undefined)
+            return;
+        if (!Array.isArray(value)) {
+            issue(path, 'callbacks.type', 'Expected an array of callbacks');
+            return;
+        }
+        value.forEach((entry, index) => {
+            const at = `${path}[${index}].function`;
+            if (!record(entry) || typeof entry.function !== 'string' || !entry.function) {
+                issue(at, 'callback.name', 'Expected a callback function name');
+            }
+            else if (registry) {
+                const fn = Object.prototype.hasOwnProperty.call(registry, entry.function) ? registry[entry.function] : undefined;
+                if (typeof fn !== 'function')
+                    issue(at, 'callback.missing', `Callback ${entry.function} is not registered`);
+                else if (options.mode === 'sync' && Object.prototype.toString.call(fn) === '[object AsyncFunction]')
+                    issue(at, 'callback.async', 'Async callbacks require an async roll');
+            }
+        });
+    };
+    const table = (value, path, inherited, depth) => {
+        if (!record(value)) {
+            issue(path, 'table.type', 'Expected a table object');
+            return;
+        }
+        if (active.has(value)) {
+            issue(path, 'table.cycle', 'Recursive table reference');
+            return;
+        }
+        if (depth > 128 || ++visited > 10000) {
+            issue(path, 'table.limit', 'Table graph exceeds validation limits');
+            return;
+        }
+        active.add(value);
+        const local = {
+            ...inherited,
+            functions: record(value.functions) ? { ...inherited.functions, ...value.functions } : inherited.functions,
+            conditions: record(value.conditions) ? { ...inherited.conditions, ...value.conditions } : inherited.conditions
+        };
+        if (value.pools !== undefined && !Array.isArray(value.pools))
+            issue(`${path}.pools`, 'pools.type', 'Expected an array of pools');
+        else {
+            (value.pools ?? []).forEach((pool, index) => {
+                const at = `${path}.pools[${index}]`;
+                if (!record(pool)) {
+                    issue(at, 'pool.type', 'Expected a pool object');
+                    return;
+                }
+                chancy(pool.rolls, `${at}.rolls`);
+                chancy(pool.nulls, `${at}.nulls`);
+                callbacks(pool.functions, `${at}.functions`, local.functions);
+                callbacks(pool.conditions, `${at}.conditions`, local.conditions);
+                if (pool.entries !== undefined && !Array.isArray(pool.entries))
+                    issue(`${at}.entries`, 'entries.type', 'Expected an array of entries');
+                else {
+                    (pool.entries ?? []).forEach((entry, position) => {
+                        const here = `${at}.entries[${position}]`;
+                        if (!record(entry)) {
+                            issue(here, 'entry.type', 'Expected an entry object');
+                            return;
+                        }
+                        if (Array.isArray(entry.pools)) {
+                            table(entry, here, local, depth + 1);
+                            return;
+                        }
+                        const effective = { ...(record(pool.template) ? pool.template : {}), ...entry };
+                        chancy(effective.weight, `${here}.weight`);
+                        chancy(effective.qty, `${here}.qty`);
+                        for (const key of ['unique', 'stackable']) {
+                            if (effective[key] !== undefined && typeof effective[key] !== 'boolean')
+                                issue(`${here}.${key}`, 'boolean.type', 'Expected a boolean');
+                        }
+                        callbacks(effective.functions, `${here}.functions`, local.functions);
+                        callbacks(effective.conditions, `${here}.conditions`, local.conditions);
+                        if (effective.type === 'table') {
+                            if (record(effective.item))
+                                table(effective.item, `${here}.item`, local, depth + 1);
+                            else if (typeof effective.item !== 'string')
+                                issue(`${here}.item`, 'reference.type', 'Expected a table name');
+                            else if (options.tables && Object.prototype.hasOwnProperty.call(options.tables, effective.item))
+                                table(options.tables[effective.item], `${here}.item(${effective.item})`, local, depth + 1);
+                            else if (!options.allowExternalReferences)
+                                issue(`${here}.item`, 'reference.missing', `Table ${effective.item} was not supplied`);
+                        }
+                        else if (record(effective.item) && typeof effective.item.rollSync === 'function')
+                            table(effective.item, `${here}.item`, local, depth + 1);
+                    });
+                }
+            });
+        }
+        active.delete(value);
+    };
+    table(definition, '$', options, 0);
+    return { valid: errors.length === 0, errors };
+}
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (/* binding */ LootTable)
-/* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(334);
-/* harmony import */ var _table_pool__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(425);
-/* harmony import */ var _table_pool_entry_results__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(219);
-/* harmony import */ var _rng__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(673);
+;// ./src/sync.ts
+/** Invoke a synchronous extension without silently accepting asynchronous work. */
+function invokeSync(fn, args, label) {
+    if (Object.prototype.toString.call(fn) === '[object AsyncFunction]') {
+        throw new Error(`Cannot use an async ${label} in a sync roll`);
+    }
+    const value = fn(args);
+    if (value != null && typeof value.then === 'function') {
+        // Observe rejected promises before throwing our synchronous contract error.
+        Promise.resolve(value).catch(() => { });
+        throw new Error(`Cannot return a promise from a sync ${label} call`);
+    }
+    return value;
+}
+
+;// ./src/log.ts
+let debug = false;
+if (true) {
+    debug = !true;
+}
+/**
+ * Logging functions that disappears in production,
+ * and still give accurate line numbers in dev.
+ */
+/**
+ * Trigger verbose logs
+ */
+// debug = false;
+const verbose = true;
+const ultraverbose = true;
+const voidFunc = (...args) => { };
+let r = {
+    enabled: debug,
+    debug: voidFunc,
+    v: voidFunc,
+    vv: voidFunc,
+    vi: voidFunc,
+    ve: voidFunc,
+    vg: voidFunc,
+    vge: voidFunc,
+    vgc: voidFunc,
+    vt: voidFunc,
+    d: voidFunc,
+    g: voidFunc,
+    ge: voidFunc,
+    gc: voidFunc,
+    t: voidFunc,
+    te: voidFunc,
+    time: voidFunc,
+    timeEnd: voidFunc,
+    group: voidFunc,
+    groupEnd: voidFunc,
+    groupCollapsed: voidFunc,
+    log: voidFunc,
+    error: voidFunc,
+    table: voidFunc,
+    info: voidFunc,
+};
+if (debug) {
+    r = {
+        ...r,
+        ...{
+            debug: function (fn) {
+                if (debug) {
+                    fn();
+                }
+            },
+            d: console.log,
+            g: console.group,
+            ge: console.groupEnd,
+            gc: console.groupCollapsed,
+            group: console.group,
+            groupEnd: console.groupEnd,
+            groupCollapsed: console.groupCollapsed,
+            log: console.log,
+            error: console.error,
+            table: console.table,
+            info: console.info
+        }
+    };
+    if (true) {
+        r = {
+            ...r,
+            ...{
+                v: console.log,
+                vi: console.info,
+                ve: console.error,
+                vg: console.group,
+                vge: console.groupEnd,
+                vgc: console.groupCollapsed,
+                vt: console.table,
+                t: console.time,
+                te: console.timeEnd,
+                time: console.time,
+                timeEnd: console.timeEnd,
+            }
+        };
+    }
+    if (true) {
+        r.vv = console.log;
+    }
+}
+/* harmony default export */ const log = (r);
+
+// EXTERNAL MODULE: ./src/table/pool/entry/result.ts
+var entry_result = __webpack_require__(668);
+;// ./src/table/pool/entry/results.ts
+class LootTableEntryResults extends Array {
+    constructor(documents) {
+        if (documents instanceof Array)
+            super(...documents);
+        else if (documents)
+            super(documents);
+        else
+            super();
+    }
+    merge(other) {
+        for (const entry of other) {
+            this.push(entry);
+        }
+        return this;
+    }
+    merged(other) {
+        return new LootTableEntryResults([...this, ...other]);
+    }
+    entrySignature(entry) {
+        const entryWithoutQty = {};
+        for (const [k, v] of Object.entries(entry)) {
+            if (k !== 'qty') {
+                entryWithoutQty[k] = v;
+            }
+        }
+        return JSON.stringify(entryWithoutQty);
+    }
+    collapsed() {
+        const map = {};
+        const other = [];
+        for (const ob of this) {
+            if (ob.stackable) {
+                const sig = this.entrySignature(ob);
+                if (typeof map[sig] === 'undefined') {
+                    map[sig] = Object.assign(Object.create(Object.getPrototypeOf(ob)), ob);
+                }
+                else {
+                    map[sig].addQty(ob.qty);
+                }
+            }
+            else {
+                other.push(Object.assign(Object.create(Object.getPrototypeOf(ob)), ob));
+            }
+        }
+        return new LootTableEntryResults([...other, ...Object.values(map)]);
+    }
+}
+
+;// ./src/table/pool/entry.ts
+
+
+
+
+
+class LootTableEntry {
+    id;
+    stackable = true;
+    unique = false;
+    name;
+    weight = 1;
+    item;
+    qty = 1;
+    functions;
+    conditions;
+    rng;
+    /**
+     * @param definition The loot table entry definition
+     */
+    constructor({ id, stackable = true, unique = false, name, weight = 1, item, functions = [], conditions = [], qty = 1, } = {}) {
+        this.id = id;
+        this.name = name;
+        this.stackable = stackable;
+        this.unique = unique;
+        this.weight = weight;
+        this.item = item;
+        this.qty = qty;
+        this.functions = functions ?? [];
+        this.conditions = conditions ?? [];
+    }
+    getRng(rng) {
+        return rng ?? this.rng ?? (this.rng = new src_rng());
+    }
+    setRng(rng) {
+        this.rng = rng;
+    }
+    get description() {
+        return this.describe();
+    }
+    describe() {
+        if (this.name) {
+            return `${this.name} [${this.id}]`;
+        }
+        return `[${this.id}]`;
+    }
+    getItem() {
+        return this.item ?? this.id;
+    }
+    deepCloneObject(ob) {
+        // Simplest way to deep clone a simple object.
+        // Anything more complex will have to implement a "clone" function.
+        return JSON.parse(JSON.stringify(ob));
+    }
+    cloneItem() {
+        if (this.item === null) {
+            return null;
+        }
+        if (typeof this.item === 'object') {
+            if (typeof this.item.clone === 'function') {
+                return this.item.clone(this.item);
+            }
+            // Here we have to do a deep clone, because if we only do
+            // a shallow clone, any nested properties will be persisted across
+            // rolls, which is probably not what we want.
+            return this.deepCloneObject(this.item);
+        }
+        else {
+            return this.item;
+        }
+    }
+    isTable() {
+        return this.getItem() instanceof LootTable;
+    }
+    resultDefinition(rng) {
+        const def = {
+            id: this.id,
+            stackable: this.stackable,
+            name: this.name,
+            item: this.cloneItem(),
+            qty: rng.chancy(this.qty)
+        };
+        return def;
+    }
+    generateBaseResults(rng) {
+        const def = this.resultDefinition(rng);
+        return new LootTableEntryResults([new entry_result/* default */.A(def)]);
+    }
+    async applyConditions({ rng, table, looter, context, result = new LootTableEntryResults(), }) {
+        let add = true;
+        for (const cond of this.conditions) {
+            const passed = await table.applyCondition(cond, { rng: this.getRng(rng), looter, context, result });
+            if (table.tracing)
+                table.emitTrace({ type: 'condition', entryId: this.id, name: cond.function, passed });
+            add = add && passed;
+            if (!add) {
+                if (log.enabled)
+                    log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
+                break;
+            }
+        }
+        return add;
+    }
+    async roll({ rng, table, looter, context, result = new LootTableEntryResults(), }) {
+        if (this.isTable()) {
+            return await this.rollTable({ rng: this.getRng(rng), table, looter, context, result });
+        }
+        else {
+            return await this.rollItem({ rng: this.getRng(rng), table, looter, context, result });
+        }
+    }
+    async rollItem({ rng, table, looter, context, result = new LootTableEntryResults() }) {
+        if (log.enabled)
+            log.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
+        await this.processEntryResults(this.generateBaseResults(this.getRng(rng)), { rng: this.getRng(rng), table, looter, context, result });
+        return result;
+    }
+    async rollTable({ rng, table, looter, context, result = new LootTableEntryResults() }) {
+        // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
+        const child = this.getItem();
+        const entryResults = await child.roll({ parent: table, looter, context, result: new LootTableEntryResults(), rng, n: this.qty });
+        await this.processEntryResults(entryResults, { rng: this.getRng(rng), table, looter, context, result });
+        return result;
+    }
+    async processEntryResults(entryResults, { rng, table, looter, context, result = new LootTableEntryResults() }) {
+        for (const entryResult of entryResults) {
+            await this.processEntryResult(entryResult, { rng: this.getRng(rng), table, looter, context, result });
+        }
+        return entryResults;
+    }
+    async processEntryResult(entryResult, { rng, table, looter, context, result = new LootTableEntryResults() }) {
+        for (const fn of this.functions) {
+            await table.applyFunction(fn, { rng: this.getRng(rng), looted: entryResult, looter, context, result });
+            if (table.tracing)
+                table.emitTrace({ type: 'modifier', entryId: this.id, name: fn.function, quantity: entryResult.qty });
+        }
+        if (entryResult.qty > 0) {
+            if (entryResult.stackable) {
+                result.push(entryResult);
+            }
+            else {
+                for (let i = 0; i < entryResult.qty; i++) {
+                    result.push(new entry_result/* default */.A({ ...entryResult, ...{ qty: 1 } }));
+                }
+            }
+        }
+    }
+    applyConditionsSync({ rng, table, looter, context, result = new LootTableEntryResults(), }) {
+        let add = true;
+        for (const cond of this.conditions) {
+            const passed = table.applyConditionSync(cond, { rng: this.getRng(rng), looter, context, result });
+            if (table.tracing)
+                table.emitTrace({ type: 'condition', entryId: this.id, name: cond.function, passed });
+            add = add && passed;
+            if (!add) {
+                if (log.enabled)
+                    log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
+                break;
+            }
+        }
+        return add;
+    }
+    rollSync({ rng, table, looter, context, result = new LootTableEntryResults(), }) {
+        if (this.isTable()) {
+            return this.rollTableSync({ rng: this.getRng(rng), table, looter, context, result });
+        }
+        else {
+            return this.rollItemSync({ rng: this.getRng(rng), table, looter, context, result });
+        }
+    }
+    rollItemSync({ rng, table, looter, context, result = new LootTableEntryResults() }) {
+        if (log.enabled)
+            log.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
+        this.processEntryResultsSync(this.generateBaseResults(this.getRng(rng)), { rng: this.getRng(rng), table, looter, context, result });
+        return result;
+    }
+    rollTableSync({ rng, table, looter, context, result = new LootTableEntryResults() }) {
+        // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
+        const child = this.getItem();
+        const entryResults = child.rollSync({ parent: table, looter, context, result: new LootTableEntryResults(), rng, n: this.qty });
+        this.processEntryResultsSync(entryResults, { rng: this.getRng(rng), table, looter, context, result });
+        return result;
+    }
+    processEntryResultsSync(entryResults, { rng, table, looter, context, result = new LootTableEntryResults() }) {
+        for (const entryResult of entryResults) {
+            this.processEntryResultSync(entryResult, { rng: this.getRng(rng), table, looter, context, result });
+        }
+        return entryResults;
+    }
+    processEntryResultSync(looted, { rng, table, looter, context, result = new LootTableEntryResults() }) {
+        for (const fn of this.functions) {
+            table.applyFunctionSync(fn, { rng: this.getRng(rng), looted, looter, context, result });
+            if (table.tracing)
+                table.emitTrace({ type: 'modifier', entryId: this.id, name: fn.function, quantity: looted.qty });
+        }
+        if (looted.qty > 0) {
+            if (looted.stackable || looted.qty === 1) {
+                result.push(looted);
+            }
+            else {
+                for (let i = 0; i < looted.qty; i++) {
+                    result.push(new entry_result/* default */.A({ ...looted, ...{ qty: 1 } }));
+                }
+            }
+        }
+    }
+}
+
+;// ./src/table/pool.ts
+
+
+
+
+
+
+class LootPool {
+    name;
+    id;
+    conditions = [];
+    functions = [];
+    rolls = 1;
+    nulls = 0;
+    entries = [];
+    template = {};
+    static NULLKEY = '__NULL__fd2a99d2-26c0-4454-a284-34578b94e0f6';
+    /**
+     * @param definition The loot table pool definition
+     */
+    constructor({ name, id, conditions = [], functions = [], rolls = 1, nulls = 0, entries = [], template = {}, } = {}) {
+        this.name = name;
+        this.conditions = conditions ?? [];
+        this.functions = functions ?? [];
+        this.rolls = rolls;
+        this.nulls = nulls;
+        this.id = id ?? (new src_rng()).randomString(6);
+        this.template = template;
+        if (entries) {
+            for (const entry of entries) {
+                this.addEntry(entry);
+            }
+        }
+    }
+    get description() {
+        return this.describe();
+    }
+    describe() {
+        if (this.name) {
+            return `${this.name} [${this.id}]`;
+        }
+        return `[${this.id}]`;
+    }
+    createEntry(def) {
+        const entry = new LootTableEntry({ ...(this.template ?? {}), ...def });
+        this.entries.push(entry);
+        return entry;
+    }
+    addEntry(entry, def) {
+        if (entry instanceof LootTable) {
+            entry = new LootTableEntry({
+                ...(this.template ?? {}),
+                ...(def ?? {}),
+                ...{
+                    id: entry.id,
+                    item: entry,
+                }
+            });
+        }
+        if (entry instanceof LootTableEntry) {
+            this.entries.push(entry);
+        }
+        else {
+            this.createEntry(entry);
+        }
+        return this;
+    }
+    getEntries() {
+        return this.entries;
+    }
+    async roll({ rng, table, looter, context, result = new LootTableEntryResults() }) {
+        const numRolls = rng.chancyInt(this.rolls);
+        if (log.enabled)
+            log.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
+        // We store a list of key/value choices with their weights in an array
+        const choices = {};
+        // A special NULL key to track null results
+        const nullWeight = rng.chancy(this.nulls);
+        if (nullWeight > 0) {
+            choices[LootPool.NULLKEY] = nullWeight;
+        }
+        // map the weights to positions in entries.
+        for (const idx in this.entries) {
+            const entry = this.entries[idx];
+            if (entry instanceof LootTable) {
+                choices[idx] = 1;
+            }
+            else {
+                const r = await entry.applyConditions({ rng, table, looter, context, result });
+                if (log.enabled)
+                    log.vv(`Pool ${this.description} | Result of calling await a.applyConditions was ${JSON.stringify(r)}`);
+                if (r) {
+                    choices[idx] = rng.chancy(entry.weight ?? 1);
+                }
+            }
+        }
+        if (log.enabled)
+            log.vv(`Pool ${this.description} | Choices:`, choices);
+        if (table.tracing)
+            table.emitTrace({ type: 'pool', poolId: this.id, rolls: numRolls, weights: { ...choices } });
+        const overallIntermediate = new LootTableEntryResults();
+        let add = true;
+        for (const cond of this.conditions) {
+            const conditionResult = await table.applyCondition(cond, { rng, looter, context, result });
+            if (log.enabled)
+                log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+            if (table.tracing)
+                table.emitTrace({ type: 'condition', poolId: this.id, name: cond.function, passed: conditionResult });
+            add = add && conditionResult;
+            if (!add) {
+                if (log.enabled)
+                    log.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
+                break;
+            }
+        }
+        if (log.enabled)
+            log.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
+        if (add) {
+            for (let i = 0; i < numRolls; i++) {
+                // This is our choice from the choices table
+                const choice = rng.weightedChoice(choices);
+                if (table.tracing)
+                    table.emitTrace({ type: 'choice', poolId: this.id, entryId: choice == null || choice === LootPool.NULLKEY ? null : this.entries[choice]?.id, choice: choice === LootPool.NULLKEY ? null : choice });
+                // Then, unless it is the null key, we extract it!
+                if (choice === null)
+                    break;
+                if (choice !== LootPool.NULLKEY) {
+                    const entry = this.entries[choice];
+                    if (entry instanceof LootTable) {
+                        // If the entry is a loot table, voila - we can roll it directly
+                        overallIntermediate.merge(await entry.roll({ looter, context, rng }));
+                    }
+                    else if (entry instanceof LootTableEntry) {
+                        // Otherwise, we can roll the entry itself
+                        if (log.enabled)
+                            log.g(`Pool ${this.description} | Rolling Loot Table Entry`);
+                        overallIntermediate.merge(await entry.roll({ rng, table, looter, context }));
+                        if (log.enabled)
+                            log.ge();
+                        if (entry.unique) {
+                            delete choices[choice];
+                        }
+                    }
+                }
+                else {
+                    if (log.enabled)
+                        log.v(`Pool ${this.description} | Got null result`);
+                }
+            }
+        }
+        else {
+            if (log.enabled)
+                log.v(`Pool ${this.description} | Skipping because of conditions`);
+        }
+        // Then we process all the results
+        await this.processEntryResults(overallIntermediate, { rng, table, looter, context, result });
+        if (log.enabled)
+            log.ge();
+        return result;
+    }
+    rollSync({ rng, table, looter, context, result = new LootTableEntryResults() }) {
+        const numRolls = rng.chancyInt(this.rolls);
+        if (log.enabled)
+            log.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
+        // We store a list of key/value choices with their weights in an array
+        const choices = {};
+        // A special NULL key to track null results
+        const nullWeight = rng.chancy(this.nulls);
+        if (nullWeight > 0) {
+            choices[LootPool.NULLKEY] = nullWeight;
+        }
+        // map the weights to positions in entries.
+        this.entries.forEach((a, i) => {
+            if (a instanceof LootTable) {
+                choices[i] = 1;
+            }
+            else {
+                if (a.applyConditionsSync({ rng, table, looter, context, result })) {
+                    choices[i] = rng.chancy(a.weight ?? 1);
+                }
+            }
+        });
+        if (log.enabled)
+            log.vv(`Pool ${this.description} | Choices:`, choices);
+        if (table.tracing)
+            table.emitTrace({ type: 'pool', poolId: this.id, rolls: numRolls, weights: { ...choices } });
+        const overallIntermediate = new LootTableEntryResults();
+        let add = true;
+        for (const cond of this.conditions) {
+            const conditionResult = table.applyConditionSync(cond, { rng, looter, context, result });
+            if (log.enabled)
+                log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+            if (table.tracing)
+                table.emitTrace({ type: 'condition', poolId: this.id, name: cond.function, passed: conditionResult });
+            add = add && conditionResult;
+            if (!add) {
+                if (log.enabled)
+                    log.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
+                break;
+            }
+        }
+        if (log.enabled)
+            log.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
+        if (add) {
+            for (let i = 0; i < numRolls; i++) {
+                // This is our choice from the choices table
+                const choice = rng.weightedChoice(choices);
+                if (table.tracing)
+                    table.emitTrace({ type: 'choice', poolId: this.id, entryId: choice == null || choice === LootPool.NULLKEY ? null : this.entries[choice]?.id, choice: choice === LootPool.NULLKEY ? null : choice });
+                // Then, unless it is the null key, we extract it!
+                if (choice === null)
+                    break;
+                if (choice !== LootPool.NULLKEY) {
+                    const entry = this.entries[choice];
+                    if (entry instanceof LootTable) {
+                        // If the entry is a loot table, voila - we can roll it directly
+                        overallIntermediate.merge(entry.rollSync({ looter, context, rng }));
+                    }
+                    else if (entry instanceof LootTableEntry) {
+                        // Otherwise, we can roll the entry itself
+                        if (log.enabled)
+                            log.g(`Pool ${this.description} | Rolling Loot Table Entry`);
+                        overallIntermediate.merge(entry.rollSync({ rng, table, looter, context }));
+                        if (log.enabled)
+                            log.ge();
+                        if (entry.unique) {
+                            delete choices[choice];
+                        }
+                    }
+                }
+                else {
+                    if (log.enabled)
+                        log.v(`Pool ${this.description} | Got null result`);
+                }
+            }
+        }
+        else {
+            if (log.enabled)
+                log.v(`Pool ${this.description} | Skipping because of conditions`);
+        }
+        // Then we process all the results
+        this.processEntryResultsSync(overallIntermediate, { rng, table, looter, context, result });
+        if (log.enabled)
+            log.ge();
+        return result;
+    }
+    async processEntryResults(entryResults, { rng, table, looter, context, result = new LootTableEntryResults() }) {
+        for (const entryResult of entryResults) {
+            await this.processEntryResult(entryResult, { rng, table, looter, context, result });
+        }
+        return entryResults;
+    }
+    processEntryResultsSync(entryResults, { rng, table, looter, context, result = new LootTableEntryResults() }) {
+        for (const entryResult of entryResults) {
+            this.processEntryResultSync(entryResult, { rng, table, looter, context, result });
+        }
+        return entryResults;
+    }
+    async processEntryResult(looted, { rng, table, looter, context, result = new LootTableEntryResults() }) {
+        for (const fn of this.functions) {
+            await table.applyFunction(fn, { rng, looted, looter, context, result });
+            if (table.tracing)
+                table.emitTrace({ type: 'modifier', poolId: this.id, name: fn.function, entryId: looted.id, quantity: looted.qty });
+        }
+        if (looted.qty > 0) {
+            if (looted.stackable) {
+                result.push(looted);
+            }
+            else {
+                for (let i = 0; i < looted.qty; i++) {
+                    result.push(new entry_result/* default */.A({ ...looted, ...{ qty: 1 } }));
+                }
+            }
+        }
+    }
+    processEntryResultSync(looted, { rng, table, looter, context, result = new LootTableEntryResults() }) {
+        for (const fn of this.functions) {
+            table.applyFunctionSync(fn, { rng, looted, looter, context, result });
+            if (table.tracing)
+                table.emitTrace({ type: 'modifier', poolId: this.id, name: fn.function, entryId: looted.id, quantity: looted.qty });
+        }
+        if (looted.qty > 0) {
+            if (looted.stackable) {
+                result.push(looted);
+            }
+            else {
+                for (let i = 0; i < looted.qty; i++) {
+                    result.push(new entry_result/* default */.A({ ...looted, ...{ qty: 1 } }));
+                }
+            }
+        }
+    }
+}
+
+;// ./src/table.ts
+
 
 
 
@@ -2219,6 +2941,28 @@ class LootTable {
      * This is a set, so we don't end up with the same table in there multiple times.
      */
     borrowed = new Set();
+    rollAncestors = [];
+    sourceTable;
+    traceSink;
+    createRollScope(parent, trace) {
+        const source = this.sourceTable ?? this;
+        const ancestors = parent?.rollAncestors ?? [];
+        if (ancestors.includes(source))
+            throw new Error('Recursive loot table roll detected');
+        // Only callback lookup state belongs to this invocation. Definitions stay shared.
+        return Object.assign(Object.create(this), {
+            sourceTable: source,
+            traceSink: trace ?? parent?.traceSink,
+            rollAncestors: [...ancestors, source],
+            borrowed: new Set([...this.borrowed, ...(parent ? [parent] : [])])
+        });
+    }
+    get tracing() { return this.traceSink !== undefined; }
+    /** @internal Emit an observation without drawing random numbers. */
+    emitTrace(event) {
+        if (this.traceSink)
+            this.traceSink({ ...event, tableId: this.id });
+    }
     /**
      * @param definition The loot table definition
      */
@@ -2227,7 +2971,7 @@ class LootTable {
         this.pools = pools;
         this.fn = fn;
         this.ul = ul;
-        this.rng = rng ?? (ul ? ul.getRng() : new _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Ay());
+        this.rng = rng ?? (ul ? ul.getRng() : new src_rng());
         this.id = id ?? this.rng.randomString(6);
     }
     // Register a function for use in loot pools
@@ -2283,7 +3027,8 @@ class LootTable {
     rollBasics({ rng, looter, context, n = 1 }) {
         const rngToUse = rng ?? this.rng;
         const rolls = rngToUse.chancy(n);
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.gc(`Table: ${this.description} | Rolling table ${rolls} times (from chancy(${JSON.stringify(n)}))`, { looter, context });
+        if (log.enabled)
+            log.gc(`Table: ${this.description} | Rolling table ${rolls} times (from chancy(${JSON.stringify(n)}))`, { looter, context });
         return [rngToUse, rolls];
     }
     /**
@@ -2294,10 +3039,13 @@ class LootTable {
      *
      * @param rollDefinition
      */
-    rollSync({ looter, context, result = new _table_pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(), rng, n = 1 } = {}) {
-        const [rngToUse, rolls] = this.rollBasics({ rng, n, looter, context });
+    rollSync({ parent, trace, looter, context, result = new LootTableEntryResults(), rng, n = 1 } = {}) {
+        const scope = this.createRollScope(parent, trace);
+        const [rngToUse, rolls] = scope.rollBasics({ rng, n, looter, context });
+        if (scope.tracing)
+            scope.emitTrace({ type: 'table:start', state: scope.tracing ? { ...rngToUse.serialize() } : undefined });
         for (const pool of this.pools) {
-            this.rollPoolSync({
+            scope.rollPoolSync({
                 n: rolls,
                 pool,
                 rng: rngToUse,
@@ -2306,7 +3054,10 @@ class LootTable {
                 result
             });
         }
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.ge();
+        if (scope.tracing)
+            scope.emitTrace({ type: 'table:end', quantity: result.reduce((sum, entry) => sum + entry.qty, 0), state: scope.tracing ? { ...rngToUse.serialize() } : undefined });
+        if (log.enabled)
+            log.ge();
         return result;
     }
     /**
@@ -2317,10 +3068,13 @@ class LootTable {
      *
      * @param rollDefinition
      */
-    async roll({ looter, context, result = new _table_pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(), rng, n = 1 } = {}) {
-        const [rngToUse, rolls] = this.rollBasics({ rng, n, looter, context });
+    async roll({ parent, trace, looter, context, result = new LootTableEntryResults(), rng, n = 1 } = {}) {
+        const scope = this.createRollScope(parent, trace);
+        const [rngToUse, rolls] = scope.rollBasics({ rng, n, looter, context });
+        if (scope.tracing)
+            scope.emitTrace({ type: 'table:start', state: scope.tracing ? { ...rngToUse.serialize() } : undefined });
         for (const pool of this.pools) {
-            await this.rollPool({
+            await scope.rollPool({
                 n: rolls,
                 pool,
                 rng: rngToUse,
@@ -2329,7 +3083,10 @@ class LootTable {
                 result
             });
         }
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.ge();
+        if (scope.tracing)
+            scope.emitTrace({ type: 'table:end', quantity: result.reduce((sum, entry) => sum + entry.qty, 0), state: scope.tracing ? { ...rngToUse.serialize() } : undefined });
+        if (log.enabled)
+            log.ge();
         return result;
     }
     /**
@@ -2339,7 +3096,7 @@ class LootTable {
      * The context will either be a container or a 'monster', but might be something else (where the loot is coming from)
      * @param rollDefinition
      */
-    rollPoolSync({ pool, looter, context, result = new _table_pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(), rng, n = 1 }) {
+    rollPoolSync({ pool, looter, context, result = new LootTableEntryResults(), rng, n = 1 }) {
         const rngToUse = rng ?? this.rng;
         const rolls = rngToUse.chancy(n);
         for (let i = 0; i < rolls; i++) {
@@ -2355,7 +3112,7 @@ class LootTable {
      *
      * @param rollDefinition
      */
-    async rollPool({ pool, looter, context, result = new _table_pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(), rng, n = 1 }) {
+    async rollPool({ pool, looter, context, result = new LootTableEntryResults(), rng, n = 1 }) {
         const rngToUse = rng ?? this.rng;
         const rolls = rngToUse.chancy(n);
         for (let i = 0; i < rolls; i++) {
@@ -2372,12 +3129,12 @@ class LootTable {
         return hasSelf || Array.from(this.borrowed).reduce((acc, cur) => acc || cur.hasCondition(cond), false);
     }
     createPool(def) {
-        const pool = new _table_pool__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(def);
+        const pool = new LootPool(def);
         this.pools.push(pool);
         return pool;
     }
     addPool(def) {
-        if ((def instanceof _table_pool__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A)) {
+        if ((def instanceof LootPool)) {
             this.pools.push(def);
         }
         else {
@@ -2397,9 +3154,9 @@ class LootTable {
                     totalWeight += (entry.weight ?? 1);
                 }
             }
-            const rollsMax = _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Ay.chancyMax(pool.rolls);
-            const rollsMin = _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Ay.chancyMin(pool.rolls);
-            const nullsMin = _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Ay.chancyMin(pool.nulls);
+            const rollsMax = src_rng.chancyMax(pool.rolls);
+            const rollsMin = src_rng.chancyMin(pool.rolls);
+            const nullsMin = src_rng.chancyMin(pool.nulls);
             for (const entry of pool.getEntries()) {
                 if (entry instanceof LootTable || entry.isTable()) {
                     let table;
@@ -2427,8 +3184,8 @@ class LootTable {
                     entries.push({
                         entry,
                         weight: entry.weight / totalWeight,
-                        min: nullsMin > 0 ? 0 : (rollsMin * _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Ay.chancyMin(entry.qty)),
-                        max: rollsMax * _rng__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Ay.chancyMax(entry.qty),
+                        min: nullsMin > 0 ? 0 : (rollsMin * src_rng.chancyMin(entry.qty)),
+                        max: rollsMax * src_rng.chancyMax(entry.qty),
                     });
                 }
             }
@@ -2525,7 +3282,7 @@ class LootTable {
             }
         }
         else {
-            return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.args });
+            return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: functionDefinition.args ?? functionDefinition.arguments }, 'function');
         }
     }
     /**
@@ -2557,620 +3314,258 @@ class LootTable {
                 return true;
             }
         }
-        const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.args });
-        if (conditionCallResult instanceof Promise) {
-            throw new Error('Cannot return promise from sync condition call');
-        }
-        return conditionCallResult;
+        return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: conditionDefinition.args ?? conditionDefinition.arguments }, 'condition');
     }
 }
 
-
-/***/ }),
-
-/***/ 425:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (/* binding */ LootPool)
-/* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(334);
-/* harmony import */ var _pool_entry__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(50);
-/* harmony import */ var _pool_entry_result__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(668);
-/* harmony import */ var _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(219);
-/* harmony import */ var _table__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(784);
-/* harmony import */ var _rng__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(673);
-
-
-
-
-
-
-class LootPool {
-    name;
-    id;
-    conditions = [];
-    functions = [];
-    rolls = 1;
-    nulls = 0;
-    entries = [];
-    template = {};
-    static NULLKEY = '__NULL__fd2a99d2-26c0-4454-a284-34578b94e0f6';
-    /**
-     * @param definition The loot table pool definition
-     */
-    constructor({ name, id, conditions = [], functions = [], rolls = 1, nulls = 0, entries = [], template = {}, } = {}) {
-        this.name = name;
-        this.conditions = conditions ?? [];
-        this.functions = functions ?? [];
-        this.rolls = rolls;
-        this.nulls = nulls;
-        this.id = id ?? (new _rng__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Ay()).randomString(6);
-        this.template = template;
-        if (entries) {
-            for (const entry of entries) {
-                this.addEntry(entry);
-            }
+;// ./package.json
+const package_namespaceObject = {"rE":"0.3.0"};
+;// ./src/utils.ts
+/**
+ * Simple dot getter function. If property is undefined, returns default value
+ * @example
+ * const ob = { a: { b: { c: 'foo' } } };
+ * dotGet(ob, 'a.b.c'); // 'foo'
+ * dotGet(ob, 'a.z.c'); // undefined
+ * dotGet(ob, 'a.z.c', 'bar'); // 'bar'
+ */
+const dotGet = (ob, path, defaultValue) => {
+    const result = path.split('.').reduce((o, i) => ((typeof o !== 'undefined') ? o[i] : o), ob);
+    return (typeof result === 'undefined' ? defaultValue : result);
+};
+/**
+ * Simple dot setter
+ * @example
+ * const ob = { a: { b: { c: 'foo' } } };
+ * dotSet(ob, 'a.b.c', 'bar'); // ob.a.b.c === 'bar';
+ * dotSet(ob, 'a.b.d', 'baz'); // ob.a.b.d === 'baz';
+ */
+const dotSet = (ob, path, value) => {
+    const keys = path.split('.');
+    let parent = ob;
+    for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        if (!(key in parent) || parent[key] == null) {
+            parent[key] = {};
         }
+        parent = parent[key];
     }
-    get description() {
-        return this.describe();
+    parent[keys[keys.length - 1]] = value;
+};
+/**
+ * returns true or false depending on property of ob
+ * @example
+ * depend(false); // false
+ * depend(false, null, true); // true
+ * depend({foo: false}, 'foo'); // false
+ * depend({foo: false}, 'foo', null, true); // true
+ * depend({foo: true}, 'foo'); // true
+ * depend({foo: true}, 'foo', null, true); // false
+ */
+const depend = (ob, { property, tobe, min, max, inverse = false, strict = true } = {}) => {
+    inverse = !!inverse;
+    if (!ob) {
+        return inverse;
     }
-    describe() {
-        if (this.name) {
-            return `${this.name} [${this.id}]`;
-        }
-        return `[${this.id}]`;
+    let val = ob;
+    if (typeof property === 'string') {
+        val = dotGet(ob, property);
     }
-    createEntry(def) {
-        const entry = new _pool_entry__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A({ ...(this.template ?? {}), ...def });
-        this.entries.push(entry);
-        return entry;
-    }
-    addEntry(entry, def) {
-        if (entry instanceof _table__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
-            entry = new _pool_entry__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A({
-                ...(this.template ?? {}),
-                ...(def ?? {}),
-                ...{
-                    id: entry.id,
-                    item: entry,
-                }
-            });
-        }
-        if (entry instanceof _pool_entry__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A) {
-            this.entries.push(entry);
+    if (typeof tobe !== 'undefined') {
+        if (strict) {
+            val = (val === tobe);
         }
         else {
-            this.createEntry(entry);
+            // eslint-disable-next-line eqeqeq
+            val = (val == tobe);
         }
-        return this;
+        return inverse ? !val : !!val;
     }
-    getEntries() {
-        return this.entries;
+    if ((typeof min !== 'undefined' ||
+        typeof max !== 'undefined') &&
+        strict &&
+        typeof val !== 'number') {
+        return false;
     }
-    async roll({ rng, table, looter, context, result = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
-        const numRolls = rng.chancyInt(this.rolls);
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
-        // We store a list of key/value choices with their weights in an array
-        const choices = {};
-        // A special NULL key to track null results
-        if (rng.chancy(this.nulls) > 0) {
-            choices[LootPool.NULLKEY] = rng.chancy(this.nulls);
+    if (typeof val !== 'undefined' &&
+        val !== null) {
+        if (typeof min !== 'undefined' && parseFloat(val) < min) {
+            return inverse;
         }
-        // map the weights to positions in entries.
-        for (const idx in this.entries) {
-            const entry = this.entries[idx];
-            if (entry instanceof _table__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
-                choices[idx] = 1;
-            }
-            else {
-                const r = await entry.applyConditions({ rng, table, looter, context, result });
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.vv(`Pool ${this.description} | Result of calling await a.applyConditions was ${JSON.stringify(r)}`);
-                if (r) {
-                    choices[idx] = rng.chancy(entry.weight ?? 1);
-                }
-            }
+        if (typeof max !== 'undefined' && parseFloat(val) > max) {
+            return inverse;
         }
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.vv(`Pool ${this.description} | Choices:`, choices);
-        const overallIntermediate = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A();
-        let add = true;
-        for (const cond of this.conditions) {
-            const conditionResult = await table.applyCondition(cond, { rng, looter, context, result });
-            _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
-            add = add && conditionResult;
-            if (!add) {
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
-                break;
-            }
-        }
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
-        if (add) {
-            for (let i = 0; i < numRolls; i++) {
-                // This is our choice from the choices table
-                const choice = rng.weightedChoice(choices);
-                // Then, unless it is the null key, we extract it!
-                if (choice !== LootPool.NULLKEY) {
-                    const entry = this.entries[choice];
-                    if (entry instanceof _table__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
-                        // If the entry is a loot table, voila - we can roll it directly
-                        overallIntermediate.merge(await entry.roll({ looter, context, rng }));
-                    }
-                    else if (entry instanceof _pool_entry__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A) {
-                        // Otherwise, we can roll the entry itself
-                        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.g(`Pool ${this.description} | Rolling Loot Table Entry`);
-                        overallIntermediate.merge(await entry.roll({ rng, table, looter, context }));
-                        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.ge();
-                        if (entry.unique) {
-                            choices[choice] = 0;
-                        }
-                    }
-                }
-                else {
-                    _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Got null result`);
-                }
-            }
-        }
-        else {
-            _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Skipping because of conditions`);
-        }
-        // Then we process all the results
-        await this.processEntryResults(overallIntermediate, { rng, table, looter, context, result });
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.ge();
-        return result;
-    }
-    rollSync({ rng, table, looter, context, result = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
-        const numRolls = rng.chancyInt(this.rolls);
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
-        // We store a list of key/value choices with their weights in an array
-        const choices = {};
-        // A special NULL key to track null results
-        if (rng.chancy(this.nulls) > 0) {
-            choices[LootPool.NULLKEY] = rng.chancy(this.nulls);
-        }
-        // map the weights to positions in entries.
-        this.entries.forEach((a, i) => {
-            if (a instanceof _table__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
-                choices[i] = 1;
-            }
-            else {
-                if (a.applyConditionsSync({ rng, table, looter, context, result })) {
-                    choices[i] = rng.chancy(a.weight ?? 1);
-                }
-            }
-        });
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.vv(`Pool ${this.description} | Choices:`, choices);
-        const overallIntermediate = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A();
-        let add = true;
-        for (const cond of this.conditions) {
-            const conditionResult = table.applyConditionSync(cond, { rng, looter, context, result });
-            _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
-            add = add && conditionResult;
-            if (!add) {
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
-                break;
-            }
-        }
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
-        if (add) {
-            for (let i = 0; i < numRolls; i++) {
-                // This is our choice from the choices table
-                const choice = rng.weightedChoice(choices);
-                // Then, unless it is the null key, we extract it!
-                if (choice !== LootPool.NULLKEY) {
-                    const entry = this.entries[choice];
-                    if (entry instanceof _table__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
-                        // If the entry is a loot table, voila - we can roll it directly
-                        overallIntermediate.merge(entry.rollSync({ looter, context, rng }));
-                    }
-                    else if (entry instanceof _pool_entry__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A) {
-                        // Otherwise, we can roll the entry itself
-                        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.g(`Pool ${this.description} | Rolling Loot Table Entry`);
-                        overallIntermediate.merge(entry.rollSync({ rng, table, looter, context }));
-                        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.ge();
-                        if (entry.unique) {
-                            choices[choice] = 0;
-                        }
-                    }
-                }
-                else {
-                    _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Got null result`);
-                }
-            }
-        }
-        else {
-            _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Pool ${this.description} | Skipping because of conditions`);
-        }
-        // Then we process all the results
-        this.processEntryResultsSync(overallIntermediate, { rng, table, looter, context, result });
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.ge();
-        return result;
-    }
-    async processEntryResults(entryResults, { rng, table, looter, context, result = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
-        const results = [];
-        for (const entryResult of entryResults) {
-            results.push(this.processEntryResult(entryResult, { rng, table, looter, context, result }));
-        }
-        return Promise.all(results);
-    }
-    processEntryResultsSync(entryResults, { rng, table, looter, context, result = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
-        for (const entryResult of entryResults) {
-            this.processEntryResultSync(entryResult, { rng, table, looter, context, result });
-        }
-        return entryResults;
-    }
-    async processEntryResult(looted, { rng, table, looter, context, result = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
-        for (const fn of this.functions) {
-            await table.applyFunction(fn, { rng, looted, looter, context, result });
-        }
-        if (looted.qty > 0) {
-            if (looted.stackable) {
-                result.push(looted);
-            }
-            else {
-                for (let i = 0; i < looted.qty; i++) {
-                    result.push(new _pool_entry_result__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A({ ...looted, ...{ qty: 1 } }));
-                }
-            }
+        if (typeof min !== 'undefined' || typeof max !== 'undefined') {
+            return !inverse;
         }
     }
-    processEntryResultSync(looted, { rng, table, looter, context, result = new _pool_entry_results__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A() }) {
-        for (const fn of this.functions) {
-            table.applyFunctionSync(fn, { rng, looted, looter, context, result });
-        }
-        if (looted.qty > 0) {
-            if (looted.stackable) {
-                result.push(looted);
-            }
-            else {
-                for (let i = 0; i < looted.qty; i++) {
-                    result.push(new _pool_entry_result__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A({ ...looted, ...{ qty: 1 } }));
-                }
-            }
-        }
-    }
-}
+    return inverse ? !val : !!val;
+};
 
+;// ./src/default/functions.ts
 
-/***/ }),
+/**
+ * Inherits some property from looter to looted
+ * @param args
+ * @example
+ * inheritLooter({looted, looter, {
+ *   looterProperty: 'equipped.color',
+ *   lootedProperty: 'item.color'
+ *   default: 'red',
+ * }})
+ */
+const inheritLooter = ({ looted, looter, args }) => {
+    args = args ?? {};
+    args.lootedProperty = args.lootedProperty ?? args.property;
+    args.looterProperty = args.looterProperty ?? args.property;
+    if (args.looterProperty && args.lootedProperty) {
+        dotSet(looted, args.lootedProperty, dotGet(looter, args.looterProperty, args.default));
+    }
+};
+/**
+ * Inherits some property from context to looted
+ * @param args
+ * @example
+ * inheritContext({looted, looter, {
+ *   contextProperty: 'dyed.color',
+ *   lootedProperty: 'item.color'
+ *   default: 'brown',
+ * }})
+ */
+const inheritContext = ({ looted, context, args }) => {
+    args = args ?? {};
+    args.lootedProperty = args.lootedProperty ?? args.property;
+    args.contextProperty = args.contextProperty ?? args.property;
+    if (args.contextProperty && args.lootedProperty) {
+        dotSet(looted, args.lootedProperty, dotGet(context, args.contextProperty, args.default));
+    }
+};
+/**
+ * Sets a property of looted to some random choice from choices list
+ *
+ * Choices can be a simple array, or a map of anything => weight.
+ *
+ * @param args
+ * @example
+ * setToRandomChoice({rng, looted, {
+ *   property: 'item.color',
+ *   choices: ['red', 'green', 'blue']
+ * }}); // looted.item.color will be one of red, green or blue.
+ */
+const setToRandomChoice = ({ rng, looted, args }) => {
+    args = args ?? {};
+    const { property, choices } = args;
+    if (property && looted && choices) {
+        dotSet(looted, property, rng.weightedChoice(choices));
+    }
+};
 
-/***/ 50:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+;// ./src/default/conditions.ts
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (/* binding */ LootTableEntry)
-/* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(334);
-/* harmony import */ var _table__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(784);
-/* harmony import */ var _rng__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(673);
-/* harmony import */ var _entry_result__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(668);
-/* harmony import */ var _entry_results__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(219);
+/**
+ * Returns true or false depending on value set in looter
+ * @param args
+ * @example
+ * const context = { a: { b: 'foo', c: true, d: false } };
+ * dependContext({ context, args: { property: 'a.b' } }); // true
+ * dependContext({ context, args: { property: 'a.b', tobe: 'foo' } }); // true
+ * dependContext({ context, args: { property: 'a.c', tobe: 'foo' } }); // false
+ * dependContext({ context, args: { property: 'a.c' } }); // true
+ * dependContext({ context, args: { property: 'a.d' } }); // false
+ *
+ * @example
+ * // Use in a json file:
+ * {
+ *   "pools": [
+ *     {
+ *       "conditions": [
+ *         {
+ *           "function": "dependContext",
+ *           "args": {
+ *             "property": "physical.wet"
+ *           }
+ *         }
+ *       ],
+ *       "entries": [
+ *         {
+ *           "id": "soggy_newspaper"
+ *         }
+ *       ]
+ *     }
+ *   ]
+ * }
+ */
+const dependContext = ({ context, args }) => {
+    if (args) {
+        return depend(context, args);
+    }
+    return true;
+};
+/**
+ * Returns true or false depending on value set in looter
+ * @param args
+ * @example
+ * const looter = { a: { b: 'foo', c: true, d: false } };
+ * dependLooter({ looter, args: { property: 'a.b' } }); // true
+ * dependLooter({ looter, args: { property: 'a.b', tobe: 'foo' } }); // true
+ * dependLooter({ looter, args: { property: 'a.c', tobe: 'foo' } }); // false
+ * dependLooter({ looter, args: { property: 'a.c' } }); // true
+ * dependLooter({ looter, args: { property: 'a.d' } }); // false
+ *
+ * @example
+ * // Use in a json file:
+ * {
+ *   "pools": [
+ *     {
+ *       "conditions": [
+ *         {
+ *           "function": "dependLooter",
+ *           "args": {
+ *             "property": "status.sickness",
+ *             "min": 0.5
+ *           }
+ *         }
+ *       ],
+ *       "entries": [
+ *         {
+ *           "id": "sickness_healing_pack"
+ *         }
+ *       ]
+ *     }
+ *   ]
+ * }
+ */
+const dependLooter = ({ looter, args }) => {
+    if (args) {
+        return depend(looter, args);
+    }
+    return true;
+};
 
-
-
-
-
-class LootTableEntry {
-    id;
-    stackable = true;
-    unique = false;
-    name;
-    weight = 1;
-    item;
-    qty = 1;
-    functions;
-    conditions;
-    rng;
-    /**
-     * @param definition The loot table entry definition
-     */
-    constructor({ id, stackable = true, unique = false, name, weight = 1, item, functions = [], conditions = [], qty = 1, } = {}) {
-        this.id = id;
-        this.name = name;
-        this.stackable = stackable;
-        this.unique = unique;
-        this.weight = weight;
-        this.item = item;
-        this.qty = qty;
-        this.functions = functions ?? [];
-        this.conditions = conditions ?? [];
-    }
-    getRng(rng) {
-        return rng ?? this.rng ?? (this.rng = new _rng__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Ay());
-    }
-    setRng(rng) {
-        this.rng = rng;
-    }
-    get description() {
-        return this.describe();
-    }
-    describe() {
-        if (this.name) {
-            return `${this.name} [${this.id}]`;
-        }
-        return `[${this.id}]`;
-    }
-    getItem() {
-        return this.item ?? this.id;
-    }
-    deepCloneObject(ob) {
-        // Simplest way to deep clone a simple object.
-        // Anything more complex will have to implement a "clone" function.
-        return JSON.parse(JSON.stringify(ob));
-    }
-    cloneItem() {
-        if (this.item === null) {
-            return null;
-        }
-        if (typeof this.item === 'object') {
-            if (typeof this.item.clone === 'function') {
-                return this.item.clone(this.item);
-            }
-            // Here we have to do a deep clone, because if we only do
-            // a shallow clone, any nested properties will be persisted across
-            // rolls, which is probably not what we want.
-            return this.deepCloneObject(this.item);
-        }
-        else {
-            return this.item;
-        }
-    }
-    isTable() {
-        return this.getItem() instanceof _table__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A;
-    }
-    resultDefinition(rng) {
-        const def = {
-            id: this.id,
-            stackable: this.stackable,
-            name: this.name,
-            item: this.cloneItem(),
-            qty: rng.chancy(this.qty)
-        };
-        return def;
-    }
-    generateBaseResults(rng) {
-        const def = this.resultDefinition(rng);
-        return new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A([new _entry_result__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A(def)]);
-    }
-    async applyConditions({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A(), }) {
-        let add = true;
-        for (const cond of this.conditions) {
-            add = add && await table.applyCondition(cond, { rng: this.getRng(rng), looter, context, result });
-            if (!add) {
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
-                break;
-            }
-        }
-        return add;
-    }
-    async roll({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A(), }) {
-        if (this.isTable()) {
-            return await this.rollTable({ rng: this.getRng(rng), table, looter, context, result });
-        }
-        else {
-            return await this.rollItem({ rng: this.getRng(rng), table, looter, context, result });
-        }
-    }
-    async rollItem({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
-        await this.processEntryResults(this.generateBaseResults(this.getRng(rng)), { rng: this.getRng(rng), table, looter, context, result });
-        return result;
-    }
-    async rollTable({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
-        // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
-        const entryResults = await this.getItem().borrow(table).roll({ looter, context, result: [], rng, n: this.qty });
-        this.getItem().unborrow(table);
-        await this.processEntryResults(entryResults, { rng: this.getRng(rng), table, looter, context, result });
-        return result;
-    }
-    async processEntryResults(entryResults, { rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
-        for (const entryResult of entryResults) {
-            await this.processEntryResult(entryResult, { rng: this.getRng(rng), table, looter, context, result });
-        }
-        return entryResults;
-    }
-    async processEntryResult(entryResult, { rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
-        for (const fn of this.functions) {
-            await table.applyFunction(fn, { rng: this.getRng(rng), looted: entryResult, looter, context, result });
-        }
-        if (entryResult.qty > 0) {
-            if (entryResult.stackable) {
-                result.push(entryResult);
-            }
-            else {
-                for (let i = 0; i < entryResult.qty; i++) {
-                    result.push(new _entry_result__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A({ ...entryResult, ...{ qty: 1 } }));
-                }
-            }
-        }
-    }
-    applyConditionsSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A(), }) {
-        let add = true;
-        for (const cond of this.conditions) {
-            add = add && table.applyConditionSync(cond, { rng: this.getRng(rng), looter, context, result });
-            if (!add) {
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
-                break;
-            }
-        }
-        return add;
-    }
-    rollSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A(), }) {
-        if (this.isTable()) {
-            return this.rollTableSync({ rng: this.getRng(rng), table, looter, context, result });
-        }
-        else {
-            return this.rollItemSync({ rng: this.getRng(rng), table, looter, context, result });
-        }
-    }
-    rollItemSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
-        this.processEntryResultsSync(this.generateBaseResults(this.getRng(rng)), { rng: this.getRng(rng), table, looter, context, result });
-        return result;
-    }
-    rollTableSync({ rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
-        // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
-        const entryResults = this.getItem().borrow(table).rollSync({ looter, context, result: [], rng, n: this.qty });
-        this.getItem().unborrow(table);
-        this.processEntryResultsSync(entryResults, { rng: this.getRng(rng), table, looter, context, result });
-        return result;
-    }
-    processEntryResultsSync(entryResults, { rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
-        for (const entryResult of entryResults) {
-            this.processEntryResultSync(entryResult, { rng: this.getRng(rng), table, looter, context, result });
-        }
-        return entryResults;
-    }
-    processEntryResultSync(looted, { rng, table, looter, context, result = new _entry_results__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A() }) {
-        for (const fn of this.functions) {
-            table.applyFunctionSync(fn, { rng: this.getRng(rng), looted, looter, context, result });
-        }
-        if (looted.qty > 0) {
-            if (looted.stackable || looted.qty === 1) {
-                result.push(looted);
-            }
-            else {
-                for (let i = 0; i < looted.qty; i++) {
-                    result.push(new _entry_result__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A({ ...looted, ...{ qty: 1 } }));
-                }
-            }
-        }
-    }
-}
-
-
-/***/ }),
-
-/***/ 668:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (/* binding */ LootTableEntryResult)
-/* harmony export */ });
-class LootTableEntryResult {
-    id;
-    stackable = true;
-    name;
-    item;
-    qty = 1;
-    constructor({ id, stackable = true, name, item, qty = 1 } = {}) {
-        this.id = id;
-        this.name = name;
-        this.item = item;
-        this.qty = qty;
-        this.stackable = stackable;
-    }
-    get description() {
-        return this.describe();
-    }
-    describe() {
-        if (this.name) {
-            return `${this.name} [${this.id}]`;
-        }
-        return `[${this.id}]`;
-    }
-    getQty() {
-        return this.qty;
-    }
-    setQty(n) {
-        this.qty = n;
-    }
-    addQty(n) {
-        this.qty = this.qty + n;
-    }
-}
-
-
-/***/ }),
-
-/***/ 219:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (/* binding */ LootTableEntryResults)
-/* harmony export */ });
-class LootTableEntryResults extends Array {
-    constructor(documents) {
-        if (documents instanceof Array)
-            super(...documents);
-        else if (documents)
-            super(documents);
-        else
-            super();
-        Object.setPrototypeOf(this, Object.create(LootTableEntryResults.prototype));
-    }
-    merge(other) {
-        for (const entry of other) {
-            this.push(entry);
-        }
-        return this;
-    }
-    merged(other) {
-        return new LootTableEntryResults([...this, ...other]);
-    }
-    entrySignature(entry) {
-        const entryWithoutQty = {};
-        for (const [k, v] of Object.entries(entry)) {
-            if (k !== 'qty') {
-                entryWithoutQty[k] = v;
-            }
-        }
-        return JSON.stringify(entryWithoutQty);
-    }
-    collapsed() {
-        const map = {};
-        const other = [];
-        for (const ob of this) {
-            if (ob.stackable) {
-                const sig = this.entrySignature(ob);
-                if (typeof map[sig] === 'undefined') {
-                    map[sig] = ob;
-                }
-                else {
-                    map[sig].addQty(ob.qty);
-                }
-            }
-            else {
-                other.push(ob);
-            }
-        }
-        return new LootTableEntryResults([...other, ...Object.values(map)]);
-    }
-}
-
-
-/***/ }),
-
-/***/ 224:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   tZ: () => (/* binding */ UltraLoot)
-/* harmony export */ });
-/* unused harmony export RecursiveTableError */
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(334);
-/* harmony import */ var _table__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(784);
-/* harmony import */ var _table_pool__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(425);
-/* harmony import */ var _table_pool_entry__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(50);
-/* harmony import */ var _rng__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(673);
-/* harmony import */ var _package_json__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(330);
-/* harmony import */ var _default_functions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(663);
-/* harmony import */ var _default_conditions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(494);
+;// ./src/ultraloot.ts
 
 
 
 
 
 
+
+
+
+const CURRENT_VERSION = package_namespaceObject.rE;
 
 
 // Set fs properly if we are in node environment
-let fs;
+let ultraloot_fs;
+let nodePath;
+let nodeUrl;
 let isNode = false;
 if (typeof process === 'object') {
     if (typeof process.versions === 'object') {
         if (typeof process.versions.node !== 'undefined') {
-            fs = __webpack_require__(896);
+            ultraloot_fs = (external_fs_namespaceFn());
+            nodePath = (external_path_namespaceFn());
+            nodeUrl = (external_url_namespaceFn());
             isNode = true;
         }
     }
@@ -3188,8 +3583,8 @@ class RecursiveTableError extends Error {
  * const ultralootCustomRng = new UltraLoot(rngSource);   // using a custom RNG
  */
 class UltraLoot {
-    static version = _package_json__WEBPACK_IMPORTED_MODULE_5__/* .version */ .rE;
-    version = _package_json__WEBPACK_IMPORTED_MODULE_5__/* .version */ .rE;
+    static version = CURRENT_VERSION;
+    version = CURRENT_VERSION;
     /**
      * Default RNG source when none is given
      */
@@ -3223,8 +3618,9 @@ class UltraLoot {
      */
     throwOnMissingConditions = true;
     constructor(rng) {
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d('UltraLoot initialising');
-        if (rng) {
+        if (log.enabled)
+            log.d('UltraLoot initialising');
+        if (rng !== undefined && rng !== null) {
             this.rng = this.makeRng(rng);
         }
     }
@@ -3234,13 +3630,13 @@ class UltraLoot {
         return this;
     }
     registerDefaultFunctions() {
-        for (const [key, fn] of Object.entries(_default_functions__WEBPACK_IMPORTED_MODULE_6__)) {
+        for (const [key, fn] of Object.entries(functions_namespaceObject)) {
             this.registerFunction(key, fn);
         }
         return this;
     }
     registerDefaultConditions() {
-        for (const [key, fn] of Object.entries(_default_conditions__WEBPACK_IMPORTED_MODULE_7__)) {
+        for (const [key, fn] of Object.entries(conditions_namespaceObject)) {
             this.registerCondition(key, fn);
         }
         return this;
@@ -3269,7 +3665,7 @@ class UltraLoot {
         this.rngConstructor = rngConstructor;
     }
     getRngConstructor() {
-        return this.rngConstructor ?? Object.getPrototypeOf(this.rng).constructor;
+        return this.rngConstructor ?? Object.getPrototypeOf(this.getRng()).constructor;
     }
     isRng(rng) {
         if (typeof rng === 'undefined') {
@@ -3312,7 +3708,7 @@ class UltraLoot {
         if (this.isRng(rng)) {
             return rng;
         }
-        const RngConstructor = this.rngConstructor ?? _rng__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Ay;
+        const RngConstructor = this.rngConstructor ?? src_rng;
         return new RngConstructor(rng);
     }
     registerFunction(name, fn) {
@@ -3338,7 +3734,8 @@ class UltraLoot {
         return this;
     }
     functionCheck(fn) {
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`UL | Applying function ${fn.function}`);
+        if (log.enabled)
+            log.d(`UL | Applying function ${fn.function}`);
         if (typeof this.functions[fn.function] === 'undefined') {
             const err = `Function ${fn.function} has not been defined. Did you forget to register the function with this loot table? UltraLoot.registerFunction(name, function).`;
             if (this.throwOnMissingFunctions) {
@@ -3354,7 +3751,8 @@ class UltraLoot {
         }
     }
     conditionCheck(cond) {
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`UL | Applying condition ${cond.function}`);
+        if (log.enabled)
+            log.d(`UL | Applying condition ${cond.function}`);
         if (typeof this.conditions[cond.function] === 'undefined') {
             const err = `Condition ${cond.function} has not been defined. Did you forget to register the function with this loot table? UltraLoot.registerCondition(name, condition_function).`;
             if (this.throwOnMissingConditions) {
@@ -3371,27 +3769,23 @@ class UltraLoot {
     }
     applyFunctionSync(functionDefinition, { rng, looted, looter, context, result }) {
         if (this.functionCheck(functionDefinition)) {
-            return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {}) });
+            return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.arguments ?? {}, functionDefinition.args ?? {}) }, 'function');
         }
     }
     applyConditionSync(conditionDefinition, { rng, looter, context, result }) {
         if (this.conditionCheck(conditionDefinition)) {
-            const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {}) });
-            if (conditionCallResult instanceof Promise) {
-                throw new Error('Cannot return promise from sync condition call');
-            }
-            return conditionCallResult;
+            return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: Object.assign({}, conditionDefinition.arguments ?? {}, conditionDefinition.args ?? {}) }, 'condition');
         }
         return true;
     }
     async applyFunction(functionDefinition, { rng, looted, looter, context, result }) {
         if (this.functionCheck(functionDefinition)) {
-            return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {}) });
+            return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.arguments ?? {}, functionDefinition.args ?? {}) });
         }
     }
     async applyCondition(conditionDefinition, { rng, looter, context, result }) {
         if (this.conditionCheck(conditionDefinition)) {
-            return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {}) });
+            return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.arguments ?? {}, conditionDefinition.args ?? {}) });
         }
         return true;
     }
@@ -3415,60 +3809,45 @@ class UltraLoot {
      *   }
      * ]);
      */
+    simulate(table, options = {}) {
+        return simulateTable(table, options);
+    }
+    simulateSync(table, options = {}) {
+        return simulateTableSync(table, options);
+    }
+    validateTable(definition, options = {}) {
+        return validateTable(definition, { functions: this.functions, conditions: this.conditions, ...options });
+    }
     createTable(def) {
-        if (def instanceof _table__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A || this.isLootTableDefinition(def)) {
-            if (def instanceof _table__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A) {
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.vv('Creating table from LootTable');
-            }
-            else {
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.vv('Creating table from LootTableDefinition');
-            }
-            def.ul = this;
-            if (def.rng) {
-                def.rng = def.rng ?? this.makeRng(def.rng);
-            }
-            else {
-                def.rng = this.getRng();
-            }
-            const lt = new _table__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(def);
-            lt.ultraloot = this;
-            return lt;
+        if (def instanceof LootTable || this.isLootTableDefinition(def)) {
+            return new LootTable({ ...def, ul: this, rng: this.makeRng(def.rng ?? this.getRng()) });
         }
-        else if (this.isEasyLootTableDefinition(def)) {
-            _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.vv('Creating table from LootTableEasyDefinition');
-            if (def.rng) {
-                def.rng = def.rng ?? this.makeRng(def.rng);
-            }
-            else {
-                def.rng = this.getRng();
-            }
-            const lt = new _table__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(this.transformEasyToProperLootTableDefinition(def));
-            lt.ultraloot = this;
-            return lt;
+        if (this.isEasyLootTableDefinition(def)) {
+            return new LootTable(this.transformEasyToProperLootTableDefinition({ ...def, rng: def.rng ?? this.getRng() }));
         }
-        else {
-            throw new Error('Cannot create loot table from these params');
-        }
+        throw new Error('Cannot create loot table from these params');
     }
     /**
      * Create a loot pool for use in a loot table
      */
     createPool(def) {
         if (this.isEasyLootTablePoolDefinition(def)) {
-            _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.vv('Creating pool from LootTablePoolEasyDefinition');
-            return new _table_pool__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(this.transformEasyToProperLootTablePoolDefinition(def));
+            if (log.enabled)
+                log.vv('Creating pool from LootTablePoolEasyDefinition');
+            return new LootPool(this.transformEasyToProperLootTablePoolDefinition(def));
         }
         else {
-            _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.vv('Creating pool from LootTablePoolDefinition');
-            return new _table_pool__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(def);
+            if (log.enabled)
+                log.vv('Creating pool from LootTablePoolDefinition');
+            return new LootPool(def);
         }
     }
     /**
      * Create an entry for a loot pool, either with object definition or from a loot table
      */
     createEntry(def) {
-        if (def instanceof _table__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A) {
-            return new _table_pool_entry__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A({
+        if (def instanceof LootTable) {
+            return new LootTableEntry({
                 id: def.id,
                 name: def.name,
                 item: def,
@@ -3476,21 +3855,21 @@ class UltraLoot {
             });
         }
         else {
-            return new _table_pool_entry__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A(def);
+            return new LootTableEntry(def);
         }
     }
     /**
      * Used for Typescript type guarding and parameter checking
      */
     isLootTableDefinition(def) {
-        if (def instanceof _table__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A ||
-            def instanceof _table_pool__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A ||
-            def instanceof _table_pool_entry__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
+        if (def instanceof LootTable ||
+            def instanceof LootPool ||
+            def instanceof LootTableEntry) {
             return false;
         }
         if (def.pools) {
             for (const pool of def.pools) {
-                if (!(pool instanceof _table_pool__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A)) {
+                if (!(pool instanceof LootPool)) {
                     return false;
                 }
             }
@@ -3501,14 +3880,14 @@ class UltraLoot {
      * Used for Typescript type guarding and parameter checking
      */
     isEasyLootTableDefinition(def) {
-        if (def instanceof _table__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A ||
-            def instanceof _table_pool__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A ||
-            def instanceof _table_pool_entry__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
+        if (def instanceof LootTable ||
+            def instanceof LootPool ||
+            def instanceof LootTableEntry) {
             return false;
         }
         if (def.pools) {
             for (const pool of def.pools) {
-                if (pool instanceof _table_pool__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A) {
+                if (pool instanceof LootPool) {
                     return false;
                 }
             }
@@ -3519,14 +3898,14 @@ class UltraLoot {
      * Used for Typescript type guarding and parameter checking
      */
     isEasyLootTablePoolDefinition(def) {
-        if (def instanceof _table__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A ||
-            def instanceof _table_pool__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A ||
-            def instanceof _table_pool_entry__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
+        if (def instanceof LootTable ||
+            def instanceof LootPool ||
+            def instanceof LootTableEntry) {
             return false;
         }
         if (def.entries) {
             for (const entry of def.entries) {
-                if (entry instanceof _table_pool_entry__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A) {
+                if (entry instanceof LootTableEntry) {
                     return false;
                 }
             }
@@ -3678,68 +4057,66 @@ class UltraLoot {
      * }
      */
     serialize(table, { includeRng = false, key, had = new Set() } = {}) {
-        const result = {};
-        const clone = {
-            name: table.name,
-            id: table.id,
-            fn: table.fn,
-            pools: []
-        };
-        clone.pools = [];
-        const keyToUse = table.filename ?? this.getRng().randomString(6);
-        had.add(table);
-        if (includeRng) {
-            clone.rng = table.rng?.serialize() ?? null;
-        }
-        for (const pool of (table.pools ?? [])) {
-            const poolClone = {
-                name: pool.name,
-                id: pool.id,
-                rolls: pool.rolls,
-                nulls: pool.nulls,
-                conditions: pool.conditions,
-                functions: pool.functions,
-                entries: [],
-            };
-            for (const entry of (pool.entries ?? [])) {
-                const entryClone = {
-                    name: entry.name,
-                    id: entry.id,
-                };
-                if (entry instanceof _table__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A) {
-                    entryClone.item = entry;
-                }
-                else {
-                    entryClone.stackable = entry.stackable;
-                    entryClone.weight = entry.weight;
-                    entryClone.item = entry.item;
-                    entryClone.qty = entry.qty;
-                    entryClone.conditions = entry.conditions;
-                    entryClone.functions = entry.functions;
-                }
-                if (entryClone.item instanceof _table__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A) {
-                    const subKeyToUse = entryClone.item.filename ?? this.getRng().randomString(6);
-                    if (had.has(entryClone.item)) {
-                        throw new RecursiveTableError('Recursive requirement detected - cannot serialize recursively required tables.');
-                    }
-                    if (typeof result[subKeyToUse] === 'undefined') {
-                        entryClone.item.filename = subKeyToUse;
-                        const r = (this.serialize(entryClone.item, { includeRng, key: subKeyToUse, had }));
-                        result[subKeyToUse] = r.tables[subKeyToUse];
-                    }
-                    entryClone.type = 'table';
-                    entryClone.item = subKeyToUse;
-                }
-                poolClone.entries.push(entryClone);
+        const tables = Object.create(null);
+        const keys = new Map();
+        const owners = new Map();
+        const active = new Set(had);
+        const visit = (current, requestedKey) => {
+            if (active.has(current)) {
+                throw new RecursiveTableError('Recursive requirement detected - cannot serialize recursively required tables.');
             }
-            clone.pools.push(poolClone);
-        }
-        result[keyToUse] = clone;
-        const final = {
-            [VERSION_KEY]: _package_json__WEBPACK_IMPORTED_MODULE_5__/* .version */ .rE,
-            tables: result
+            const existing = keys.get(current);
+            if (existing !== undefined)
+                return existing;
+            const base = String(requestedKey ?? current.filename ?? `table_${keys.size + 1}`);
+            let name = base;
+            for (let suffix = 2; owners.has(name); suffix++)
+                name = `${base}_${suffix}`;
+            keys.set(current, name);
+            owners.set(name, current);
+            active.add(current);
+            const definition = {
+                name: current.name,
+                id: current.id,
+                fn: current.fn,
+                pools: current.pools.map(pool => ({
+                    name: pool.name,
+                    id: pool.id,
+                    rolls: pool.rolls,
+                    nulls: pool.nulls,
+                    conditions: pool.conditions,
+                    functions: pool.functions,
+                    entries: pool.entries.map(entry => {
+                        const nested = entry instanceof LootTable ? entry : entry.item;
+                        const saved = entry instanceof LootTable
+                            ? { id: entry.id, name: entry.name }
+                            : {
+                                id: entry.id,
+                                name: entry.name,
+                                stackable: entry.stackable,
+                                unique: entry.unique,
+                                weight: entry.weight,
+                                qty: entry.qty,
+                                conditions: entry.conditions,
+                                functions: entry.functions,
+                                item: entry.item
+                            };
+                        if (nested instanceof LootTable) {
+                            saved.type = 'table';
+                            saved.item = visit(nested);
+                        }
+                        return saved;
+                    })
+                }))
+            };
+            if (includeRng)
+                definition.rng = current.rng.serialize();
+            active.delete(current);
+            tables[name] = definition;
+            return name;
         };
-        return final;
+        visit(table, key);
+        return { [VERSION_KEY]: CURRENT_VERSION, tables };
     }
     /**
      * Convert a LootTable to JSON
@@ -3751,208 +4128,151 @@ class UltraLoot {
     toJson(table, { includeRng = false } = {}) {
         return JSON.stringify(this.serialize(table, { includeRng }));
     }
-    /**
-     * @todo Implement this
-     */
-    async saveTable(table, { path = '', defaultExtension } = {}) {
-        throw new Error('Not yet implemented.');
+    /** Save a complete graph as JSON. An explicit destination directory is required. */
+    async saveTable(table, { path = '', filename, defaultExtension = '.json', includeRng = false, overwrite = false } = {}) {
+        if (!isNode)
+            throw new Error('saveTable is only available in Node; use toJson in a browser');
+        if (!path)
+            throw new Error('Provide a destination path to saveTable');
+        const destination = this.location(filename ?? String(table.filename ?? table.id), path, defaultExtension);
+        if (/^https?:/i.test(destination))
+            throw new Error('saveTable requires a filesystem destination');
+        await ultraloot_fs.promises.mkdir(nodePath.dirname(destination), { recursive: true });
+        await ultraloot_fs.promises.writeFile(destination, this.toJson(table, { includeRng }), { encoding: 'utf8', flag: overwrite ? 'w' : 'wx' });
+        return destination;
     }
-    /**
-     * Load serialized tables from a file.
-     *
-     * This is just a wrapper around unserializing json contents of a file.
-     *    */
-    async loadTables(filename, { path = '', defaultExtension } = {}) {
-        defaultExtension = defaultExtension ?? this.getExtension(path) ?? '.json';
-        const fullPath = this.finishWith(this.pathJoin([path, filename]), defaultExtension);
-        if (isNode) {
-            if (fullPath.startsWith('http') || fullPath.startsWith('file://')) {
-                return this.loadTablesFromUrl(fullPath, { path });
-            }
-            else {
-                return this.loadTablesFromFile(fullPath, { path });
-            }
+    location(filename, path = '', extension = '.json') {
+        let location;
+        if (/^(?:https?|file):/i.test(filename)) {
+            location = filename;
+        }
+        else if (/^(?:https?|file):/i.test(path)) {
+            location = new URL(filename, path.endsWith('/') ? path : path + '/').href;
+        }
+        else if (isNode) {
+            location = nodePath.resolve(path || '.', filename);
         }
         else {
-            return this.loadTablesFromUrl(fullPath, { path });
+            location = [path, filename].filter(Boolean).join('/');
         }
+        if (/^file:/i.test(location))
+            location = nodeUrl.fileURLToPath(location);
+        if (/^https?:/i.test(location)) {
+            const url = new URL(location);
+            if (!this.getExtension(url.pathname) && extension)
+                url.pathname = this.finishWithExtension(url.pathname, extension);
+            return url.href;
+        }
+        if (!this.getExtension(location) && extension)
+            location = this.finishWithExtension(location, extension);
+        return location;
     }
-    /**
-     * Loads serialized tables from a local file
-     */
-    async loadTablesFromFile(filename, { path = '', defaultExtension } = {}) {
-        defaultExtension = defaultExtension ?? this.getExtension(path) ?? '.json';
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Reading tables from ${filename}`);
-        let contents;
-        const ext = this.getExtension(filename);
-        if (ext === '.js') {
-            const cb = await fs.promises.readFile(`${filename}`, 'utf8');
-            // eslint-disable-next-line no-eval
-            contents = eval(cb);
-        }
-        else {
-            contents = await fs.promises.readFile(filename, 'utf8')
-                .then((d) => JSON.parse(d))
-                .catch((e) => {
-                if (e instanceof SyntaxError) {
-                    e.message = `There was an error loading file: "${filename}". ${e.message}`;
-                    throw e;
-                }
-                throw e;
-            });
-        }
-        return this.unserialize(contents);
+    directory(location) {
+        if (/^https?:/i.test(location))
+            return new URL('.', location).href;
+        if (isNode)
+            return nodePath.dirname(location);
+        return location.substring(0, location.lastIndexOf('/') + 1);
     }
-    /**
-     * Load serialized tables from a url
-     */
-    async loadTablesFromUrl(url, { path = '', defaultExtension } = {}) {
-        defaultExtension = defaultExtension ?? this.getExtension(url) ?? '.json';
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d(`Reading tables from ${url}`);
-        return fetch(url).then(data => data.text()).then(txt => {
+    async readDefinition(location) {
+        if (/^https?:/i.test(location) || !isNode) {
+            const response = await fetch(location);
+            if (!response.ok)
+                throw new Error(`Could not load ${location}: HTTP ${response.status} ${response.statusText}`);
+            const text = await response.text();
             try {
-                return JSON.parse(txt);
+                return JSON.parse(text);
             }
-            catch (e) {
-                if (e instanceof SyntaxError) {
-                    e.message = `There was an error loading file: "${url}". ${e.message}`;
-                    throw e;
-                }
-                throw e;
-            }
-        }).then(tables => {
-            return this.unserialize(tables);
-        });
-    }
-    /**
-     * Load a table from a file.
-     *
-     * The file can be local or a url. If running in browser, it's always treated as
-     * a URL. When run in node, it will only treat it as a URL if it's prefixed with
-     * http.
-     *
-     * This function expects a single table to be located in the file, as the base object.
-     */
-    async loadTable(filename, { path = '', defaultExtension } = {}) {
-        const ext = defaultExtension ?? this.getExtension(filename) ?? '.json';
-        const fullPath = this.finishWithExtension(this.pathJoin([path, filename]), ext);
-        _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.d('Load Table', {
-            filenameWithPath: this.pathJoin([path, filename]),
-            filename,
-            defaultExtension,
-            ext,
-            path,
-            fullPath
-        });
-        if (isNode) {
-            if (fullPath.startsWith('http') || fullPath.startsWith('file://')) {
-                return this.loadTableFromUrl(fullPath, { path, defaultExtension });
-            }
-            else {
-                return this.loadTableFromFile(filename, { path, defaultExtension });
+            catch (error) {
+                throw new Error(`Invalid JSON in ${location}: ${error.message}`);
             }
         }
-        else {
-            return this.loadTableFromUrl(fullPath, { path, defaultExtension });
+        const extension = this.getExtension(location);
+        if (extension === '.js' || extension === '.mjs' || extension === '.cjs') {
+            // Leave native module loading intact in both webpack outputs.
+            const loaded = await import(/* webpackIgnore: true */ nodeUrl.pathToFileURL(location).href);
+            return loaded.default ?? loaded;
+        }
+        const text = await ultraloot_fs.promises.readFile(location, 'utf8');
+        try {
+            return JSON.parse(text);
+        }
+        catch (error) {
+            throw new Error(`Invalid JSON in ${location}: ${error.message}`);
         }
     }
-    /**
-     * Loads a table from a local file
-     */
-    async loadTableFromFile(filename, { path = '', defaultExtension } = {}) {
-        defaultExtension = defaultExtension ?? this.getExtension(filename) ?? '.json';
-        const extension = this.getExtension(filename);
-        const pj = this.pathJoin([path, filename]);
-        if (!extension) {
-            // If the file exists without extension, try and read it as json
-            if (fs.existsSync(pj) && fs.statSync(pj).isFile()) {
-                const contents = await fs.promises.readFile(pj, 'utf8')
-                    .then((d) => JSON.parse(d))
-                    .catch((e) => {
-                    if (e instanceof SyntaxError) {
-                        e.message = `There was an error loading file: "${filename}". ${e.message}`;
-                        throw e;
-                    }
-                    throw e;
-                });
-                return this.resolveTable(contents, { path, defaultExtension });
-            }
-            // Try and dynamically find the filename.
-            const extensions = new Set([
-                defaultExtension,
-                '.json',
-                '.js',
-                '.cjs',
-                '.mjs'
-            ]);
-            for (const extension of extensions) {
-                const fnWithExt = this.finishWithExtension(pj, extension);
-                if (fs.existsSync(fnWithExt) && fs.statSync(fnWithExt).isFile()) {
-                    return this.loadTableFromFile(this.finishWithExtension(filename, extension), { path, defaultExtension });
+    async loadTableInternal(filename, options, state) {
+        let location = this.location(filename, options.path, options.defaultExtension);
+        // Preserve extension discovery for local module tables.
+        if (isNode && !/^https?:/i.test(location) && !this.getExtension(filename) && !ultraloot_fs.existsSync(location)) {
+            const candidates = [this.location(filename, options.path, ''), ...['.json', '.js', '.cjs', '.mjs'].map(extension => this.finishWithExtension(location, extension))];
+            for (const candidate of candidates) {
+                if (ultraloot_fs.existsSync(candidate) && ultraloot_fs.statSync(candidate).isFile()) {
+                    location = candidate;
+                    break;
                 }
             }
         }
-        if (!fs.existsSync(pj)) {
-            throw new Error(`Could not find file "${filename}" in path "${path}"`);
+        if (state.active.has(location))
+            throw new RecursiveTableError(`Recursive table reference detected at ${location}`);
+        const existing = state.tables.get(location);
+        if (existing)
+            return existing;
+        state.active.add(location);
+        try {
+            const definition = await this.readDefinition(location);
+            const base = state.rootPath ?? this.directory(location);
+            const table = await this.resolveDefinition(definition, child => this.loadTableInternal(child, { ...options, path: base }, state));
+            state.tables.set(location, table);
+            return table;
         }
-        let contents;
-        if (extension === '.js' ||
-            extension === '.mjs' ||
-            extension === '.cjs') {
-            // unfortunately, typescript mangles import statements, so the only
-            // way we can do this is using eval...
-            const cb = await fs.promises.readFile(`${pj}`, 'utf8');
-            // eslint-disable-next-line no-eval
-            contents = eval(cb);
+        finally {
+            state.active.delete(location);
         }
-        else if (extension === '.json' || defaultExtension === '') {
-            contents = await fs.promises.readFile(pj, 'utf8')
-                .then((d) => JSON.parse(d))
-                .catch((e) => {
-                if (e instanceof SyntaxError) {
-                    e.message = `There was an error loading file: "${filename}". ${e.message}`;
-                    throw e;
-                }
-                throw e;
-            });
-        }
-        return this.resolveTable(contents, { path, defaultExtension });
     }
-    /**
-     * Loads a table from a url
-     */
-    async loadTableFromUrl(url, { path = '', defaultExtension } = {}) {
-        defaultExtension = defaultExtension ?? this.getExtension(url) ?? '.json';
-        return fetch(url).then(data => data.text()).then(txt => {
-            try {
-                return JSON.parse(txt);
-            }
-            catch (e) {
-                if (e instanceof SyntaxError) {
-                    e.message = `There was an error loading file: "${url}". ${e.message}`;
-                    throw e;
-                }
-                throw e;
-            }
-        }).then(tables => {
-            return this.resolveTable(tables, { path, defaultExtension });
-        });
+    /** Load a single definition. Explicit path is shared by all nested references. */
+    async loadTable(filename, options = {}) {
+        return this.loadTableInternal(filename, options, { active: new Set(), tables: new Map(), rootPath: options.path || undefined });
     }
-    /**
-     * Turns a JSON representation into a LootTable, and does the
-     * same for all nested tables inside pools recursively.
-     */
-    async resolveTable(table, { path = '', defaultExtension } = {}) {
-        for (const pool of (table.pools ?? [])) {
-            for (const entry of (pool.entries ?? [])) {
-                if (entry.type === 'table') {
-                    entry.item = await this.loadTable(entry.item, { path, defaultExtension });
-                }
-                delete entry.type;
+    async loadTableFromFile(filename, options = {}) {
+        if (!isNode)
+            throw new Error('Filesystem loading is only available in Node');
+        return this.loadTable(filename, options);
+    }
+    async loadTableFromUrl(url, options = {}) {
+        return this.loadTable(url, options);
+    }
+    /** Load a serialized graph, including files written by saveTable. */
+    async loadTables(filename, options = {}) {
+        return this.unserialize(await this.readDefinition(this.location(filename, options.path, options.defaultExtension)));
+    }
+    async loadTablesFromFile(filename, options = {}) {
+        if (!isNode)
+            throw new Error('Filesystem loading is only available in Node');
+        return this.loadTables(filename, options);
+    }
+    async loadTablesFromUrl(url, options = {}) {
+        return this.loadTables(url, options);
+    }
+    async resolveDefinition(definition, load) {
+        if (!definition || typeof definition !== 'object')
+            throw new Error('Expected a loot table definition');
+        const pools = [];
+        for (const pool of definition.pools ?? []) {
+            const entries = [];
+            for (const entry of pool.entries ?? []) {
+                const { type, ...copy } = entry;
+                if (type === 'table')
+                    copy.item = await load(String(entry.item));
+                entries.push(copy);
             }
+            pools.push({ ...pool, entries });
         }
-        const lootTable = this.createTable(table);
-        return lootTable;
+        return this.createTable({ ...definition, pools });
+    }
+    async resolveTable(table, options = {}) {
+        const state = { active: new Set(), tables: new Map(), rootPath: options.path || undefined };
+        return this.resolveDefinition(table, filename => this.loadTableInternal(filename, options, state));
     }
     /**
      * Unserializes tables serialized with the "serialize" function
@@ -3960,232 +4280,104 @@ class UltraLoot {
      * @return {Promise<Record<string, LootTable>>}             A key/value pairing of tables
      */
     unserialize(tables) {
-        const result = {};
-        // When unserializing, we loop through multiple times because there is
-        // inheretence - so we need to unserialize things in the right order.
-        // To avoid building complex inheritance chains, we just loop through
-        // up to 100 times, so things can be nested up to 100 times, restarting
-        // when we hit an unserialized nested requirement.
-        let i = 100;
-        // @TODO Detect recursive requirements better.
-        /* eslint-disable no-labels */
-        while (Object.values(tables.tables).length > 0 && i-- > 0) {
-            getBack: for (const [id, table] of Object.entries(tables.tables)) {
-                const rng = table.rng ?? null;
-                delete table.rng;
-                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`Unserializing table ${id}`);
-                for (const pool of (table.pools ?? [])) {
-                    for (const entry of (pool.entries ?? [])) {
-                        if (entry.type === 'table') {
-                            if (typeof result[entry.item] === 'undefined') {
-                                if (typeof tables.tables[entry.item] === 'undefined') {
-                                    throw new Error(`Table ${entry.item} not present in serialized data`);
-                                }
-                                // We do the following to unserialize things in the correct order.
-                                _log__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.v(`We didn't have ${entry.item} in our results`);
-                                // Weirdly, javascript has no way to break out of nested loops except using labels?
-                                // anyway...this is unusual, but hey ho
-                                continue getBack;
-                            }
-                            entry.item = result[entry.item];
-                        }
-                        delete entry.type;
+        if (!tables || !tables.tables || typeof tables.tables !== 'object') {
+            throw new Error('Expected a serialized tables object');
+        }
+        const result = Object.create(null);
+        const pending = new Map(Object.entries(tables.tables));
+        while (pending.size > 0) {
+            let progress = false;
+            for (const [id, definition] of pending) {
+                const dependencies = (definition.pools ?? []).flatMap(pool => pool.entries ?? [])
+                    .filter(entry => entry.type === 'table').map(entry => String(entry.item));
+                for (const dependency of dependencies) {
+                    if (!Object.prototype.hasOwnProperty.call(tables.tables, dependency)) {
+                        throw new Error(`Table ${dependency} not present in serialized data`);
                     }
                 }
-                result[id] = this.createTable(table);
-                if (rng) {
-                    result[id].setRng(this.getRngConstructor().unserialize(rng));
+                if (dependencies.some(dependency => !Object.prototype.hasOwnProperty.call(result, dependency)))
+                    continue;
+                // Work on fresh definitions: callers can reuse a saved graph repeatedly.
+                const restored = {
+                    ...definition,
+                    rng: undefined,
+                    pools: (definition.pools ?? []).map(pool => ({
+                        ...pool,
+                        entries: (pool.entries ?? []).map(entry => {
+                            const { type, ...copy } = entry;
+                            if (type === 'table')
+                                copy.item = result[String(entry.item)];
+                            return copy;
+                        })
+                    }))
+                };
+                result[id] = this.createTable(restored);
+                if (definition.rng != null) {
+                    result[id].setRng(this.getRngConstructor().unserialize(definition.rng));
                 }
-                delete tables.tables[id];
+                pending.delete(id);
+                progress = true;
             }
+            if (!progress)
+                throw new RecursiveTableError('Recursive table dependency cycle detected in serialized data');
         }
-        if (i === 0) {
-            throw new Error('Maximum nested serialized table limit reached (could be a recursive requirement somewhere causing an issue?)');
-        }
-        /* eslint-enable no-labels */
         return result;
     }
 }
-/* unused harmony default export */ var __WEBPACK_DEFAULT_EXPORT__ = (UltraLoot);
+/* harmony default export */ const ultraloot = ((/* unused pure expression or super */ null && (UltraLoot)));
 
+;// ./src/typed.ts
+/* unused harmony import specifier */ var typed_UltraLoot;
 
-/***/ }),
-
-/***/ 185:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   _c: () => (/* binding */ dotSet),
-/* harmony export */   fE: () => (/* binding */ depend),
-/* harmony export */   m0: () => (/* binding */ dotGet)
-/* harmony export */ });
-/**
- * Simple dot getter function. If property is undefined, returns default value
- * @example
- * const ob = { a: { b: { c: 'foo' } } };
- * dotGet(ob, 'a.b.c'); // 'foo'
- * dotGet(ob, 'a.z.c'); // undefined
- * dotGet(ob, 'a.z.c', 'bar'); // 'bar'
- */
-const dotGet = (ob, path, defaultValue) => {
-    const result = path.split('.').reduce((o, i) => ((typeof o !== 'undefined') ? o[i] : o), ob);
-    return (typeof result === 'undefined' ? defaultValue : result);
-};
-/**
- * Simple dot setter
- * @example
- * const ob = { a: { b: { c: 'foo' } } };
- * dotSet(ob, 'a.b.c', 'bar'); // ob.a.b.c === 'bar';
- * dotSet(ob, 'a.b.d', 'baz'); // ob.a.b.d === 'baz';
- */
-const dotSet = (ob, path, value) => {
-    const keys = path.split('.');
-    let parent = ob;
-    for (let i = 0; i < keys.length - 1; i++) {
-        const key = keys[i];
-        if (!(key in parent) || parent[key] == null) {
-            parent[key] = {};
-        }
-        parent = parent[key];
+/** An opt-in typed boundary over the existing extensible loot engine. */
+class TypedLootTable {
+    raw;
+    mode;
+    constructor(raw, mode) {
+        this.raw = raw;
+        this.mode = mode;
     }
-    parent[keys[keys.length - 1]] = value;
-};
-/**
- * returns true or false depending on property of ob
- * @example
- * depend(false); // false
- * depend(false, null, true); // true
- * depend({foo: false}, 'foo'); // false
- * depend({foo: false}, 'foo', null, true); // true
- * depend({foo: true}, 'foo'); // true
- * depend({foo: true}, 'foo', null, true); // false
- */
-const depend = (ob, { property, tobe, min, max, inverse = false, strict = true } = {}) => {
-    inverse = !!inverse;
-    if (!ob) {
-        return inverse;
+    registerFunction(name, fn) {
+        this.raw.registerFunction(name, value => fn({ ...value, args: value.args }));
+        return this;
     }
-    let val = ob;
-    if (typeof property === 'string') {
-        val = dotGet(ob, property);
+    registerCondition(name, fn) {
+        this.raw.registerCondition(name, value => fn({ ...value, args: value.args }));
+        return this;
     }
-    if (typeof tobe !== 'undefined') {
-        if (strict) {
-            val = (val === tobe);
-        }
-        else {
-            // eslint-disable-next-line eqeqeq
-            val = (val == tobe);
-        }
-        return inverse ? !val : !!val;
+    roll(options) {
+        return this.raw.roll(options);
     }
-    if ((typeof min !== 'undefined' ||
-        typeof max !== 'undefined') &&
-        strict &&
-        typeof val !== 'number') {
-        return false;
+    rollSync(options) {
+        return this.raw.rollSync(options);
     }
-    if (typeof val !== 'undefined' &&
-        val !== null) {
-        if (typeof min !== 'undefined' && parseFloat(val) < min) {
-            return inverse;
-        }
-        if (typeof max !== 'undefined' && parseFloat(val) > max) {
-            return inverse;
-        }
-        if (typeof min !== 'undefined' || typeof max !== 'undefined') {
-            return !inverse;
-        }
+}
+class TypedUltraLoot {
+    mode;
+    raw;
+    constructor(mode, seed) {
+        this.mode = mode;
+        this.raw = new typed_UltraLoot(seed);
     }
-    return inverse ? !val : !!val;
-};
+    registerFunction(name, fn) {
+        this.raw.registerFunction(name, value => fn({ ...value, args: value.args }));
+        return this;
+    }
+    registerCondition(name, fn) {
+        this.raw.registerCondition(name, value => fn({ ...value, args: value.args }));
+        return this;
+    }
+    createTable(definition) {
+        return new TypedLootTable(this.raw.createTable(definition), this.mode);
+    }
+}
+function createSyncLoot(seed) {
+    return new TypedUltraLoot('sync', seed);
+}
+function createAsyncLoot(seed) {
+    return new TypedUltraLoot('async', seed);
+}
 
-
-/***/ }),
-
-/***/ 896:
-/***/ ((module) => {
-
-module.exports = require("fs");
-
-/***/ }),
-
-/***/ 330:
-/***/ ((module) => {
-
-module.exports = {"rE":"0.3.0"};
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/ 	
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
-/******/ 			// no module.loaded needed
-/******/ 			exports: {}
-/******/ 		};
-/******/ 	
-/******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/ 	
-/************************************************************************/
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/************************************************************************/
-var __webpack_exports__ = {};
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "default": () => (/* binding */ src)
-});
-
-// UNUSED EXPORTS: ArrayNumberValidator, LootTable, LootTableEntry, LootTableEntryResult, LootTableEntryResults, LootTableManager, LootTablePool, MaxRecursionsError, NonRandomRandomError, NumberValidationError, NumberValidator, PredictableRng, RecursiveTableError, Rng, RngAbstract, UltraLoot
-
-// EXTERNAL MODULE: ./src/ultraloot.ts
-var ultraloot = __webpack_require__(224);
-// EXTERNAL MODULE: ./src/rng.ts + 2 modules
-var rng = __webpack_require__(673);
 ;// ./src/rng/predictable.ts
 
 /**
@@ -4247,7 +4439,7 @@ var rng = __webpack_require__(673);
  * prng.random(); // 0.9999999...
  * prng.random(); // 0.0
  */
-class PredictableRng extends rng/* RngAbstract */.Up {
+class PredictableRng extends RngAbstract {
     counter = 0;
     _results = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 - Number.EPSILON];
     constructor(seed, results) {
@@ -4257,13 +4449,15 @@ class PredictableRng extends rng/* RngAbstract */.Up {
         }
     }
     get results() {
-        return this._results;
+        return [...this._results];
     }
     set results(results) {
         if (results.length <= 0) {
             throw new Error('Must provide some fake results.');
         }
         for (const r of results) {
+            if (!Number.isFinite(r))
+                throw new Error('Predictable results must be finite');
             if (r < 0) {
                 throw new Error(`Results must be greater than or equal to 0, got '${r}'`);
             }
@@ -4271,10 +4465,12 @@ class PredictableRng extends rng/* RngAbstract */.Up {
                 throw new Error(`Results must be less than 1, got '${r}'`);
             }
         }
-        this._results = results;
+        this._results = [...results];
         this.reset();
     }
     evenSpread(n) {
+        if (!Number.isSafeInteger(n) || n < 1)
+            throw new Error('Spread size must be a positive safe integer');
         const p = [];
         for (let i = 0; i < (n - 1); i++) {
             p.push(i / (n - 1));
@@ -4299,13 +4495,12 @@ class PredictableRng extends rng/* RngAbstract */.Up {
         return this;
     }
     _next() {
-        return this.results[this.counter++ % this.results.length];
+        return this._results[this.counter++ % this._results.length];
     }
 }
 
-// EXTERNAL MODULE: ./src/table.ts
-var table = __webpack_require__(784);
 ;// ./src/table/manager.ts
+/* unused harmony import specifier */ var manager_LootTable;
 
 /**
  * Example implementation of a loot table manager.
@@ -4329,13 +4524,13 @@ class LootTableManager {
         return this;
     }
     addTable(name, table) {
-        if (typeof name === 'string' && typeof table !== 'undefined' && table instanceof LootTable) {
+        if (typeof name === 'string' && typeof table !== 'undefined' && table instanceof manager_LootTable) {
             this.tables[name] = table;
         }
-        else if (typeof table === 'string' && name instanceof LootTable) {
+        else if (typeof table === 'string' && name instanceof manager_LootTable) {
             this.tables[table] = name;
         }
-        else if (name instanceof LootTable) {
+        else if (name instanceof manager_LootTable) {
             this.tables[name.id] = name;
         }
         else {
@@ -4351,13 +4546,11 @@ class LootTableManager {
     }
 }
 
-// EXTERNAL MODULE: ./src/table/pool.ts
-var pool = __webpack_require__(425);
-// EXTERNAL MODULE: ./src/table/pool/entry.ts
-var entry = __webpack_require__(50);
-// EXTERNAL MODULE: ./src/table/pool/entry/results.ts
-var results = __webpack_require__(219);
 ;// ./src/index.ts
+
+
+
+
 
 
 
@@ -4382,7 +4575,7 @@ var results = __webpack_require__(219);
 // This provides an easy way of using ultraloot in browser.
 // It can be instantiated by new UltraLoot() and submodules can be
 // instantiated by new UltraLoot.LootTable() and whatnot.
-/* harmony default export */ const src = (ultraloot/* UltraLoot */.tZ);
+/* harmony default export */ const src = (UltraLoot);
 
 __webpack_exports__ = __webpack_exports__["default"];
 /******/ 	return __webpack_exports__;

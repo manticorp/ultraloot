@@ -147,9 +147,11 @@ export default class LootTableEntry {
   }) {
     let add = true;
     for (const cond of this.conditions) {
-      add = add && await table.applyCondition(cond, { rng: this.getRng(rng), looter, context, result });
+      const passed = await table.applyCondition(cond, { rng: this.getRng(rng), looter, context, result });
+      if (table.tracing) table.emitTrace({ type: 'condition', entryId: this.id, name: cond.function, passed });
+      add = add && passed;
       if (!add) {
-        log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
+        if (log.enabled) log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
         break;
       }
     }
@@ -189,7 +191,7 @@ export default class LootTableEntry {
     context: any,
     result: LootTableEntryResults
   }) {
-    log.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
+    if (log.enabled) log.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
     await this.processEntryResults(this.generateBaseResults(this.getRng(rng)), { rng: this.getRng(rng), table, looter, context, result });
     return result;
   }
@@ -208,8 +210,8 @@ export default class LootTableEntry {
     result: LootTableEntryResults
   }) {
     // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
-    const entryResults = await this.getItem().borrow(table).roll({ looter, context, result: [], rng, n: this.qty });
-    this.getItem().unborrow(table);
+    const child: LootTable = this.getItem();
+    const entryResults = await child.roll({ parent: table, looter, context, result: new LootTableEntryResults(), rng, n: this.qty });
     await this.processEntryResults(entryResults, { rng: this.getRng(rng), table, looter, context, result });
     return result;
   }
@@ -249,6 +251,7 @@ export default class LootTableEntry {
   }) {
     for (const fn of this.functions) {
       await table.applyFunction(fn, { rng: this.getRng(rng), looted: entryResult, looter, context, result });
+      if (table.tracing) table.emitTrace({ type: 'modifier', entryId: this.id, name: fn.function, quantity: entryResult.qty });
     }
     if (entryResult.qty > 0) {
       if (entryResult.stackable) {
@@ -276,9 +279,11 @@ export default class LootTableEntry {
   }) {
     let add = true;
     for (const cond of this.conditions) {
-      add = add && table.applyConditionSync(cond, { rng: this.getRng(rng), looter, context, result });
+      const passed = table.applyConditionSync(cond, { rng: this.getRng(rng), looter, context, result });
+      if (table.tracing) table.emitTrace({ type: 'condition', entryId: this.id, name: cond.function, passed });
+      add = add && passed;
       if (!add) {
-        log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
+        if (log.enabled) log.d(`Entry: ${this.description} | Condition "${cond.function}" stopped this from being added`);
         break;
       }
     }
@@ -318,7 +323,7 @@ export default class LootTableEntry {
     context: any,
     result: LootTableEntryResults
   }) {
-    log.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
+    if (log.enabled) log.d(`Entry: ${this.description} | Rolling Item for ${this.id}`, { looter, context });
     this.processEntryResultsSync(this.generateBaseResults(this.getRng(rng)), { rng: this.getRng(rng), table, looter, context, result });
     return result;
   }
@@ -337,8 +342,8 @@ export default class LootTableEntry {
     result: LootTableEntryResults
   }) {
     // log.d(`Entry: ${this.description} | Rolling Table for ${this.id}`, {looter, context});
-    const entryResults = this.getItem().borrow(table).rollSync({ looter, context, result: [], rng, n: this.qty });
-    this.getItem().unborrow(table);
+    const child: LootTable = this.getItem();
+    const entryResults = child.rollSync({ parent: table, looter, context, result: new LootTableEntryResults(), rng, n: this.qty });
     this.processEntryResultsSync(entryResults, { rng: this.getRng(rng), table, looter, context, result });
     return result;
   }
@@ -378,6 +383,7 @@ export default class LootTableEntry {
   }) {
     for (const fn of this.functions) {
       table.applyFunctionSync(fn, { rng: this.getRng(rng), looted, looter, context, result });
+      if (table.tracing) table.emitTrace({ type: 'modifier', entryId: this.id, name: fn.function, quantity: looted.qty });
     }
     if (looted.qty > 0) {
       if (looted.stackable || looted.qty === 1) {

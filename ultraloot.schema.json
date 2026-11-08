@@ -1,0 +1,272 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UltraLoot table definition",
+  "description": "JSON loot table structure. Use validateTable for graph, callback, and cross-field diagnostics.",
+  "definitions": {
+    "chancy": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "string",
+          "pattern": "^\\s*(?:\\d+(?:\\.\\d+)?|\\d*\\s*[dD]\\s*\\d+\\s*(?:[+-]\\s*\\d+(?:\\.\\d+)?)?)\\s*$"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "random",
+                "integer",
+                "normal_integer",
+                "dice",
+                "normal",
+                "gaussian",
+                "boxMuller",
+                "irwinHall",
+                "bates",
+                "batesgaussian",
+                "bernoulli",
+                "exponential",
+                "pareto",
+                "poisson",
+                "hypergeometric",
+                "rademacher",
+                "binomial",
+                "betaBinomial",
+                "beta",
+                "gamma",
+                "studentsT",
+                "wignerSemicircle",
+                "kumaraswamy",
+                "hermite",
+                "chiSquared",
+                "rayleigh",
+                "logNormal",
+                "cauchy",
+                "laplace",
+                "logistic"
+              ]
+            },
+            "min": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max": {
+              "type": "number",
+              "minimum": 0
+            },
+            "dice": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "array"
+                },
+                {
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "dice"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              },
+              "then": {
+                "required": [
+                  "dice"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "callback": {
+      "type": "object",
+      "required": [
+        "function"
+      ],
+      "properties": {
+        "function": {
+          "type": "string",
+          "minLength": 1
+        },
+        "args": {},
+        "arguments": {}
+      }
+    },
+    "entry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "item",
+            "table"
+          ]
+        },
+        "weight": {
+          "$ref": "#/definitions/chancy"
+        },
+        "qty": {
+          "$ref": "#/definitions/chancy"
+        },
+        "unique": {
+          "type": "boolean"
+        },
+        "stackable": {
+          "type": "boolean"
+        },
+        "functions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/callback"
+          }
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/callback"
+          }
+        },
+        "item": {},
+        "pools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pool"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "table"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "item"
+            ],
+            "properties": {
+              "item": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/definitions/table"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "pool": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rolls": {
+          "$ref": "#/definitions/chancy"
+        },
+        "nulls": {
+          "$ref": "#/definitions/chancy"
+        },
+        "template": {
+          "$ref": "#/definitions/entry"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/entry"
+          }
+        },
+        "functions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/callback"
+          }
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/callback"
+          }
+        }
+      }
+    },
+    "table": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "fn": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "rng": {},
+        "pools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pool"
+          }
+        }
+      }
+    }
+  },
+  "$ref": "#/definitions/table"
+}

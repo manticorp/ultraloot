@@ -3,9 +3,10 @@ export default class Dequeue<T> {
   elements: T[] = [];
   constructor (length: T[] | number = 1) {
     if (Array.isArray(length)) {
-      this.elements = length;
+      this.elements = [...length];
       this.size = this.elements.length;
     } else {
+      if (!Number.isSafeInteger(length) || length < 1) throw new Error('Queue size must be a positive safe integer');
       this.size = length;
     }
   }
@@ -17,7 +18,7 @@ export default class Dequeue<T> {
   public push (el: T) : T | undefined {
     this.elements.push(el);
     if (this.elements.length > this.size) {
-      return this.pop();
+      return this.elements.shift();
     }
   }
 
@@ -73,7 +74,7 @@ export class NonRandomDetector<T> extends Dequeue<T> {
     this.detectLoop();
     this.elements.push(el);
     if (this.elements.length > this.size) {
-      return this.pop();
+      return this.elements.shift();
     }
   }
 

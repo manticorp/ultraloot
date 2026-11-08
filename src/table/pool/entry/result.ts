@@ -1,8 +1,8 @@
-export default class LootTableEntryResult {
+export default class LootTableEntryResult<Item = any> {
   id?: number | string;
   stackable: boolean = true;
   name?: string;
-  item?: any;
+  item?: Item;
   qty: number = 1;
   constructor ({
     id,
@@ -14,7 +14,7 @@ export default class LootTableEntryResult {
     id?: number | string,
     stackable?: boolean,
     name?: string,
-    item?: any,
+    item?: Item,
     qty?: number,
   } = {}) {
     this.id = id;

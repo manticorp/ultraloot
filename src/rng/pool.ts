@@ -97,6 +97,7 @@ export default class Pool<EntryType> {
    * @throws {@link PoolNotEnoughElementsError} if the pool does not have enough elements to draw n values
    */
   drawMany (n: number) : EntryType[] {
+    if (!Number.isSafeInteger(n)) throw new Error('Draw count must be a safe integer');
     if (n < 0) {
       throw new Error('Cannot draw < 0 elements from pool');
     }

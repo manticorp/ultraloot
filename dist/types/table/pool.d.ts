@@ -31,35 +31,35 @@ export default class LootPool {
     describe(): string;
     createEntry(def: LootTableEntryDefinition): LootTableEntry;
     addEntry(entry: LootTableEntry | LootTable | LootTableEntryDefinition, def?: Omit<LootTableEntryDefinition, 'id'>): this;
-    getEntries(): (LootTableEntry | LootTable)[];
+    getEntries(): (LootTable | LootTableEntry)[];
     roll({ rng, table, looter, context, result }: {
         rng: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): Promise<LootTableEntryResults>;
+    }): Promise<LootTableEntryResults<any>>;
     rollSync({ rng, table, looter, context, result }: {
         rng: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): LootTableEntryResults;
+    }): LootTableEntryResults<any>;
     processEntryResults(entryResults: LootTableEntryResults, { rng, table, looter, context, result }: {
         rng: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): Promise<void[]>;
+    }): Promise<LootTableEntryResults<any>>;
     processEntryResultsSync(entryResults: LootTableEntryResults, { rng, table, looter, context, result }: {
         rng: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): LootTableEntryResults;
+    }): LootTableEntryResults<any>;
     processEntryResult(looted: LootTableEntryResult, { rng, table, looter, context, result }: {
         rng: RngInterface;
         table: LootTable;

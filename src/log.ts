@@ -19,6 +19,7 @@ const ultraverbose = true;
 
 const voidFunc = (...args: any): void => {};
 let r = {
+  enabled: debug,
   debug: voidFunc,
   v: voidFunc,
   vv: voidFunc,

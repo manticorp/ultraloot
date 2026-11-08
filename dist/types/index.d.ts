@@ -1,3 +1,7 @@
+export * from './typed';
+export * from './trace';
+export * from './simulation';
+export * from './validation';
 export * from './ultraloot';
 export * from './number';
 export * from './rng';

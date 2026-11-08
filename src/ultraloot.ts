@@ -1,3 +1,6 @@
+import { simulateTable, simulateTableSync, SimulationOptions, SimulationResult } from './simulation';
+import { validateTable as validateDefinition, TableValidationOptions, TableValidationResult } from './validation';
+import { invokeSync } from './sync';
 import log from './log';
 import { default as LootTable, LootTableFunctionSignature, LootTableConditionSignature, LootTableDefinition } from './table';
 import { default as LootTablePool, LootTablePoolDefinition } from './table/pool';
@@ -6,17 +9,22 @@ import LootTableEntryResult from './table/pool/entry/result';
 import LootTableEntryResults from './table/pool/entry/results';
 import RNG from './rng';
 import { Seed, RngInterface, RngConstructor, ChancyNumeric } from './rng/interface';
-import { version as CURRENT_VERSION } from './../package.json';
+import packageInfo from './../package.json';
+const CURRENT_VERSION = packageInfo.version;
 import * as defaultFunctions from './default/functions';
 import * as defaultConditions from './default/conditions';
 
 // Set fs properly if we are in node environment
 let fs : any;
+let nodePath: any;
+let nodeUrl: any;
 let isNode = false;
 if (typeof process === 'object') {
   if (typeof process.versions === 'object') {
     if (typeof process.versions.node !== 'undefined') {
       fs = require('fs');
+      nodePath = require('path');
+      nodeUrl = require('url');
       isNode = true;
     }
   }
@@ -82,6 +90,7 @@ export type LootTableEntryJsonDefinition = {
   id?: number | string,
   type?: string,
   stackable?: boolean,
+  unique?: boolean,
   weight?: number,
   item?: any,
   qty?: ChancyNumeric,
@@ -97,6 +106,8 @@ export interface SerializedTables {
 }
 
 export type LoadSaveArgs = { defaultExtension?: string, path?: string };
+export type SaveTableArgs = LoadSaveArgs & { filename?: string, includeRng?: boolean, overwrite?: boolean };
+type LoadState = { active: Set<string>, tables: Map<string, LootTable>, rootPath?: string };
 
 /**
  * @todo detect recursively required tables
@@ -152,8 +163,8 @@ export class UltraLoot {
   public throwOnMissingConditions: boolean = true;
 
   constructor (rng?: Seed | RngInterface) {
-    log.d('UltraLoot initialising');
-    if (rng) {
+    if (log.enabled) log.d('UltraLoot initialising');
+    if (rng !== undefined && rng !== null) {
       this.rng = this.makeRng(rng);
     }
   }
@@ -207,7 +218,7 @@ export class UltraLoot {
   }
 
   public getRngConstructor (): RngConstructor {
-    return this.rngConstructor ?? Object.getPrototypeOf(this.rng).constructor;
+    return this.rngConstructor ?? Object.getPrototypeOf(this.getRng()).constructor;
   }
 
   public isRng (rng?: any): rng is RngInterface {
@@ -285,7 +296,7 @@ export class UltraLoot {
   }
 
   public functionCheck (fn: FunctionDefinition) {
-    log.d(`UL | Applying function ${fn.function}`);
+    if (log.enabled) log.d(`UL | Applying function ${fn.function}`);
     if (typeof this.functions[fn.function] === 'undefined') {
       const err = `Function ${fn.function} has not been defined. Did you forget to register the function with this loot table? UltraLoot.registerFunction(name, function).`;
       if (this.throwOnMissingFunctions) {
@@ -300,7 +311,7 @@ export class UltraLoot {
   }
 
   public conditionCheck (cond: ConditionDefinition) {
-    log.d(`UL | Applying condition ${cond.function}`);
+    if (log.enabled) log.d(`UL | Applying condition ${cond.function}`);
     if (typeof this.conditions[cond.function] === 'undefined') {
       const err = `Condition ${cond.function} has not been defined. Did you forget to register the function with this loot table? UltraLoot.registerCondition(name, condition_function).`;
       if (this.throwOnMissingConditions) {
@@ -328,7 +339,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.functionCheck(functionDefinition)) {
-      return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {}) });
+      return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.arguments ?? {}, functionDefinition.args ?? {}) }, 'function');
     }
   }
 
@@ -344,11 +355,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {}) });
-      if (conditionCallResult instanceof Promise) {
-        throw new Error('Cannot return promise from sync condition call');
-      }
-      return conditionCallResult;
+      return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: Object.assign({}, conditionDefinition.arguments ?? {}, conditionDefinition.args ?? {}) }, 'condition');
     }
     return true;
   }
@@ -367,7 +374,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.functionCheck(functionDefinition)) {
-      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.args ?? {}, functionDefinition.arguments ?? {}) });
+      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.arguments ?? {}, functionDefinition.args ?? {}) });
     }
   }
 
@@ -383,7 +390,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.args ?? {}, conditionDefinition.arguments ?? {}) });
+      return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.arguments ?? {}, conditionDefinition.args ?? {}) });
     }
     return true;
   }
@@ -408,35 +415,26 @@ export class UltraLoot {
    *   }
    * ]);
    */
+  simulate (table: LootTable, options: SimulationOptions = {}): Promise<SimulationResult> {
+    return simulateTable(table, options);
+  }
+
+  simulateSync (table: LootTable, options: SimulationOptions = {}): SimulationResult {
+    return simulateTableSync(table, options);
+  }
+
+  public validateTable (definition: unknown, options: TableValidationOptions = {}): TableValidationResult {
+    return validateDefinition(definition, { functions: this.functions, conditions: this.conditions, ...options });
+  }
+
   public createTable (def: LootTable | LootTableDefinition | LootTableEasyDefinition | LootTableJsonDefinition): LootTable {
     if (def instanceof LootTable || this.isLootTableDefinition(def)) {
-      if (def instanceof LootTable) {
-        log.vv('Creating table from LootTable');
-      } else {
-        log.vv('Creating table from LootTableDefinition');
-      }
-      def.ul = this;
-      if (def.rng) {
-        def.rng = def.rng ?? this.makeRng(def.rng);
-      } else {
-        def.rng = this.getRng();
-      }
-      const lt = new LootTable(def);
-      lt.ultraloot = this;
-      return lt;
-    } else if (this.isEasyLootTableDefinition(def)) {
-      log.vv('Creating table from LootTableEasyDefinition');
-      if (def.rng) {
-        def.rng = def.rng ?? this.makeRng(def.rng);
-      } else {
-        def.rng = this.getRng();
-      }
-      const lt = new LootTable(this.transformEasyToProperLootTableDefinition(def));
-      lt.ultraloot = this;
-      return lt;
-    } else {
-      throw new Error('Cannot create loot table from these params');
+      return new LootTable({ ...def, ul: this, rng: this.makeRng(def.rng ?? this.getRng()) });
     }
+    if (this.isEasyLootTableDefinition(def)) {
+      return new LootTable(this.transformEasyToProperLootTableDefinition({ ...def, rng: def.rng ?? this.getRng() }));
+    }
+    throw new Error('Cannot create loot table from these params');
   }
 
   /**
@@ -444,10 +442,10 @@ export class UltraLoot {
    */
   public createPool (def: LootTablePoolDefinition | LootTablePoolEasyDefinition): LootTablePool {
     if (this.isEasyLootTablePoolDefinition(def)) {
-      log.vv('Creating pool from LootTablePoolEasyDefinition');
+      if (log.enabled) log.vv('Creating pool from LootTablePoolEasyDefinition');
       return new LootTablePool(this.transformEasyToProperLootTablePoolDefinition(def));
     } else {
-      log.vv('Creating pool from LootTablePoolDefinition');
+      if (log.enabled) log.vv('Creating pool from LootTablePoolDefinition');
       return new LootTablePool(def);
     }
   }
@@ -682,74 +680,63 @@ export class UltraLoot {
    * }
    */
   public serialize (table: LootTable, { includeRng = false, key, had = new Set() }: { includeRng?: boolean, key?: string | number, had?: Set<any> } = {}): SerializedTables {
-    const result: Record<string, LootTableJsonDefinition> = {};
-    const clone: LootTableJsonDefinition = {
-      name: table.name,
-      id: table.id,
-      fn: table.fn,
-      pools: []
-    };
-    clone.pools = [];
-
-    const keyToUse = table.filename ?? this.getRng().randomString(6);
-    had.add(table);
-
-    if (includeRng) {
-      clone.rng = table.rng?.serialize() ?? null;
-    }
-
-    for (const pool of (table.pools ?? [])) {
-      const poolClone: LootTablePoolJsonDefinition = {
-        name: pool.name,
-        id: pool.id,
-        rolls: pool.rolls,
-        nulls: pool.nulls,
-        conditions: pool.conditions,
-        functions: pool.functions,
-        entries: [],
-      };
-
-      for (const entry of (pool.entries ?? [])) {
-        const entryClone: LootTableEntryJsonDefinition = {
-          name: entry.name,
-          id: entry.id,
-        };
-
-        if (entry instanceof LootTable) {
-          entryClone.item = entry;
-        } else {
-          entryClone.stackable = entry.stackable;
-          entryClone.weight = entry.weight;
-          entryClone.item = entry.item;
-          entryClone.qty = entry.qty;
-          entryClone.conditions = entry.conditions;
-          entryClone.functions = entry.functions;
-        }
-
-        if (entryClone.item instanceof LootTable) {
-          const subKeyToUse = entryClone.item.filename ?? this.getRng().randomString(6);
-          if (had.has(entryClone.item)) {
-            throw new RecursiveTableError('Recursive requirement detected - cannot serialize recursively required tables.');
-          }
-          if (typeof result[subKeyToUse] === 'undefined') {
-            entryClone.item.filename = subKeyToUse;
-            const r = (this.serialize(entryClone.item, { includeRng, key: subKeyToUse, had }));
-            result[subKeyToUse] = r.tables[subKeyToUse];
-          }
-          entryClone.type = 'table';
-          entryClone.item = subKeyToUse;
-        }
-        poolClone.entries.push(entryClone);
+    const tables: Record<string, LootTableJsonDefinition> = Object.create(null);
+    const keys = new Map<LootTable, string>();
+    const owners = new Map<string, LootTable>();
+    const active = new Set(had);
+    const visit = (current: LootTable, requestedKey?: string | number): string => {
+      if (active.has(current)) {
+        throw new RecursiveTableError('Recursive requirement detected - cannot serialize recursively required tables.');
       }
-      clone.pools.push(poolClone);
-    }
-
-    result[keyToUse] = clone;
-    const final = {
-      [VERSION_KEY]: CURRENT_VERSION,
-      tables: result
+      const existing = keys.get(current);
+      if (existing !== undefined) return existing;
+      const base = String(requestedKey ?? current.filename ?? `table_${keys.size + 1}`);
+      let name = base;
+      for (let suffix = 2; owners.has(name); suffix++) name = `${base}_${suffix}`;
+      keys.set(current, name);
+      owners.set(name, current);
+      active.add(current);
+      const definition: LootTableJsonDefinition = {
+        name: current.name,
+        id: current.id,
+        fn: current.fn,
+        pools: current.pools.map(pool => ({
+          name: pool.name,
+          id: pool.id,
+          rolls: pool.rolls,
+          nulls: pool.nulls,
+          conditions: pool.conditions,
+          functions: pool.functions,
+          entries: pool.entries.map(entry => {
+            const nested = entry instanceof LootTable ? entry : entry.item;
+            const saved: LootTableEntryJsonDefinition = entry instanceof LootTable
+              ? { id: entry.id, name: entry.name }
+              : {
+                  id: entry.id,
+                  name: entry.name,
+                  stackable: entry.stackable,
+                  unique: entry.unique,
+                  weight: entry.weight,
+                  qty: entry.qty,
+                  conditions: entry.conditions,
+                  functions: entry.functions,
+                  item: entry.item
+                };
+            if (nested instanceof LootTable) {
+              saved.type = 'table';
+              saved.item = visit(nested);
+            }
+            return saved;
+          })
+        }))
+      };
+      if (includeRng) definition.rng = current.rng.serialize();
+      active.delete(current);
+      tables[name] = definition;
+      return name;
     };
-    return final;
+    visit(table, key);
+    return { [VERSION_KEY]: CURRENT_VERSION, tables };
   }
 
   /**
@@ -763,213 +750,135 @@ export class UltraLoot {
     return JSON.stringify(this.serialize(table, { includeRng }));
   }
 
-  /**
-   * @todo Implement this
-   */
-  async saveTable (table: LootTable, { path = '', defaultExtension } : LoadSaveArgs = {}) {
-    throw new Error('Not yet implemented.');
+  /** Save a complete graph as JSON. An explicit destination directory is required. */
+  async saveTable (table: LootTable, { path = '', filename, defaultExtension = '.json', includeRng = false, overwrite = false }: SaveTableArgs = {}): Promise<string> {
+    if (!isNode) throw new Error('saveTable is only available in Node; use toJson in a browser');
+    if (!path) throw new Error('Provide a destination path to saveTable');
+    const destination = this.location(filename ?? String(table.filename ?? table.id), path, defaultExtension);
+    if (/^https?:/i.test(destination)) throw new Error('saveTable requires a filesystem destination');
+    await fs.promises.mkdir(nodePath.dirname(destination), { recursive: true });
+    await fs.promises.writeFile(destination, this.toJson(table, { includeRng }), { encoding: 'utf8', flag: overwrite ? 'w' : 'wx' });
+    return destination;
   }
 
-  /**
-   * Load serialized tables from a file.
-   *
-   * This is just a wrapper around unserializing json contents of a file.
-   *    */
-  async loadTables (filename: string, { path = '', defaultExtension } : LoadSaveArgs = {}): Promise<Record<string, LootTable>> {
-    defaultExtension = defaultExtension ?? this.getExtension(path) ?? '.json';
-    const fullPath = this.finishWith(this.pathJoin([path, filename]), defaultExtension);
-    if (isNode) {
-      if (fullPath.startsWith('http') || fullPath.startsWith('file://')) {
-        return this.loadTablesFromUrl(fullPath, { path });
-      } else {
-        return this.loadTablesFromFile(fullPath, { path });
-      }
+  private location (filename: string, path = '', extension = '.json'): string {
+    let location: string;
+    if (/^(?:https?|file):/i.test(filename)) {
+      location = filename;
+    } else if (/^(?:https?|file):/i.test(path)) {
+      location = new URL(filename, path.endsWith('/') ? path : path + '/').href;
+    } else if (isNode) {
+      location = nodePath.resolve(path || '.', filename);
     } else {
-      return this.loadTablesFromUrl(fullPath, { path });
+      location = [path, filename].filter(Boolean).join('/');
+    }
+    if (/^file:/i.test(location)) location = nodeUrl.fileURLToPath(location);
+    if (/^https?:/i.test(location)) {
+      const url = new URL(location);
+      if (!this.getExtension(url.pathname) && extension) url.pathname = this.finishWithExtension(url.pathname, extension);
+      return url.href;
+    }
+    if (!this.getExtension(location) && extension) location = this.finishWithExtension(location, extension);
+    return location;
+  }
+
+  private directory (location: string): string {
+    if (/^https?:/i.test(location)) return new URL('.', location).href;
+    if (isNode) return nodePath.dirname(location);
+    return location.substring(0, location.lastIndexOf('/') + 1);
+  }
+
+  private async readDefinition (location: string): Promise<any> {
+    if (/^https?:/i.test(location) || !isNode) {
+      const response = await fetch(location);
+      if (!response.ok) throw new Error(`Could not load ${location}: HTTP ${response.status} ${response.statusText}`);
+      const text = await response.text();
+      try { return JSON.parse(text); } catch (error: any) {
+        throw new Error(`Invalid JSON in ${location}: ${error.message}`);
+      }
+    }
+    const extension = this.getExtension(location);
+    if (extension === '.js' || extension === '.mjs' || extension === '.cjs') {
+      // Leave native module loading intact in both webpack outputs.
+      const loaded = await import(/* webpackIgnore: true */ nodeUrl.pathToFileURL(location).href);
+      return loaded.default ?? loaded;
+    }
+    const text = await fs.promises.readFile(location, 'utf8');
+    try { return JSON.parse(text); } catch (error: any) {
+      throw new Error(`Invalid JSON in ${location}: ${error.message}`);
     }
   }
 
-  /**
-   * Loads serialized tables from a local file
-   */
-  async loadTablesFromFile (filename: string, { path = '', defaultExtension } : LoadSaveArgs = {}): Promise<Record<string, LootTable>> {
-    defaultExtension = defaultExtension ?? this.getExtension(path) ?? '.json';
-    log.d(`Reading tables from ${filename}`);
-    let contents;
-    const ext = this.getExtension(filename);
-    if (ext === '.js') {
-      const cb = await fs.promises.readFile(`${filename}`, 'utf8');
-      // eslint-disable-next-line no-eval
-      contents = eval(cb);
-    } else {
-      contents = await fs.promises.readFile(filename, 'utf8')
-        .then((d:string) => JSON.parse(d))
-        .catch((e: any) => {
-          if (e instanceof SyntaxError) {
-            e.message = `There was an error loading file: "${filename}". ${e.message}`;
-            throw e;
-          }
-          throw e;
-        });
+  private async loadTableInternal (filename: string, options: LoadSaveArgs, state: LoadState): Promise<LootTable> {
+    let location = this.location(filename, options.path, options.defaultExtension);
+    // Preserve extension discovery for local module tables.
+    if (isNode && !/^https?:/i.test(location) && !this.getExtension(filename) && !fs.existsSync(location)) {
+      const candidates = [this.location(filename, options.path, ''), ...['.json', '.js', '.cjs', '.mjs'].map(extension => this.finishWithExtension(location, extension))];
+      for (const candidate of candidates) {
+        if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) { location = candidate; break; }
+      }
     }
-    return this.unserialize(contents);
-  }
-
-  /**
-   * Load serialized tables from a url
-   */
-  async loadTablesFromUrl (url: string, { path = '', defaultExtension } : LoadSaveArgs = {}): Promise<Record<string, LootTable>> {
-    defaultExtension = defaultExtension ?? this.getExtension(url) ?? '.json';
-    log.d(`Reading tables from ${url}`);
-    return fetch(url).then(data => data.text()).then(txt => {
-      try {
-        return JSON.parse(txt);
-      } catch (e : any) {
-        if (e instanceof SyntaxError) {
-          e.message = `There was an error loading file: "${url}". ${e.message}`;
-          throw e;
-        }
-        throw e;
-      }
-    }).then(tables => {
-      return this.unserialize(tables);
-    });
-  }
-
-  /**
-   * Load a table from a file.
-   *
-   * The file can be local or a url. If running in browser, it's always treated as
-   * a URL. When run in node, it will only treat it as a URL if it's prefixed with
-   * http.
-   *
-   * This function expects a single table to be located in the file, as the base object.
-   */
-  async loadTable (filename: string, { path = '', defaultExtension } : LoadSaveArgs = {}): Promise<LootTable | null> {
-    const ext = defaultExtension ?? this.getExtension(filename) ?? '.json';
-    const fullPath = this.finishWithExtension(this.pathJoin([path, filename]), ext);
-    log.d('Load Table', {
-      filenameWithPath: this.pathJoin([path, filename]),
-      filename,
-      defaultExtension,
-      ext,
-      path,
-      fullPath
-    });
-    if (isNode) {
-      if (fullPath.startsWith('http') || fullPath.startsWith('file://')) {
-        return this.loadTableFromUrl(fullPath, { path, defaultExtension });
-      } else {
-        return this.loadTableFromFile(filename, { path, defaultExtension });
-      }
-    } else {
-      return this.loadTableFromUrl(fullPath, { path, defaultExtension });
+    if (state.active.has(location)) throw new RecursiveTableError(`Recursive table reference detected at ${location}`);
+    const existing = state.tables.get(location);
+    if (existing) return existing;
+    state.active.add(location);
+    try {
+      const definition = await this.readDefinition(location);
+      const base = state.rootPath ?? this.directory(location);
+      const table = await this.resolveDefinition(definition, child => this.loadTableInternal(child, { ...options, path: base }, state));
+      state.tables.set(location, table);
+      return table;
+    } finally {
+      state.active.delete(location);
     }
   }
 
-  /**
-   * Loads a table from a local file
-   */
-  async loadTableFromFile (filename: string, { path = '', defaultExtension } : LoadSaveArgs = {}): Promise<LootTable | null> {
-    defaultExtension = defaultExtension ?? this.getExtension(filename) ?? '.json';
-
-    const extension = this.getExtension(filename);
-    const pj = this.pathJoin([path, filename]);
-    if (!extension) {
-      // If the file exists without extension, try and read it as json
-      if (fs.existsSync(pj) && fs.statSync(pj).isFile()) {
-        const contents = await fs.promises.readFile(pj, 'utf8')
-          .then((d:string) => JSON.parse(d))
-          .catch((e: any) => {
-            if (e instanceof SyntaxError) {
-              e.message = `There was an error loading file: "${filename}". ${e.message}`;
-              throw e;
-            }
-            throw e;
-          });
-        return this.resolveTable(contents, { path, defaultExtension });
-      }
-
-      // Try and dynamically find the filename.
-      const extensions = new Set([
-        defaultExtension,
-        '.json',
-        '.js',
-        '.cjs',
-        '.mjs'
-      ]);
-      for (const extension of extensions) {
-        const fnWithExt = this.finishWithExtension(pj, extension);
-        if (fs.existsSync(fnWithExt) && fs.statSync(fnWithExt).isFile()) {
-          return this.loadTableFromFile(this.finishWithExtension(filename, extension), { path, defaultExtension });
-        }
-      }
-    }
-
-    if (!fs.existsSync(pj)) {
-      throw new Error(`Could not find file "${filename}" in path "${path}"`);
-    }
-
-    let contents;
-    if (
-      extension === '.js' ||
-      extension === '.mjs' ||
-      extension === '.cjs'
-    ) {
-      // unfortunately, typescript mangles import statements, so the only
-      // way we can do this is using eval...
-      const cb = await fs.promises.readFile(`${pj}`, 'utf8');
-      // eslint-disable-next-line no-eval
-      contents = eval(cb);
-    } else if (extension === '.json' || defaultExtension === '') {
-      contents = await fs.promises.readFile(pj, 'utf8')
-        .then((d:string) => JSON.parse(d))
-        .catch((e: any) => {
-          if (e instanceof SyntaxError) {
-            e.message = `There was an error loading file: "${filename}". ${e.message}`;
-            throw e;
-          }
-          throw e;
-        });
-    }
-    return this.resolveTable(contents, { path, defaultExtension });
+  /** Load a single definition. Explicit path is shared by all nested references. */
+  async loadTable (filename: string, options: LoadSaveArgs = {}): Promise<LootTable> {
+    return this.loadTableInternal(filename, options, { active: new Set(), tables: new Map(), rootPath: options.path || undefined });
   }
 
-  /**
-   * Loads a table from a url
-   */
-  async loadTableFromUrl (url: string, { path = '', defaultExtension } : LoadSaveArgs = {}): Promise<LootTable | null> {
-    defaultExtension = defaultExtension ?? this.getExtension(url) ?? '.json';
-    return fetch(url).then(data => data.text()).then(txt => {
-      try {
-        return JSON.parse(txt);
-      } catch (e : any) {
-        if (e instanceof SyntaxError) {
-          e.message = `There was an error loading file: "${url}". ${e.message}`;
-          throw e;
-        }
-        throw e;
-      }
-    }).then(tables => {
-      return this.resolveTable(tables, { path, defaultExtension });
-    });
+  async loadTableFromFile (filename: string, options: LoadSaveArgs = {}): Promise<LootTable> {
+    if (!isNode) throw new Error('Filesystem loading is only available in Node');
+    return this.loadTable(filename, options);
   }
 
-  /**
-   * Turns a JSON representation into a LootTable, and does the
-   * same for all nested tables inside pools recursively.
-   */
-  async resolveTable (table: LootTableJsonDefinition, { path = '', defaultExtension } : LoadSaveArgs = {}): Promise<LootTable | null> {
-    for (const pool of (table.pools ?? [])) {
-      for (const entry of (pool.entries ?? [])) {
-        if (entry.type === 'table') {
-          entry.item = await this.loadTable(entry.item, { path, defaultExtension });
-        }
-        delete entry.type;
+  async loadTableFromUrl (url: string, options: LoadSaveArgs = {}): Promise<LootTable> {
+    return this.loadTable(url, options);
+  }
+
+  /** Load a serialized graph, including files written by saveTable. */
+  async loadTables (filename: string, options: LoadSaveArgs = {}): Promise<Record<string, LootTable>> {
+    return this.unserialize(await this.readDefinition(this.location(filename, options.path, options.defaultExtension)));
+  }
+
+  async loadTablesFromFile (filename: string, options: LoadSaveArgs = {}): Promise<Record<string, LootTable>> {
+    if (!isNode) throw new Error('Filesystem loading is only available in Node');
+    return this.loadTables(filename, options);
+  }
+
+  async loadTablesFromUrl (url: string, options: LoadSaveArgs = {}): Promise<Record<string, LootTable>> {
+    return this.loadTables(url, options);
+  }
+
+  private async resolveDefinition (definition: LootTableJsonDefinition, load: (filename: string) => Promise<LootTable>): Promise<LootTable> {
+    if (!definition || typeof definition !== 'object') throw new Error('Expected a loot table definition');
+    const pools = [];
+    for (const pool of definition.pools ?? []) {
+      const entries = [];
+      for (const entry of pool.entries ?? []) {
+        const { type, ...copy } = entry;
+        if (type === 'table') copy.item = await load(String(entry.item));
+        entries.push(copy);
       }
+      pools.push({ ...pool, entries });
     }
-    const lootTable = this.createTable(table);
-    return lootTable;
+    return this.createTable({ ...definition, pools });
+  }
+
+  async resolveTable (table: LootTableJsonDefinition, options: LoadSaveArgs = {}): Promise<LootTable> {
+    const state: LoadState = { active: new Set(), tables: new Map(), rootPath: options.path || undefined };
+    return this.resolveDefinition(table, filename => this.loadTableInternal(filename, options, state));
   }
 
   /**
@@ -978,53 +887,44 @@ export class UltraLoot {
    * @return {Promise<Record<string, LootTable>>}             A key/value pairing of tables
    */
   unserialize (tables: SerializedTables): Record<string, LootTable> {
-    const result: Record<string, LootTable> = {};
-
-    // When unserializing, we loop through multiple times because there is
-    // inheretence - so we need to unserialize things in the right order.
-    // To avoid building complex inheritance chains, we just loop through
-    // up to 100 times, so things can be nested up to 100 times, restarting
-    // when we hit an unserialized nested requirement.
-    let i = 100;
-
-    // @TODO Detect recursive requirements better.
-
-    /* eslint-disable no-labels */
-    while (Object.values(tables.tables).length > 0 && i-- > 0) {
-      getBack:
-      for (const [id, table] of Object.entries(tables.tables)) {
-        const rng = table.rng ?? null;
-        delete table.rng;
-        log.v(`Unserializing table ${id}`);
-        for (const pool of (table.pools ?? [])) {
-          for (const entry of (pool.entries ?? [])) {
-            if (entry.type === 'table') {
-              if (typeof result[entry.item] === 'undefined') {
-                if (typeof tables.tables[entry.item] === 'undefined') {
-                  throw new Error(`Table ${entry.item} not present in serialized data`);
-                }
-                // We do the following to unserialize things in the correct order.
-                log.v(`We didn't have ${entry.item} in our results`);
-                // Weirdly, javascript has no way to break out of nested loops except using labels?
-                // anyway...this is unusual, but hey ho
-                continue getBack;
-              }
-              entry.item = result[entry.item];
-            }
-            delete entry.type;
+    if (!tables || !tables.tables || typeof tables.tables !== 'object') {
+      throw new Error('Expected a serialized tables object');
+    }
+    const result: Record<string, LootTable> = Object.create(null);
+    const pending = new Map(Object.entries(tables.tables));
+    while (pending.size > 0) {
+      let progress = false;
+      for (const [id, definition] of pending) {
+        const dependencies = (definition.pools ?? []).flatMap(pool => pool.entries ?? [])
+          .filter(entry => entry.type === 'table').map(entry => String(entry.item));
+        for (const dependency of dependencies) {
+          if (!Object.prototype.hasOwnProperty.call(tables.tables, dependency)) {
+            throw new Error(`Table ${dependency} not present in serialized data`);
           }
         }
-        result[id] = this.createTable(table);
-        if (rng) {
-          result[id].setRng(this.getRngConstructor().unserialize(rng));
+        if (dependencies.some(dependency => !Object.prototype.hasOwnProperty.call(result, dependency))) continue;
+        // Work on fresh definitions: callers can reuse a saved graph repeatedly.
+        const restored: LootTableJsonDefinition = {
+          ...definition,
+          rng: undefined,
+          pools: (definition.pools ?? []).map(pool => ({
+            ...pool,
+            entries: (pool.entries ?? []).map(entry => {
+              const { type, ...copy } = entry;
+              if (type === 'table') copy.item = result[String(entry.item)];
+              return copy;
+            })
+          }))
+        };
+        result[id] = this.createTable(restored);
+        if (definition.rng != null) {
+          result[id].setRng(this.getRngConstructor().unserialize(definition.rng as any));
         }
-        delete tables.tables[id];
+        pending.delete(id);
+        progress = true;
       }
+      if (!progress) throw new RecursiveTableError('Recursive table dependency cycle detected in serialized data');
     }
-    if (i === 0) {
-      throw new Error('Maximum nested serialized table limit reached (could be a recursive requirement somewhere causing an issue?)');
-    }
-    /* eslint-enable no-labels */
     return result;
   }
 }

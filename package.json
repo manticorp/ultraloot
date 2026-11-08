@@ -1,67 +1,105 @@
 {
   "name": "@manticorp/ultraloot",
   "version": "0.3.0",
-  "description": "",
-  "main": "dist/ultraloot.cjs",
+  "description": "Seedable, serializable loot tables for games, with nested pools and synchronous or asynchronous conditions and modifiers.",
+  "main": "./dist/ultraloot.cjs",
   "browser": "dist/ultraloot.cjs",
   "module": "dist/ultraloot.mjs",
   "type": "module",
   "exports": {
-    "require": {
-      "default": "./dist/ultraloot.cjs",
-      "types": "./dist/types/index.d.ts"
+    ".": {
+      "import": {
+        "types": "./dist/ultraloot.d.mts",
+        "default": "./dist/ultraloot.mjs"
+      },
+      "require": {
+        "types": "./dist/ultraloot.d.cts",
+        "default": "./dist/ultraloot.cjs"
+      }
     },
-    "import": {
-      "default": "./dist/ultraloot.mjs",
-      "types": "./dist/types/index.d.ts"
-    }
+    "./schema.json": "./ultraloot.schema.json"
   },
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/ultraloot.d.cts",
   "scripts": {
     "watch": "webpack --mode development --config webpack.config.js --watch",
     "dev": "webpack --mode development --config webpack.config.js",
     "prebuild": "rimraf dist",
-    "build": "webpack --mode production --config webpack.config.js && webpack --mode production --config webpack-esm.config.js",
-    "ci": "npm t && npx typedoc && npm run test-build && copyfiles -f ./dist/*.* ./docs/js",
+    "build": "webpack --mode production --config webpack.config.js && webpack --mode production --config webpack-esm.config.js && npm run build-types",
+    "ci": "npm t && npm run docs && npm run test-build && copyfiles -f ./dist/*.* ./docs/js",
     "test-build": "npm run build && node test-build-common.cjs && node test-build-module.mjs",
     "test": "jest --coverage",
-    "test-watch": "jest --coverage --watchAll"
+    "test-watch": "jest --coverage --watchAll",
+    "build-types": "rollup -c rollup-types.config.mjs",
+    "test-package": "node scripts/test-package.mjs",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run check:embedded && npm run typecheck && npm test -- --runInBand && npm run build && npm run test:forest-bandit && npm run test-package && npm run test:release && npm run docs",
+    "benchmark": "node benchmarks/run.mjs",
+    "sync:rng": "node scripts/sync-sampling.mjs",
+    "check:embedded": "node scripts/sync-sampling.mjs --check",
+    "test:parity": "node scripts/test-parity.mjs",
+    "postbuild": "node scripts/finalize-build.mjs",
+    "prepublishOnly": "node scripts/check-release.mjs",
+    "docs": "node scripts/build-docs.mjs",
+    "test:release": "node --test tests/release.test.mjs",
+    "test:forest-bandit": "node --test tests/forest-bandit.test.mjs"
   },
   "files": [
     "LICENSE",
     "README.md",
     "package.json",
-    "./dist/"
+    "./dist/",
+    "ultraloot.schema.json",
+    "CHANGELOG.md",
+    "SECURITY.md"
   ],
-  "keywords": [],
+  "keywords": [
+    "loot",
+    "loot-table",
+    "game",
+    "rng",
+    "random",
+    "typescript",
+    "seedable",
+    "rpg"
+  ],
   "author": "Harry Mustoe-Playfair <harry@mustoeplayfair.com>",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
     "@types/jest": "^29.5.13",
+    "ajv": "^8.20.0",
     "autoprefixer": "^10.4.20",
     "babel-loader": "^9.2.1",
     "copyfiles": "^2.4.1",
-    "cpy-cli": "^5.0.0",
-    "esbuild": "^0.24.0",
-    "eslint": "^9.11.1",
+    "eslint": "^10.14.0",
+    "fast-check": "^4.10.2",
     "html-loader": "^5.1.0",
     "jest": "^29.7.0",
-    "jsdoc": "^4.0.3",
-    "neostandard": "^0.11.6",
-    "rimraf": "^6.0.1",
+    "neostandard": "^0.14.1",
+    "rimraf": "^6.1.4",
     "rollup": "^4.24.0",
-    "rollup-plugin-dts": "^6.1.1",
-    "rollup-plugin-esbuild": "^6.1.1",
+    "rollup-plugin-dts": "^6.5.1",
     "terser-webpack-plugin": "^5.3.10",
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.1",
-    "typedoc": "^0.26.7",
-    "typedoc-plugin-rename-defaults": "^0.7.1",
+    "typedoc": "^0.28.20",
     "typescript": "^5.6.2",
     "val-loader": "^6.0.0",
     "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manticorp/ultraloot.git"
+  },
+  "homepage": "https://manticorp.github.io/ultraloot/",
+  "bugs": {
+    "url": "https://github.com/manticorp/ultraloot/issues"
+  },
+  "overrides": {
+    "brace-expansion@1": "1.1.21",
+    "minimatch@>=7 <11.0.1": "11.0.1",
+    "glob@>=9 <14.0.2": "14.0.2"
   }
 }

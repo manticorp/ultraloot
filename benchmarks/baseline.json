@@ -1,0 +1,71 @@
+{
+  "description": "Advisory local measurements, not CI performance thresholds. Before uses 9c8fc84; after includes correctness fixes, disabled-log guards, and native result-array prototypes.",
+  "before": {
+    "package": "@manticorp/ultraloot",
+    "node": "v25.7.0",
+    "platform": "darwin/arm64",
+    "seed": 123,
+    "repeats": 5,
+    "checksum": 175000,
+    "results": {
+      "simple": {
+        "iterations": 10000,
+        "medianMs": 39.598583,
+        "minMs": 35.186292,
+        "operationsPerSecond": 252534
+      },
+      "weighted32": {
+        "iterations": 10000,
+        "medianMs": 47.556416,
+        "minMs": 46.628125,
+        "operationsPerSecond": 210277
+      },
+      "nested4": {
+        "iterations": 5000,
+        "medianMs": 58.402667,
+        "minMs": 56.784833,
+        "operationsPerSecond": 85613
+      },
+      "itemClone": {
+        "iterations": 10000,
+        "medianMs": 38.595542,
+        "minMs": 36.8095,
+        "operationsPerSecond": 259097
+      }
+    }
+  },
+  "after": {
+    "package": "@manticorp/ultraloot",
+    "node": "v25.7.0",
+    "platform": "darwin/arm64",
+    "seed": 123,
+    "repeats": 5,
+    "checksum": 175000,
+    "results": {
+      "simple": {
+        "iterations": 10000,
+        "medianMs": 4.509166,
+        "minMs": 4.318041,
+        "operationsPerSecond": 2217705
+      },
+      "weighted32": {
+        "iterations": 10000,
+        "medianMs": 14.672666,
+        "minMs": 14.302333,
+        "operationsPerSecond": 681539
+      },
+      "nested4": {
+        "iterations": 5000,
+        "medianMs": 10.073416,
+        "minMs": 9.919917,
+        "operationsPerSecond": 496356
+      },
+      "itemClone": {
+        "iterations": 10000,
+        "medianMs": 7.232584,
+        "minMs": 7.2125,
+        "operationsPerSecond": 1382632
+      }
+    }
+  }
+}

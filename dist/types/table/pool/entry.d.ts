@@ -54,7 +54,7 @@ export default class LootTableEntry {
         item: any;
         qty: number;
     };
-    generateBaseResults(rng: RngInterface): LootTableEntryResults;
+    generateBaseResults(rng: RngInterface): LootTableEntryResults<any>;
     applyConditions({ rng, table, looter, context, result, }: {
         rng?: RngInterface;
         table: LootTable;
@@ -75,21 +75,21 @@ export default class LootTableEntry {
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): Promise<LootTableEntryResults>;
+    }): Promise<LootTableEntryResults<any>>;
     rollTable({ rng, table, looter, context, result }: {
         rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): Promise<LootTableEntryResults>;
+    }): Promise<LootTableEntryResults<any>>;
     processEntryResults(entryResults: LootTableEntryResults, { rng, table, looter, context, result }: {
         rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): Promise<LootTableEntryResults>;
+    }): Promise<LootTableEntryResults<any>>;
     processEntryResult(entryResult: LootTableEntryResult, { rng, table, looter, context, result }: {
         rng?: RngInterface;
         table: LootTable;
@@ -117,21 +117,21 @@ export default class LootTableEntry {
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): LootTableEntryResults;
+    }): LootTableEntryResults<any>;
     rollTableSync({ rng, table, looter, context, result }: {
         rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): LootTableEntryResults;
+    }): LootTableEntryResults<any>;
     processEntryResultsSync(entryResults: LootTableEntryResults, { rng, table, looter, context, result }: {
         rng?: RngInterface;
         table: LootTable;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): LootTableEntryResults;
+    }): LootTableEntryResults<any>;
     processEntryResultSync(looted: LootTableEntryResult, { rng, table, looter, context, result }: {
         rng?: RngInterface;
         table: LootTable;

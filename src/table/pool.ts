@@ -111,14 +111,15 @@ export default class LootPool {
   }) {
     const numRolls = rng.chancyInt(this.rolls);
 
-    log.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
+    if (log.enabled) log.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
 
     // We store a list of key/value choices with their weights in an array
     const choices : Record<string, number> = {};
 
     // A special NULL key to track null results
-    if (rng.chancy(this.nulls) > 0) {
-      choices[LootPool.NULLKEY] = rng.chancy(this.nulls);
+    const nullWeight = rng.chancy(this.nulls);
+    if (nullWeight > 0) {
+      choices[LootPool.NULLKEY] = nullWeight;
     }
 
     // map the weights to positions in entries.
@@ -128,34 +129,38 @@ export default class LootPool {
         choices[idx] = 1;
       } else {
         const r = await entry.applyConditions({ rng, table, looter, context, result });
-        log.vv(`Pool ${this.description} | Result of calling await a.applyConditions was ${JSON.stringify(r)}`);
+        if (log.enabled) log.vv(`Pool ${this.description} | Result of calling await a.applyConditions was ${JSON.stringify(r)}`);
         if (r) {
           choices[idx] = rng.chancy(entry.weight ?? 1);
         }
       }
     }
-    log.vv(`Pool ${this.description} | Choices:`, choices);
+    if (log.enabled) log.vv(`Pool ${this.description} | Choices:`, choices);
 
+    if (table.tracing) table.emitTrace({ type: 'pool', poolId: this.id, rolls: numRolls, weights: { ...choices } });
     const overallIntermediate = new LootTableEntryResults();
 
     let add = true;
     for (const cond of this.conditions) {
       const conditionResult = await table.applyCondition(cond, { rng, looter, context, result });
-      log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+      if (log.enabled) log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+      if (table.tracing) table.emitTrace({ type: 'condition', poolId: this.id, name: cond.function, passed: conditionResult });
       add = add && conditionResult;
       if (!add) {
-        log.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
+        if (log.enabled) log.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
         break;
       }
     }
-    log.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
+    if (log.enabled) log.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
 
     if (add) {
       for (let i = 0; i < numRolls; i++) {
         // This is our choice from the choices table
         const choice = rng.weightedChoice(choices);
+        if (table.tracing) table.emitTrace({ type: 'choice', poolId: this.id, entryId: choice == null || choice === LootPool.NULLKEY ? null : this.entries[choice]?.id, choice: choice === LootPool.NULLKEY ? null : choice });
 
         // Then, unless it is the null key, we extract it!
+        if (choice === null) break;
         if (choice !== LootPool.NULLKEY) {
           const entry = this.entries[choice];
           if (entry instanceof LootTable) {
@@ -163,24 +168,24 @@ export default class LootPool {
             overallIntermediate.merge(await entry.roll({ looter, context, rng }));
           } else if (entry instanceof LootTableEntry) {
             // Otherwise, we can roll the entry itself
-            log.g(`Pool ${this.description} | Rolling Loot Table Entry`);
+            if (log.enabled) log.g(`Pool ${this.description} | Rolling Loot Table Entry`);
             overallIntermediate.merge(await entry.roll({ rng, table, looter, context }));
-            log.ge();
+            if (log.enabled) log.ge();
             if (entry.unique) {
-              choices[choice] = 0;
+              delete choices[choice];
             }
           }
         } else {
-          log.v(`Pool ${this.description} | Got null result`);
+          if (log.enabled) log.v(`Pool ${this.description} | Got null result`);
         }
       }
     } else {
-      log.v(`Pool ${this.description} | Skipping because of conditions`);
+      if (log.enabled) log.v(`Pool ${this.description} | Skipping because of conditions`);
     }
 
     // Then we process all the results
     await this.processEntryResults(overallIntermediate, { rng, table, looter, context, result });
-    log.ge();
+    if (log.enabled) log.ge();
     return result;
   }
 
@@ -199,14 +204,15 @@ export default class LootPool {
   }) {
     const numRolls = rng.chancyInt(this.rolls);
 
-    log.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
+    if (log.enabled) log.gc(`Pool ${this.description} | Rolling pool ${numRolls} times (from chancy(${JSON.stringify(this.rolls)}))`);
 
     // We store a list of key/value choices with their weights in an array
     const choices : Record<string, number> = {};
 
     // A special NULL key to track null results
-    if (rng.chancy(this.nulls) > 0) {
-      choices[LootPool.NULLKEY] = rng.chancy(this.nulls);
+    const nullWeight = rng.chancy(this.nulls);
+    if (nullWeight > 0) {
+      choices[LootPool.NULLKEY] = nullWeight;
     }
 
     // map the weights to positions in entries.
@@ -219,28 +225,32 @@ export default class LootPool {
         }
       }
     });
-    log.vv(`Pool ${this.description} | Choices:`, choices);
+    if (log.enabled) log.vv(`Pool ${this.description} | Choices:`, choices);
 
+    if (table.tracing) table.emitTrace({ type: 'pool', poolId: this.id, rolls: numRolls, weights: { ...choices } });
     const overallIntermediate = new LootTableEntryResults();
 
     let add = true;
     for (const cond of this.conditions) {
       const conditionResult = table.applyConditionSync(cond, { rng, looter, context, result });
-      log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+      if (log.enabled) log.v(`Pool ${this.description} | Testing function "${cond.function}" resulted in ${JSON.stringify(conditionResult)}`);
+      if (table.tracing) table.emitTrace({ type: 'condition', poolId: this.id, name: cond.function, passed: conditionResult });
       add = add && conditionResult;
       if (!add) {
-        log.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
+        if (log.enabled) log.v(`Pool ${this.description} | Function "${cond.function}" stopped this from being added`);
         break;
       }
     }
-    log.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
+    if (log.enabled) log.v(`Pool ${this.description} | After applying conditions, add was ${JSON.stringify(add)}`);
 
     if (add) {
       for (let i = 0; i < numRolls; i++) {
         // This is our choice from the choices table
         const choice = rng.weightedChoice(choices);
+        if (table.tracing) table.emitTrace({ type: 'choice', poolId: this.id, entryId: choice == null || choice === LootPool.NULLKEY ? null : this.entries[choice]?.id, choice: choice === LootPool.NULLKEY ? null : choice });
 
         // Then, unless it is the null key, we extract it!
+        if (choice === null) break;
         if (choice !== LootPool.NULLKEY) {
           const entry = this.entries[choice];
           if (entry instanceof LootTable) {
@@ -248,24 +258,24 @@ export default class LootPool {
             overallIntermediate.merge(entry.rollSync({ looter, context, rng }));
           } else if (entry instanceof LootTableEntry) {
             // Otherwise, we can roll the entry itself
-            log.g(`Pool ${this.description} | Rolling Loot Table Entry`);
+            if (log.enabled) log.g(`Pool ${this.description} | Rolling Loot Table Entry`);
             overallIntermediate.merge(entry.rollSync({ rng, table, looter, context }));
-            log.ge();
+            if (log.enabled) log.ge();
             if (entry.unique) {
-              choices[choice] = 0;
+              delete choices[choice];
             }
           }
         } else {
-          log.v(`Pool ${this.description} | Got null result`);
+          if (log.enabled) log.v(`Pool ${this.description} | Got null result`);
         }
       }
     } else {
-      log.v(`Pool ${this.description} | Skipping because of conditions`);
+      if (log.enabled) log.v(`Pool ${this.description} | Skipping because of conditions`);
     }
 
     // Then we process all the results
     this.processEntryResultsSync(overallIntermediate, { rng, table, looter, context, result });
-    log.ge();
+    if (log.enabled) log.ge();
     return result;
   }
 
@@ -283,11 +293,10 @@ export default class LootPool {
       context: any,
       result: LootTableEntryResults
     }) {
-    const results = [];
     for (const entryResult of entryResults) {
-      results.push(this.processEntryResult(entryResult, { rng, table, looter, context, result }));
+      await this.processEntryResult(entryResult, { rng, table, looter, context, result });
     }
-    return Promise.all(results);
+    return entryResults;
   }
 
   processEntryResultsSync (entryResults : LootTableEntryResults,
@@ -325,6 +334,7 @@ export default class LootPool {
   }) {
     for (const fn of this.functions) {
       await table.applyFunction(fn, { rng, looted, looter, context, result });
+      if (table.tracing) table.emitTrace({ type: 'modifier', poolId: this.id, name: fn.function, entryId: looted.id, quantity: looted.qty });
     }
     if (looted.qty > 0) {
       if (looted.stackable) {
@@ -352,6 +362,7 @@ export default class LootPool {
   }) {
     for (const fn of this.functions) {
       table.applyFunctionSync(fn, { rng, looted, looter, context, result });
+      if (table.tracing) table.emitTrace({ type: 'modifier', poolId: this.id, name: fn.function, entryId: looted.id, quantity: looted.qty });
     }
     if (looted.qty > 0) {
       if (looted.stackable) {

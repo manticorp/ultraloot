@@ -1,3 +1,5 @@
+import type { RollTraceEvent, RollTraceSink } from './trace';
+import { invokeSync } from './sync';
 import log from './log';
 import { UltraLoot, LootTablePoolEasyDefinition } from './ultraloot';
 import { default as LootTablePool, LootTablePoolDefinition } from './table/pool';
@@ -52,6 +54,9 @@ export type LootTableConditionSignature = ({
 }) => boolean | Promise<boolean>;
 
 export interface TableRollInterface {
+  /** @internal Parent callback scope for a nested roll. */
+  parent?: LootTable,
+  trace?: RollTraceSink,
   looter?: any,
   context?: any,
   result?: LootTableEntryResults,
@@ -93,6 +98,30 @@ export default class LootTable {
    * This is a set, so we don't end up with the same table in there multiple times.
    */
   borrowed: Set<LootTable> = new Set();
+
+  private rollAncestors: LootTable[] = [];
+  private sourceTable?: LootTable;
+  private traceSink?: RollTraceSink;
+
+  private createRollScope (parent?: LootTable, trace?: RollTraceSink): LootTable {
+    const source = this.sourceTable ?? this;
+    const ancestors = parent?.rollAncestors ?? [];
+    if (ancestors.includes(source)) throw new Error('Recursive loot table roll detected');
+    // Only callback lookup state belongs to this invocation. Definitions stay shared.
+    return Object.assign(Object.create(this), {
+      sourceTable: source,
+      traceSink: trace ?? parent?.traceSink,
+      rollAncestors: [...ancestors, source],
+      borrowed: new Set([...this.borrowed, ...(parent ? [parent] : [])])
+    });
+  }
+
+  get tracing (): boolean { return this.traceSink !== undefined; }
+
+  /** @internal Emit an observation without drawing random numbers. */
+  emitTrace (event: Omit<RollTraceEvent, 'tableId'>): void {
+    if (this.traceSink) this.traceSink({ ...event, tableId: this.id });
+  }
 
   /**
    * @param definition The loot table definition
@@ -176,7 +205,7 @@ export default class LootTable {
   } : Omit<TableRollInterface, 'result'>) : [RngInterface, number] {
     const rngToUse = rng ?? this.rng;
     const rolls = rngToUse.chancy(n);
-    log.gc(`Table: ${this.description} | Rolling table ${rolls} times (from chancy(${JSON.stringify(n)}))`, { looter, context });
+    if (log.enabled) log.gc(`Table: ${this.description} | Rolling table ${rolls} times (from chancy(${JSON.stringify(n)}))`, { looter, context });
     return [rngToUse, rolls];
   }
 
@@ -189,15 +218,19 @@ export default class LootTable {
    * @param rollDefinition
    */
   rollSync ({
+    parent,
+    trace,
     looter,
     context,
     result = new LootTableEntryResults(),
     rng,
     n = 1
   } : TableRollInterface = {}) : LootTableEntryResults {
-    const [rngToUse, rolls] = this.rollBasics({ rng, n, looter, context });
+    const scope = this.createRollScope(parent, trace);
+    const [rngToUse, rolls] = scope.rollBasics({ rng, n, looter, context });
+    if (scope.tracing) scope.emitTrace({ type: 'table:start', state: scope.tracing ? { ...rngToUse.serialize() } : undefined });
     for (const pool of this.pools) {
-      this.rollPoolSync({
+      scope.rollPoolSync({
         n: rolls,
         pool,
         rng: rngToUse,
@@ -206,7 +239,8 @@ export default class LootTable {
         result
       });
     }
-    log.ge();
+    if (scope.tracing) scope.emitTrace({ type: 'table:end', quantity: result.reduce((sum, entry) => sum + entry.qty, 0), state: scope.tracing ? { ...rngToUse.serialize() } : undefined });
+    if (log.enabled) log.ge();
     return result;
   }
 
@@ -219,15 +253,19 @@ export default class LootTable {
    * @param rollDefinition
    */
   async roll ({
+    parent,
+    trace,
     looter,
     context,
     result = new LootTableEntryResults(),
     rng,
     n = 1
   } : TableRollInterface = {}) : Promise<LootTableEntryResults> {
-    const [rngToUse, rolls] = this.rollBasics({ rng, n, looter, context });
+    const scope = this.createRollScope(parent, trace);
+    const [rngToUse, rolls] = scope.rollBasics({ rng, n, looter, context });
+    if (scope.tracing) scope.emitTrace({ type: 'table:start', state: scope.tracing ? { ...rngToUse.serialize() } : undefined });
     for (const pool of this.pools) {
-      await this.rollPool({
+      await scope.rollPool({
         n: rolls,
         pool,
         rng: rngToUse,
@@ -236,7 +274,8 @@ export default class LootTable {
         result
       });
     }
-    log.ge();
+    if (scope.tracing) scope.emitTrace({ type: 'table:end', quantity: result.reduce((sum, entry) => sum + entry.qty, 0), state: scope.tracing ? { ...rngToUse.serialize() } : undefined });
+    if (log.enabled) log.ge();
     return result;
   }
 
@@ -478,7 +517,7 @@ export default class LootTable {
         console.error(err);
       }
     } else {
-      return this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.args });
+      return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: functionDefinition.args ?? functionDefinition.arguments }, 'function');
     }
   }
 
@@ -519,10 +558,6 @@ export default class LootTable {
         return true;
       }
     }
-    const conditionCallResult = this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.args });
-    if (conditionCallResult instanceof Promise) {
-      throw new Error('Cannot return promise from sync condition call');
-    }
-    return conditionCallResult;
+    return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: conditionDefinition.args ?? conditionDefinition.arguments }, 'condition');
   }
 }

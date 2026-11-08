@@ -1,3 +1,4 @@
+import type { RollTraceEvent, RollTraceSink } from './trace';
 import { UltraLoot, LootTablePoolEasyDefinition } from './ultraloot';
 import { default as LootTablePool, LootTablePoolDefinition } from './table/pool';
 import { FunctionDefinition, ConditionDefinition } from './table/pool/entry';
@@ -32,6 +33,9 @@ export type LootTableConditionSignature = ({ rng, looted, looter, context, resul
     args?: any;
 }) => boolean | Promise<boolean>;
 export interface TableRollInterface {
+    /** @internal Parent callback scope for a nested roll. */
+    parent?: LootTable;
+    trace?: RollTraceSink;
     looter?: any;
     context?: any;
     result?: LootTableEntryResults;
@@ -68,6 +72,13 @@ export default class LootTable {
      * This is a set, so we don't end up with the same table in there multiple times.
      */
     borrowed: Set<LootTable>;
+    private rollAncestors;
+    private sourceTable?;
+    private traceSink?;
+    private createRollScope;
+    get tracing(): boolean;
+    /** @internal Emit an observation without drawing random numbers. */
+    emitTrace(event: Omit<RollTraceEvent, 'tableId'>): void;
     /**
      * @param definition The loot table definition
      */
@@ -99,7 +110,7 @@ export default class LootTable {
      *
      * @param rollDefinition
      */
-    rollSync({ looter, context, result, rng, n }?: TableRollInterface): LootTableEntryResults;
+    rollSync({ parent, trace, looter, context, result, rng, n }?: TableRollInterface): LootTableEntryResults;
     /**
      * Roll for loot on this table
      *
@@ -108,7 +119,7 @@ export default class LootTable {
      *
      * @param rollDefinition
      */
-    roll({ looter, context, result, rng, n }?: TableRollInterface): Promise<LootTableEntryResults>;
+    roll({ parent, trace, looter, context, result, rng, n }?: TableRollInterface): Promise<LootTableEntryResults>;
     /**
      * Roll for loot on a pool
      *
