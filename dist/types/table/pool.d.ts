@@ -52,7 +52,7 @@ export default class LootPool {
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): Promise<void[]>;
+    }): Promise<LootTableEntryResults>;
     processEntryResultsSync(entryResults: LootTableEntryResults, { rng, table, looter, context, result }: {
         rng: RngInterface;
         table: LootTable;

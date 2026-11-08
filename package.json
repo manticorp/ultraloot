@@ -2,37 +2,42 @@
   "name": "@manticorp/ultraloot",
   "version": "0.3.0",
   "description": "",
-  "main": "dist/ultraloot.cjs",
+  "main": "./dist/ultraloot.cjs",
   "browser": "dist/ultraloot.cjs",
   "module": "dist/ultraloot.mjs",
   "type": "module",
   "exports": {
     ".": {
-      "require": {
-        "default": "./dist/ultraloot.cjs",
-        "types": "./dist/types/index.d.ts"
-      },
       "import": {
-        "default": "./dist/ultraloot.mjs",
-        "types": "./dist/types/index.d.ts"
+        "types": "./dist/ultraloot.d.mts",
+        "default": "./dist/ultraloot.mjs"
+      },
+      "require": {
+        "types": "./dist/ultraloot.d.cts",
+        "default": "./dist/ultraloot.cjs"
       }
     },
     "./schema.json": "./ultraloot.schema.json"
   },
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/ultraloot.d.cts",
   "scripts": {
     "watch": "webpack --mode development --config webpack.config.js --watch",
     "dev": "webpack --mode development --config webpack.config.js",
     "prebuild": "rimraf dist",
-    "build": "webpack --mode production --config webpack.config.js && webpack --mode production --config webpack-esm.config.js",
+    "build": "webpack --mode production --config webpack.config.js && webpack --mode production --config webpack-esm.config.js && npm run build-types",
     "ci": "npm t && npx typedoc && npm run test-build && copyfiles -f ./dist/*.* ./docs/js",
     "test-build": "npm run build && node test-build-common.cjs && node test-build-module.mjs",
     "test": "jest --coverage",
     "test-watch": "jest --coverage --watchAll",
+    "build-types": "rollup -c rollup-types.config.mjs",
+    "test-package": "node scripts/test-package.mjs",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run check:embedded && npm run typecheck && npm test -- --runInBand && npm run build && npm run test-package",
+    "benchmark": "node benchmarks/run.mjs",
     "sync:rng": "node scripts/sync-sampling.mjs",
     "check:embedded": "node scripts/sync-sampling.mjs --check",
     "test:parity": "node scripts/test-parity.mjs",
-    "benchmark": "node benchmarks/run.mjs"
+    "postbuild": "node scripts/finalize-build.mjs"
   },
   "files": [
     "LICENSE",
@@ -48,6 +53,7 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
     "@types/jest": "^29.5.13",
+    "ajv": "8.17.1",
     "autoprefixer": "^10.4.20",
     "babel-loader": "^9.2.1",
     "copyfiles": "^2.4.1",
@@ -70,7 +76,6 @@
     "typescript": "^5.6.2",
     "val-loader": "^6.0.0",
     "webpack": "^5.95.0",
-    "webpack-cli": "^5.1.4",
-    "ajv": "8.17.1"
+    "webpack-cli": "^5.1.4"
   }
 }

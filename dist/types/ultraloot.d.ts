@@ -1,3 +1,4 @@
+import { TableValidationOptions, TableValidationResult } from './validation';
 import { default as LootTable, LootTableFunctionSignature, LootTableConditionSignature, LootTableDefinition } from './table';
 import { default as LootTablePool, LootTablePoolDefinition } from './table/pool';
 import { default as LootTableEntry, LootTableEntryDefinition, FunctionDefinition, ConditionDefinition } from './table/pool/entry';
@@ -59,6 +60,7 @@ export type LootTableEntryJsonDefinition = {
     id?: number | string;
     type?: string;
     stackable?: boolean;
+    unique?: boolean;
     weight?: number;
     item?: any;
     qty?: ChancyNumeric;
@@ -74,6 +76,11 @@ export interface SerializedTables {
 export type LoadSaveArgs = {
     defaultExtension?: string;
     path?: string;
+};
+export type SaveTableArgs = LoadSaveArgs & {
+    filename?: string;
+    includeRng?: boolean;
+    overwrite?: boolean;
 };
 /**
  * @todo detect recursively required tables
@@ -150,13 +157,13 @@ export declare class UltraLoot {
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): void;
+    }): any;
     applyConditionSync(conditionDefinition: ConditionDefinition, { rng, looter, context, result }: {
         rng: RngInterface;
         looter: any;
         context: any;
         result: LootTableEntryResults;
-    }): boolean;
+    }): any;
     applyFunction(functionDefinition: FunctionDefinition, { rng, looted, looter, context, result }: {
         rng: RngInterface;
         looted: LootTableEntryResult;
@@ -190,6 +197,7 @@ export declare class UltraLoot {
      *   }
      * ]);
      */
+    validateTable(definition: unknown, options?: TableValidationOptions): TableValidationResult;
     createTable(def: LootTable | LootTableDefinition | LootTableEasyDefinition | LootTableJsonDefinition): LootTable;
     /**
      * Create a loot pool for use in a loot table
@@ -303,47 +311,22 @@ export declare class UltraLoot {
     toJson(table: LootTable, { includeRng }?: {
         includeRng?: boolean;
     }): string;
-    /**
-     * @todo Implement this
-     */
-    saveTable(table: LootTable, { path, defaultExtension }?: LoadSaveArgs): Promise<void>;
-    /**
-     * Load serialized tables from a file.
-     *
-     * This is just a wrapper around unserializing json contents of a file.
-     *    */
-    loadTables(filename: string, { path, defaultExtension }?: LoadSaveArgs): Promise<Record<string, LootTable>>;
-    /**
-     * Loads serialized tables from a local file
-     */
-    loadTablesFromFile(filename: string, { path, defaultExtension }?: LoadSaveArgs): Promise<Record<string, LootTable>>;
-    /**
-     * Load serialized tables from a url
-     */
-    loadTablesFromUrl(url: string, { path, defaultExtension }?: LoadSaveArgs): Promise<Record<string, LootTable>>;
-    /**
-     * Load a table from a file.
-     *
-     * The file can be local or a url. If running in browser, it's always treated as
-     * a URL. When run in node, it will only treat it as a URL if it's prefixed with
-     * http.
-     *
-     * This function expects a single table to be located in the file, as the base object.
-     */
-    loadTable(filename: string, { path, defaultExtension }?: LoadSaveArgs): Promise<LootTable | null>;
-    /**
-     * Loads a table from a local file
-     */
-    loadTableFromFile(filename: string, { path, defaultExtension }?: LoadSaveArgs): Promise<LootTable | null>;
-    /**
-     * Loads a table from a url
-     */
-    loadTableFromUrl(url: string, { path, defaultExtension }?: LoadSaveArgs): Promise<LootTable | null>;
-    /**
-     * Turns a JSON representation into a LootTable, and does the
-     * same for all nested tables inside pools recursively.
-     */
-    resolveTable(table: LootTableJsonDefinition, { path, defaultExtension }?: LoadSaveArgs): Promise<LootTable | null>;
+    /** Save a complete graph as JSON. An explicit destination directory is required. */
+    saveTable(table: LootTable, { path, filename, defaultExtension, includeRng, overwrite }?: SaveTableArgs): Promise<string>;
+    private location;
+    private directory;
+    private readDefinition;
+    private loadTableInternal;
+    /** Load a single definition. Explicit path is shared by all nested references. */
+    loadTable(filename: string, options?: LoadSaveArgs): Promise<LootTable>;
+    loadTableFromFile(filename: string, options?: LoadSaveArgs): Promise<LootTable>;
+    loadTableFromUrl(url: string, options?: LoadSaveArgs): Promise<LootTable>;
+    /** Load a serialized graph, including files written by saveTable. */
+    loadTables(filename: string, options?: LoadSaveArgs): Promise<Record<string, LootTable>>;
+    loadTablesFromFile(filename: string, options?: LoadSaveArgs): Promise<Record<string, LootTable>>;
+    loadTablesFromUrl(url: string, options?: LoadSaveArgs): Promise<Record<string, LootTable>>;
+    private resolveDefinition;
+    resolveTable(table: LootTableJsonDefinition, options?: LoadSaveArgs): Promise<LootTable>;
     /**
      * Unserializes tables serialized with the "serialize" function
      * @param  {Record<string, LootTableJsonDefinition>} tables Record of tables serialized using the "serialize" function

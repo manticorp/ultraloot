@@ -1,4 +1,5 @@
 declare let r: {
+    enabled: boolean;
     debug: (...args: any) => void;
     v: (...args: any) => void;
     vv: (...args: any) => void;

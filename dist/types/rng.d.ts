@@ -1,6 +1,7 @@
 import Pool from './rng/pool';
 import { DiceInterface, Distribution, Chancy, ChancyNumeric, Seed, Randfunc, RngInterface, RngDistributionsInterface } from './rng/interface';
 export interface SerializedRng {
+    samplingVersion?: number;
     mask: number;
     seed: number;
     m_z: number;
