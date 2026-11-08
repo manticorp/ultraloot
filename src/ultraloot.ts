@@ -1,3 +1,4 @@
+import { validateTable as validateDefinition, TableValidationOptions, TableValidationResult } from './validation';
 import { invokeSync } from './sync';
 import log from './log';
 import { default as LootTable, LootTableFunctionSignature, LootTableConditionSignature, LootTableDefinition } from './table';
@@ -413,6 +414,10 @@ export class UltraLoot {
    *   }
    * ]);
    */
+  public validateTable (definition: unknown, options: TableValidationOptions = {}): TableValidationResult {
+    return validateDefinition(definition, { functions: this.functions, conditions: this.conditions, ...options });
+  }
+
   public createTable (def: LootTable | LootTableDefinition | LootTableEasyDefinition | LootTableJsonDefinition): LootTable {
     if (def instanceof LootTable || this.isLootTableDefinition(def)) {
       return new LootTable({ ...def, ul: this, rng: this.makeRng(def.rng ?? this.getRng()) });

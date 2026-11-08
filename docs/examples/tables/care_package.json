@@ -10,7 +10,7 @@
                     "weight": 5,
                     "type": "table",
                     "item": "food"
-                },
+                }
             ]
         },
         {
@@ -26,7 +26,7 @@
                     "weight": 5,
                     "type": "table",
                     "item": "loot/skill_magazines"
-                },
+                }
             ]
         }
     ]
