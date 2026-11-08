@@ -87,7 +87,7 @@
     "typescript": "^5.6.2",
     "val-loader": "^6.0.0",
     "webpack": "^5.95.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^7.3.1"
   },
   "repository": {
     "type": "git",
