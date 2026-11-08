@@ -117,8 +117,9 @@ export default class LootPool {
     const choices : Record<string, number> = {};
 
     // A special NULL key to track null results
-    if (rng.chancy(this.nulls) > 0) {
-      choices[LootPool.NULLKEY] = rng.chancy(this.nulls);
+    const nullWeight = rng.chancy(this.nulls);
+    if (nullWeight > 0) {
+      choices[LootPool.NULLKEY] = nullWeight;
     }
 
     // map the weights to positions in entries.
@@ -156,6 +157,7 @@ export default class LootPool {
         const choice = rng.weightedChoice(choices);
 
         // Then, unless it is the null key, we extract it!
+        if (choice === null) break;
         if (choice !== LootPool.NULLKEY) {
           const entry = this.entries[choice];
           if (entry instanceof LootTable) {
@@ -167,7 +169,7 @@ export default class LootPool {
             overallIntermediate.merge(await entry.roll({ rng, table, looter, context }));
             log.ge();
             if (entry.unique) {
-              choices[choice] = 0;
+              delete choices[choice];
             }
           }
         } else {
@@ -205,8 +207,9 @@ export default class LootPool {
     const choices : Record<string, number> = {};
 
     // A special NULL key to track null results
-    if (rng.chancy(this.nulls) > 0) {
-      choices[LootPool.NULLKEY] = rng.chancy(this.nulls);
+    const nullWeight = rng.chancy(this.nulls);
+    if (nullWeight > 0) {
+      choices[LootPool.NULLKEY] = nullWeight;
     }
 
     // map the weights to positions in entries.
@@ -241,6 +244,7 @@ export default class LootPool {
         const choice = rng.weightedChoice(choices);
 
         // Then, unless it is the null key, we extract it!
+        if (choice === null) break;
         if (choice !== LootPool.NULLKEY) {
           const entry = this.entries[choice];
           if (entry instanceof LootTable) {
@@ -252,7 +256,7 @@ export default class LootPool {
             overallIntermediate.merge(entry.rollSync({ rng, table, looter, context }));
             log.ge();
             if (entry.unique) {
-              choices[choice] = 0;
+              delete choices[choice];
             }
           }
         } else {
