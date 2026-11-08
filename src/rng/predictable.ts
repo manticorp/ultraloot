@@ -75,7 +75,7 @@ export default class PredictableRng extends RngAbstract implements RngInterface,
   }
 
   get results () {
-    return this._results;
+    return [...this._results];
   }
 
   set results (results) {
@@ -83,6 +83,7 @@ export default class PredictableRng extends RngAbstract implements RngInterface,
       throw new Error('Must provide some fake results.');
     }
     for (const r of results) {
+      if (!Number.isFinite(r)) throw new Error('Predictable results must be finite');
       if (r < 0) {
         throw new Error(`Results must be greater than or equal to 0, got '${r}'`);
       }
@@ -90,11 +91,12 @@ export default class PredictableRng extends RngAbstract implements RngInterface,
         throw new Error(`Results must be less than 1, got '${r}'`);
       }
     }
-    this._results = results;
+    this._results = [...results];
     this.reset();
   }
 
   public evenSpread (n : number) {
+    if (!Number.isSafeInteger(n) || n < 1) throw new Error('Spread size must be a positive safe integer');
     const p = [];
     for (let i = 0; i < (n - 1); i++) {
       p.push(i / (n - 1));
@@ -124,6 +126,6 @@ export default class PredictableRng extends RngAbstract implements RngInterface,
   }
 
   protected _next () : number {
-    return this.results[this.counter++ % this.results.length];
+    return this._results[this.counter++ % this._results.length];
   }
 }
