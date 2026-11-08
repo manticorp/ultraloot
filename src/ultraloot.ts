@@ -82,6 +82,7 @@ export type LootTableEntryJsonDefinition = {
   id?: number | string,
   type?: string,
   stackable?: boolean,
+  unique?: boolean,
   weight?: number,
   item?: any,
   qty?: ChancyNumeric,
@@ -207,7 +208,7 @@ export class UltraLoot {
   }
 
   public getRngConstructor (): RngConstructor {
-    return this.rngConstructor ?? Object.getPrototypeOf(this.rng).constructor;
+    return this.rngConstructor ?? Object.getPrototypeOf(this.getRng()).constructor;
   }
 
   public isRng (rng?: any): rng is RngInterface {
@@ -661,74 +662,63 @@ export class UltraLoot {
    * }
    */
   public serialize (table: LootTable, { includeRng = false, key, had = new Set() }: { includeRng?: boolean, key?: string | number, had?: Set<any> } = {}): SerializedTables {
-    const result: Record<string, LootTableJsonDefinition> = {};
-    const clone: LootTableJsonDefinition = {
-      name: table.name,
-      id: table.id,
-      fn: table.fn,
-      pools: []
-    };
-    clone.pools = [];
-
-    const keyToUse = table.filename ?? this.getRng().randomString(6);
-    had.add(table);
-
-    if (includeRng) {
-      clone.rng = table.rng?.serialize() ?? null;
-    }
-
-    for (const pool of (table.pools ?? [])) {
-      const poolClone: LootTablePoolJsonDefinition = {
-        name: pool.name,
-        id: pool.id,
-        rolls: pool.rolls,
-        nulls: pool.nulls,
-        conditions: pool.conditions,
-        functions: pool.functions,
-        entries: [],
-      };
-
-      for (const entry of (pool.entries ?? [])) {
-        const entryClone: LootTableEntryJsonDefinition = {
-          name: entry.name,
-          id: entry.id,
-        };
-
-        if (entry instanceof LootTable) {
-          entryClone.item = entry;
-        } else {
-          entryClone.stackable = entry.stackable;
-          entryClone.weight = entry.weight;
-          entryClone.item = entry.item;
-          entryClone.qty = entry.qty;
-          entryClone.conditions = entry.conditions;
-          entryClone.functions = entry.functions;
-        }
-
-        if (entryClone.item instanceof LootTable) {
-          const subKeyToUse = entryClone.item.filename ?? this.getRng().randomString(6);
-          if (had.has(entryClone.item)) {
-            throw new RecursiveTableError('Recursive requirement detected - cannot serialize recursively required tables.');
-          }
-          if (typeof result[subKeyToUse] === 'undefined') {
-            entryClone.item.filename = subKeyToUse;
-            const r = (this.serialize(entryClone.item, { includeRng, key: subKeyToUse, had }));
-            result[subKeyToUse] = r.tables[subKeyToUse];
-          }
-          entryClone.type = 'table';
-          entryClone.item = subKeyToUse;
-        }
-        poolClone.entries.push(entryClone);
+    const tables: Record<string, LootTableJsonDefinition> = Object.create(null);
+    const keys = new Map<LootTable, string>();
+    const owners = new Map<string, LootTable>();
+    const active = new Set(had);
+    const visit = (current: LootTable, requestedKey?: string | number): string => {
+      if (active.has(current)) {
+        throw new RecursiveTableError('Recursive requirement detected - cannot serialize recursively required tables.');
       }
-      clone.pools.push(poolClone);
-    }
-
-    result[keyToUse] = clone;
-    const final = {
-      [VERSION_KEY]: CURRENT_VERSION,
-      tables: result
+      const existing = keys.get(current);
+      if (existing !== undefined) return existing;
+      const base = String(requestedKey ?? current.filename ?? `table_${keys.size + 1}`);
+      let name = base;
+      for (let suffix = 2; owners.has(name); suffix++) name = `${base}_${suffix}`;
+      keys.set(current, name);
+      owners.set(name, current);
+      active.add(current);
+      const definition: LootTableJsonDefinition = {
+        name: current.name,
+        id: current.id,
+        fn: current.fn,
+        pools: current.pools.map(pool => ({
+          name: pool.name,
+          id: pool.id,
+          rolls: pool.rolls,
+          nulls: pool.nulls,
+          conditions: pool.conditions,
+          functions: pool.functions,
+          entries: pool.entries.map(entry => {
+            const nested = entry instanceof LootTable ? entry : entry.item;
+            const saved: LootTableEntryJsonDefinition = entry instanceof LootTable
+              ? { id: entry.id, name: entry.name }
+              : {
+                  id: entry.id,
+                  name: entry.name,
+                  stackable: entry.stackable,
+                  unique: entry.unique,
+                  weight: entry.weight,
+                  qty: entry.qty,
+                  conditions: entry.conditions,
+                  functions: entry.functions,
+                  item: entry.item
+                };
+            if (nested instanceof LootTable) {
+              saved.type = 'table';
+              saved.item = visit(nested);
+            }
+            return saved;
+          })
+        }))
+      };
+      if (includeRng) definition.rng = current.rng.serialize();
+      active.delete(current);
+      tables[name] = definition;
+      return name;
     };
-    return final;
+    visit(table, key);
+    return { [VERSION_KEY]: CURRENT_VERSION, tables };
   }
 
   /**
@@ -957,53 +947,44 @@ export class UltraLoot {
    * @return {Promise<Record<string, LootTable>>}             A key/value pairing of tables
    */
   unserialize (tables: SerializedTables): Record<string, LootTable> {
-    const result: Record<string, LootTable> = {};
-
-    // When unserializing, we loop through multiple times because there is
-    // inheretence - so we need to unserialize things in the right order.
-    // To avoid building complex inheritance chains, we just loop through
-    // up to 100 times, so things can be nested up to 100 times, restarting
-    // when we hit an unserialized nested requirement.
-    let i = 100;
-
-    // @TODO Detect recursive requirements better.
-
-    /* eslint-disable no-labels */
-    while (Object.values(tables.tables).length > 0 && i-- > 0) {
-      getBack:
-      for (const [id, table] of Object.entries(tables.tables)) {
-        const rng = table.rng ?? null;
-        delete table.rng;
-        log.v(`Unserializing table ${id}`);
-        for (const pool of (table.pools ?? [])) {
-          for (const entry of (pool.entries ?? [])) {
-            if (entry.type === 'table') {
-              if (typeof result[entry.item] === 'undefined') {
-                if (typeof tables.tables[entry.item] === 'undefined') {
-                  throw new Error(`Table ${entry.item} not present in serialized data`);
-                }
-                // We do the following to unserialize things in the correct order.
-                log.v(`We didn't have ${entry.item} in our results`);
-                // Weirdly, javascript has no way to break out of nested loops except using labels?
-                // anyway...this is unusual, but hey ho
-                continue getBack;
-              }
-              entry.item = result[entry.item];
-            }
-            delete entry.type;
+    if (!tables || !tables.tables || typeof tables.tables !== 'object') {
+      throw new Error('Expected a serialized tables object');
+    }
+    const result: Record<string, LootTable> = Object.create(null);
+    const pending = new Map(Object.entries(tables.tables));
+    while (pending.size > 0) {
+      let progress = false;
+      for (const [id, definition] of pending) {
+        const dependencies = (definition.pools ?? []).flatMap(pool => pool.entries ?? [])
+          .filter(entry => entry.type === 'table').map(entry => String(entry.item));
+        for (const dependency of dependencies) {
+          if (!Object.prototype.hasOwnProperty.call(tables.tables, dependency)) {
+            throw new Error(`Table ${dependency} not present in serialized data`);
           }
         }
-        result[id] = this.createTable(table);
-        if (rng) {
-          result[id].setRng(this.getRngConstructor().unserialize(rng));
+        if (dependencies.some(dependency => !Object.prototype.hasOwnProperty.call(result, dependency))) continue;
+        // Work on fresh definitions: callers can reuse a saved graph repeatedly.
+        const restored: LootTableJsonDefinition = {
+          ...definition,
+          rng: undefined,
+          pools: (definition.pools ?? []).map(pool => ({
+            ...pool,
+            entries: (pool.entries ?? []).map(entry => {
+              const { type, ...copy } = entry;
+              if (type === 'table') copy.item = result[String(entry.item)];
+              return copy;
+            })
+          }))
+        };
+        result[id] = this.createTable(restored);
+        if (definition.rng != null) {
+          result[id].setRng(this.getRngConstructor().unserialize(definition.rng as any));
         }
-        delete tables.tables[id];
+        pending.delete(id);
+        progress = true;
       }
+      if (!progress) throw new RecursiveTableError('Recursive table dependency cycle detected in serialized data');
     }
-    if (i === 0) {
-      throw new Error('Maximum nested serialized table limit reached (could be a recursive requirement somewhere causing an issue?)');
-    }
-    /* eslint-enable no-labels */
     return result;
   }
 }
