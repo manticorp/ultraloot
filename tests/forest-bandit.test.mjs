@@ -102,3 +102,12 @@ test('complete adventures are achievable without losing requests or getting stuc
     assert.ok(state.day < 15, `seed ${seed} should finish in a reasonable number of outings`);
   }
 });
+
+
+test('rejects non-object search counters before gameplay resumes', () => {
+  for (const searches of [true, 1, 'counters', [], null]) {
+    const saved = createGame(); saved.searches = searches;
+    assert.throws(() => restoreGame(JSON.stringify(saved)), /search counts/);
+  }
+  assert.deepEqual(restoreGame(JSON.stringify(createGame())).searches, {});
+});
