@@ -35,7 +35,9 @@ table.rollSync({looter:{level:'bad'},context:{zone:'forest'}});
 `;
   await writeFile(join(directory, 'consumer.mts'), esm + (rng ? '' : typed));
   await writeFile(join(directory, 'consumer.cts'), cjs);
-  run(process.execPath, [join(root, 'node_modules/typescript/bin/tsc'), '--strict', '--noEmit', '--module', 'NodeNext', '--moduleResolution', 'NodeNext', '--target', 'ES2022', 'consumer.mts', 'consumer.cts']);
+  for (const compiler of ['@typescript/native/bin/tsc', 'typescript/bin/tsc6']) {
+    run(process.execPath, [join(root, 'node_modules', compiler), '--strict', '--noEmit', '--module', 'NodeNext', '--moduleResolution', 'NodeNext', '--target', 'ES2022', 'consumer.mts', 'consumer.cts']);
+  }
 
   await writeFile(join(directory, 'esm.mjs'), `
     import assert from 'node:assert/strict';

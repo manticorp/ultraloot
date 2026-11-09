@@ -31,7 +31,7 @@
     "test-watch": "jest --coverage --watchAll",
     "build-types": "rollup -c rollup-types.config.mjs",
     "test-package": "node scripts/test-package.mjs",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.tests.json",
     "check": "npm run check:embedded && npm run typecheck && npm test -- --runInBand && npm run build && npm run test:forest-bandit && npm run test-package && npm run test:release && npm run docs",
     "benchmark": "node benchmarks/run.mjs",
     "sync:rng": "node scripts/sync-sampling.mjs",
@@ -66,6 +66,8 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^30.0.0",
+    "@types/node": "^22.20.5",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "ajv": "^8.20.0",
     "autoprefixer": "^10.6.2",
     "copyfiles": "^2.4.1",
@@ -81,7 +83,7 @@
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.6.2",
     "typedoc": "^0.28.20",
-    "typescript": "^5.6.2",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "val-loader": "^6.0.0",
     "webpack": "^5.95.0",
     "webpack-cli": "^7.3.1"

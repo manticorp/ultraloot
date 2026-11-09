@@ -5,6 +5,10 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # The compiler API alias must stay on 6 until Jest/TypeDoc support the native API.
+      - dependency-name: "@typescript/typescript6"
+        update-types: [version-update:semver-major]
     groups:
       development-tools:
         dependency-type: development
