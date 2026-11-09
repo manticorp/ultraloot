@@ -93,6 +93,7 @@ export type SaveTableArgs = LoadSaveArgs & {
  * const ultralootCustomRng = new UltraLoot(rngSource);   // using a custom RNG
  */
 export declare class UltraLoot {
+    private constructingTables;
     static version: string;
     version: string;
     /**

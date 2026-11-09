@@ -55,7 +55,9 @@
                 "logNormal",
                 "cauchy",
                 "laplace",
-                "logistic"
+                "logistic",
+                "int",
+                "normal_int"
               ]
             },
             "min": {
@@ -96,8 +98,27 @@
                 ]
               },
               "then": {
-                "required": [
-                  "dice"
+                "anyOf": [
+                  {
+                    "required": [
+                      "dice"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "n"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "d"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "plus"
+                    ]
+                  }
                 ]
               }
             }
