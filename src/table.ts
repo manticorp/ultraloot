@@ -436,7 +436,7 @@ export default class LootTable {
         console.error(err);
       }
     } else {
-      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.args });
+      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.args ?? functionDefinition.arguments });
     }
   }
 
@@ -477,7 +477,7 @@ export default class LootTable {
         return true;
       }
     }
-    return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.args });
+    return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.args ?? conditionDefinition.arguments });
   }
 
   /**
