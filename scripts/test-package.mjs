@@ -73,11 +73,22 @@ table.rollSync({looter:{level:'bad'},context:{zone:'forest'}});
   run(process.execPath, ['esm.mjs']);
   run(process.execPath, ['cjs.cjs']);
 
-  const browser = vm.createContext({ console });
+  const browserRequests = [];
+  const browser = vm.createContext({ console, URL, fetch: async url => {
+    browserRequests.push(url);
+    const definition = url === 'tables/root.json' ? { pools: [{ entries: [{ type: 'table', item: 'child' }] }] }
+      : url === 'tables/child.json' ? { pools: [{ entries: [{ id: 'nested-gold' }] }] } : null;
+    return { ok: definition !== null, status: definition ? 200 : 404, statusText: 'Not Found', text: async () => JSON.stringify(definition) };
+  } });
   const browserFile = rng ? 'gamerng.js' : 'ultraloot.js';
   vm.runInContext(await readFile(join(directory, 'node_modules', pkg.name, 'dist', browserFile), 'utf8'), browser);
   const result = vm.runInContext(rng ? 'new GameRng(0).random()' : 'new UltraLoot(0).createTable({pools:[{entries:[{id:"gold"}]}]}).rollSync()[0].id', browser);
   assert.ok(rng ? Number.isFinite(result) : result === 'gold');
+  if (!rng) {
+    const nested = await vm.runInContext("new UltraLoot(123).loadTable('root', {path:'tables/'})", browser);
+    assert.equal(nested.rollSync()[0].id, 'nested-gold');
+    assert.deepEqual(browserRequests, ['tables/root.json', 'tables/child.json']);
+  }
   console.log(`${pkg.name}: packed ESM/CJS runtime, NodeNext declarations, and browser bundle passed`);
 } catch (error) {
   if (error.stdout) process.stderr.write(error.stdout);

@@ -1988,13 +1988,13 @@ type LootTableEntryDefinition = {
 };
 interface FunctionDefinition {
     function: string;
-    arguments?: Array<any> | Record<string, any>;
-    args?: Array<any> | Record<string, any>;
+    arguments?: unknown;
+    args?: unknown;
 }
 interface ConditionDefinition {
     function: string;
-    arguments?: Array<any> | Record<string, any>;
-    args?: Array<any> | Record<string, any>;
+    arguments?: unknown;
+    args?: unknown;
 }
 declare class LootTableEntry {
     id?: number | string;
@@ -2508,6 +2508,7 @@ type SaveTableArgs = LoadSaveArgs & {
  * const ultralootCustomRng = new UltraLoot(rngSource);   // using a custom RNG
  */
 declare class UltraLoot {
+    private constructingTables;
     static version: string;
     version: string;
     /**

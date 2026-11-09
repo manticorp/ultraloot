@@ -573,6 +573,18 @@ __webpack_require__.d(conditions_namespaceObject, {
   dependLooter: () => (dependLooter)
 });
 
+;// ./src/args.ts
+/** Preserve callback payload shapes while retaining legacy object-alias merging. */
+function callbackArgs({ args, arguments: legacy }, cloneRecord = false) {
+    const record = (value) => value !== null && typeof value === 'object' && (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null);
+    if (record(args) && record(legacy))
+        return { ...legacy, ...args };
+    const value = args !== undefined ? args : legacy;
+    if (cloneRecord && record(value))
+        return { ...value };
+    return value === undefined ? {} : value;
+}
+
 ;// ./src/rng/sampling.ts
 // Generated from GameRNG src/sampling.ts; update with npm run sync:rng -- --source ../gamerng
 /** Dependency-free sampling algorithms embedded in UltraLoot at build time. */
@@ -2143,7 +2155,7 @@ async function simulateTable(table, options = {}) {
 }
 
 ;// ./src/validation.ts
-const distributions = new Set(['random', 'integer', 'normal_integer', 'dice', 'normal', 'gaussian', 'boxMuller', 'irwinHall', 'bates', 'batesgaussian', 'bernoulli', 'exponential', 'pareto', 'poisson', 'hypergeometric', 'rademacher', 'binomial', 'betaBinomial', 'beta', 'gamma', 'studentsT', 'wignerSemicircle', 'kumaraswamy', 'hermite', 'chiSquared', 'rayleigh', 'logNormal', 'cauchy', 'laplace', 'logistic']);
+const distributions = new Set(['random', 'int', 'integer', 'normal_int', 'normal_integer', 'dice', 'normal', 'gaussian', 'boxMuller', 'irwinHall', 'bates', 'batesgaussian', 'bernoulli', 'exponential', 'pareto', 'poisson', 'hypergeometric', 'rademacher', 'binomial', 'betaBinomial', 'beta', 'gamma', 'studentsT', 'wignerSemicircle', 'kumaraswamy', 'hermite', 'chiSquared', 'rayleigh', 'logNormal', 'cauchy', 'laplace', 'logistic']);
 const record = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 /** Validate structure and references without rolling, invoking callbacks, or consuming RNG. */
 function validateTable(definition, options = {}) {
@@ -2179,8 +2191,8 @@ function validateTable(definition, options = {}) {
             }
             if (typeof value.min === 'number' && typeof value.max === 'number' && value.min > value.max)
                 issue(path, 'chancy.bounds', 'Minimum must not exceed maximum');
-            if (value.type === 'dice' && value.dice === undefined)
-                issue(`${path}.dice`, 'chancy.dice', 'A dice distribution requires dice');
+            if (value.type === 'dice' && value.dice === undefined && !['n', 'd', 'plus'].some(key => value[key] !== undefined))
+                issue(`${path}.dice`, 'chancy.dice', 'A dice distribution requires dice or inline n, d, or plus');
         }
         else {
             issue(path, 'chancy.type', 'Expected a number, dice expression, numeric choices, or distribution');
@@ -2946,6 +2958,7 @@ class LootPool {
 
 
 
+
 class LootTable {
     name;
     id;
@@ -3247,7 +3260,7 @@ class LootTable {
             }
         }
         else {
-            return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.args });
+            return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: callbackArgs(functionDefinition) });
         }
     }
     /**
@@ -3279,7 +3292,7 @@ class LootTable {
                 return true;
             }
         }
-        return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.args });
+        return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: callbackArgs(conditionDefinition) });
     }
     /**
      * @param functionDefinition
@@ -3309,7 +3322,7 @@ class LootTable {
             }
         }
         else {
-            return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: functionDefinition.args ?? functionDefinition.arguments }, 'function');
+            return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: callbackArgs(functionDefinition) }, 'function');
         }
     }
     /**
@@ -3341,7 +3354,7 @@ class LootTable {
                 return true;
             }
         }
-        return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: conditionDefinition.args ?? conditionDefinition.arguments }, 'condition');
+        return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: callbackArgs(conditionDefinition) }, 'condition');
     }
 }
 
@@ -3579,6 +3592,7 @@ const dependLooter = ({ looter, args }) => {
 
 
 
+
 const CURRENT_VERSION = package_namespaceObject.rE;
 
 
@@ -3610,6 +3624,7 @@ class RecursiveTableError extends Error {
  * const ultralootCustomRng = new UltraLoot(rngSource);   // using a custom RNG
  */
 class UltraLoot {
+    constructingTables = new Set();
     static version = CURRENT_VERSION;
     version = CURRENT_VERSION;
     /**
@@ -3796,23 +3811,23 @@ class UltraLoot {
     }
     applyFunctionSync(functionDefinition, { rng, looted, looter, context, result }) {
         if (this.functionCheck(functionDefinition)) {
-            return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.arguments ?? {}, functionDefinition.args ?? {}) }, 'function');
+            return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: callbackArgs(functionDefinition, true) }, 'function');
         }
     }
     applyConditionSync(conditionDefinition, { rng, looter, context, result }) {
         if (this.conditionCheck(conditionDefinition)) {
-            return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: Object.assign({}, conditionDefinition.arguments ?? {}, conditionDefinition.args ?? {}) }, 'condition');
+            return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: callbackArgs(conditionDefinition, true) }, 'condition');
         }
         return true;
     }
     async applyFunction(functionDefinition, { rng, looted, looter, context, result }) {
         if (this.functionCheck(functionDefinition)) {
-            return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.arguments ?? {}, functionDefinition.args ?? {}) });
+            return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: callbackArgs(functionDefinition, true) });
         }
     }
     async applyCondition(conditionDefinition, { rng, looter, context, result }) {
         if (this.conditionCheck(conditionDefinition)) {
-            return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.arguments ?? {}, conditionDefinition.args ?? {}) });
+            return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: callbackArgs(conditionDefinition, true) });
         }
         return true;
     }
@@ -3846,13 +3861,23 @@ class UltraLoot {
         return validateTable(definition, { functions: this.functions, conditions: this.conditions, ...options });
     }
     createTable(def) {
-        if (def instanceof LootTable || this.isLootTableDefinition(def)) {
-            return new LootTable({ ...def, ul: this, rng: this.makeRng(def.rng ?? this.getRng()) });
+        if (!def || typeof def !== 'object')
+            throw new Error('Expected a loot table object');
+        if (this.constructingTables.has(def))
+            throw new RecursiveTableError('Recursive inline table definition');
+        this.constructingTables.add(def);
+        try {
+            if (def instanceof LootTable || this.isLootTableDefinition(def)) {
+                return new LootTable({ ...def, ul: this, rng: this.makeRng(def.rng ?? this.getRng()) });
+            }
+            if (this.isEasyLootTableDefinition(def)) {
+                return new LootTable(this.transformEasyToProperLootTableDefinition({ ...def, rng: def.rng ?? this.getRng() }));
+            }
+            throw new Error('Cannot create loot table from these params');
         }
-        if (this.isEasyLootTableDefinition(def)) {
-            return new LootTable(this.transformEasyToProperLootTableDefinition({ ...def, rng: def.rng ?? this.getRng() }));
+        finally {
+            this.constructingTables.delete(def);
         }
-        throw new Error('Cannot create loot table from these params');
     }
     /**
      * Create a loot pool for use in a loot table
@@ -3958,6 +3983,9 @@ class UltraLoot {
     transformEasyToProperLootTablePoolDefinition(def) {
         const transformedEntries = [];
         for (let entry of (def.entries ?? [])) {
+            if (!(entry instanceof LootTableEntry) && !(entry instanceof LootTable) && 'type' in entry && entry.type === 'table' && entry.item && typeof entry.item === 'object' && !(entry.item instanceof LootTable)) {
+                entry = { ...entry, item: this.createTable(entry.item) };
+            }
             if (this.isEasyLootTableDefinition(entry)) {
                 if (typeof entry.pools !== 'undefined' && Array.isArray(entry.pools)) {
                     entry = this.createTable(entry);
@@ -4180,7 +4208,7 @@ class UltraLoot {
             location = nodePath.resolve(path || '.', filename);
         }
         else {
-            location = [path, filename].filter(Boolean).join('/');
+            location = filename.startsWith('/') ? filename : path ? path.replace(/\/+$/, '') + '/' + filename : filename;
         }
         if (/^file:/i.test(location))
             location = nodeUrl.fileURLToPath(location);
@@ -4281,21 +4309,34 @@ class UltraLoot {
     async loadTablesFromUrl(url, options = {}) {
         return this.loadTables(url, options);
     }
-    async resolveDefinition(definition, load) {
+    async resolveDefinition(definition, load, active = new Set()) {
         if (!definition || typeof definition !== 'object')
             throw new Error('Expected a loot table definition');
-        const pools = [];
-        for (const pool of definition.pools ?? []) {
-            const entries = [];
-            for (const entry of pool.entries ?? []) {
-                const { type, ...copy } = entry;
-                if (type === 'table')
-                    copy.item = await load(String(entry.item));
-                entries.push(copy);
+        if (active.has(definition))
+            throw new RecursiveTableError('Recursive inline table definition');
+        active.add(definition);
+        try {
+            const pools = [];
+            for (const pool of definition.pools ?? []) {
+                const entries = [];
+                for (const entry of pool.entries ?? []) {
+                    const { type, ...copy } = entry;
+                    if (type === 'table') {
+                        copy.item = entry.item instanceof LootTable
+                            ? entry.item
+                            : entry.item && typeof entry.item === 'object'
+                                ? await this.resolveDefinition(entry.item, load, active)
+                                : await load(String(entry.item));
+                    }
+                    entries.push(copy);
+                }
+                pools.push({ ...pool, entries });
             }
-            pools.push({ ...pool, entries });
+            return this.createTable({ ...definition, pools });
         }
-        return this.createTable({ ...definition, pools });
+        finally {
+            active.delete(definition);
+        }
     }
     async resolveTable(table, options = {}) {
         const state = { active: new Set(), tables: new Map(), rootPath: options.path || undefined };
