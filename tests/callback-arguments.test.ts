@@ -8,7 +8,6 @@ test.each(['sync', 'async'])('table callbacks accept legacy arguments during %s 
   expect(result[0].qty).toBe(3);
 });
 
-
 describe.each(['sync', 'async'])('%s callback payloads', mode => {
   test.each(['global', 'table'])('preserves arrays, scalars, nulls and object alias merging in %s callbacks', async scope => {
     for (const [args, legacy, expected] of [[3, undefined, 3], [[1, 2], undefined, [1, 2]], [null, undefined, null], [{ factor: 3 }, { factor: 1, extra: true }, { factor: 3, extra: true }]]) {

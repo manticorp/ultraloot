@@ -66,7 +66,6 @@ test('saves and loads a complete graph with RNG state and unique flags', async (
   await expect(ul.saveTable(root, { path: directory })).rejects.toThrow();
 });
 
-
 test('constructs and loads recursive inline children without mutating JSON definitions', async () => {
   const definition = { id: 'root', pools: [{ entries: [{ type: 'table', item: { id: 'child', pools: [{ entries: [{ type: 'table', item: { id: 'leaf', pools: [{ entries: [{ id: 'gold' }] }] } }] }] } }] }] };
   const before = JSON.stringify(definition);

@@ -30,7 +30,6 @@ export function contracts () {
   asyncEngine.createTable({}).rollSync({ looter: { level: 2 }, context: { multiplier: 1 } });
 }
 
-
 test('typed scalar and array registries preserve their runtime contracts', () => {
   const ul = new TypedUltraLoot<Item, Player, Context, { scalar: number, list: number[] }, {}>('sync', 123);
   ul.registerFunction('scalar', ({ looted, args }) => { looted.qty *= args; });

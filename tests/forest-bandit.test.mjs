@@ -103,7 +103,6 @@ test('complete adventures are achievable without losing requests or getting stuc
   }
 });
 
-
 test('rejects non-object search counters before gameplay resumes', () => {
   for (const searches of [true, 1, 'counters', [], null]) {
     const saved = createGame(); saved.searches = searches;

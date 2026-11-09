@@ -341,7 +341,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.functionCheck(functionDefinition)) {
-      return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: callbackArgs(functionDefinition) }, 'function');
+      return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: callbackArgs(functionDefinition, true) }, 'function');
     }
   }
 
@@ -357,7 +357,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: callbackArgs(conditionDefinition) }, 'condition');
+      return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: callbackArgs(conditionDefinition, true) }, 'condition');
     }
     return true;
   }
@@ -376,7 +376,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.functionCheck(functionDefinition)) {
-      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: callbackArgs(functionDefinition) });
+      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: callbackArgs(functionDefinition, true) });
     }
   }
 
@@ -392,7 +392,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: callbackArgs(conditionDefinition) });
+      return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: callbackArgs(conditionDefinition, true) });
     }
     return true;
   }
@@ -883,9 +883,13 @@ export class UltraLoot {
         const entries = [];
         for (const entry of pool.entries ?? []) {
           const { type, ...copy } = entry;
-          if (type === 'table') copy.item = entry.item instanceof LootTable ? entry.item
-            : entry.item && typeof entry.item === 'object' ? await this.resolveDefinition(entry.item, load, active)
-              : await load(String(entry.item));
+          if (type === 'table') {
+            copy.item = entry.item instanceof LootTable
+              ? entry.item
+              : entry.item && typeof entry.item === 'object'
+                ? await this.resolveDefinition(entry.item, load, active)
+                : await load(String(entry.item));
+          }
           entries.push(copy);
         }
         pools.push({ ...pool, entries });
