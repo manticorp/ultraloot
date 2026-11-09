@@ -771,7 +771,7 @@ export class UltraLoot {
     } else if (isNode) {
       location = nodePath.resolve(path || '.', filename);
     } else {
-      location = [path, filename].filter(Boolean).join('/');
+      location = filename.startsWith('/') ? filename : path ? path.replace(/\/+$/, '') + '/' + filename : filename;
     }
     if (/^file:/i.test(location)) location = nodeUrl.fileURLToPath(location);
     if (/^https?:/i.test(location)) {
