@@ -1,3 +1,4 @@
+import { callbackArgs } from './args';
 import { simulateTable, simulateTableSync, SimulationOptions, SimulationResult } from './simulation';
 import { validateTable as validateDefinition, TableValidationOptions, TableValidationResult } from './validation';
 import { invokeSync } from './sync';
@@ -339,7 +340,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.functionCheck(functionDefinition)) {
-      return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.arguments ?? {}, functionDefinition.args ?? {}) }, 'function');
+      return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: callbackArgs(functionDefinition) }, 'function');
     }
   }
 
@@ -355,7 +356,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: Object.assign({}, conditionDefinition.arguments ?? {}, conditionDefinition.args ?? {}) }, 'condition');
+      return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: callbackArgs(conditionDefinition) }, 'condition');
     }
     return true;
   }
@@ -374,7 +375,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.functionCheck(functionDefinition)) {
-      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: Object.assign({}, functionDefinition.arguments ?? {}, functionDefinition.args ?? {}) });
+      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: callbackArgs(functionDefinition) });
     }
   }
 
@@ -390,7 +391,7 @@ export class UltraLoot {
     result: LootTableEntryResults
   }) {
     if (this.conditionCheck(conditionDefinition)) {
-      return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: Object.assign({}, conditionDefinition.arguments ?? {}, conditionDefinition.args ?? {}) });
+      return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: callbackArgs(conditionDefinition) });
     }
     return true;
   }

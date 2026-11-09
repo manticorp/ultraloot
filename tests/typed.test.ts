@@ -29,3 +29,13 @@ export function contracts () {
   // @ts-expect-error async tables cannot roll synchronously
   asyncEngine.createTable({}).rollSync({ looter: { level: 2 }, context: { multiplier: 1 } });
 }
+
+
+test('typed scalar and array registries preserve their runtime contracts', () => {
+  const ul = new TypedUltraLoot<Item, Player, Context, { scalar: number, list: number[] }, {}>('sync', 123);
+  ul.registerFunction('scalar', ({ looted, args }) => { looted.qty *= args; });
+  ul.registerFunction('list', ({ looted, args }) => { looted.item!.value = args.reduce((sum, value) => sum + value, 0); });
+  const table = ul.createTable({ pools: [{ entries: [{ item: { value: 0 }, functions: [{ function: 'scalar', args: 3 }, { function: 'list', args: [1, 2] }] }] }] });
+  const result = table.rollSync({ looter: { level: 1 }, context: { multiplier: 1 } });
+  expect(result[0].qty).toBe(3); expect(result[0].item!.value).toBe(3);
+});

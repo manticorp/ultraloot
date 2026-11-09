@@ -1,3 +1,4 @@
+import { callbackArgs } from './args';
 import type { RollTraceEvent, RollTraceSink } from './trace';
 import { invokeSync } from './sync';
 import log from './log';
@@ -436,7 +437,7 @@ export default class LootTable {
         console.error(err);
       }
     } else {
-      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: functionDefinition.args ?? functionDefinition.arguments });
+      return await this.functions[functionDefinition.function]({ rng, looted, looter, context, result, args: callbackArgs(functionDefinition) });
     }
   }
 
@@ -477,7 +478,7 @@ export default class LootTable {
         return true;
       }
     }
-    return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: conditionDefinition.args ?? conditionDefinition.arguments });
+    return await this.conditions[conditionDefinition.function]({ rng, looter, context, result, args: callbackArgs(conditionDefinition) });
   }
 
   /**
@@ -517,7 +518,7 @@ export default class LootTable {
         console.error(err);
       }
     } else {
-      return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: functionDefinition.args ?? functionDefinition.arguments }, 'function');
+      return invokeSync(this.functions[functionDefinition.function], { rng, looted, looter, context, result, args: callbackArgs(functionDefinition) }, 'function');
     }
   }
 
@@ -558,6 +559,6 @@ export default class LootTable {
         return true;
       }
     }
-    return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: conditionDefinition.args ?? conditionDefinition.arguments }, 'condition');
+    return invokeSync(this.conditions[conditionDefinition.function], { rng, looter, context, result, args: callbackArgs(conditionDefinition) }, 'condition');
   }
 }
