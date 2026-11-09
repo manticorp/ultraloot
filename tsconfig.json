@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": ["ESNext" ],
+    "lib": [
+      "ESNext"
+    ],
     "module": "esnext",
     "rootDir": "./src/",
-    "moduleResolution": "node10",
-    "baseUrl": "./",
-    "strict" : true,
+    "moduleResolution": "bundler",
+    "strict": true,
     "declaration": true,
     "sourceMap": true,
     "outDir": "./dist",
@@ -18,9 +19,17 @@
     "jsx": "react",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "types": [
+      "node"
+    ]
   },
-  "include": ["src"],
-  "exclude" : ["dist/", "docs/", "node_modules/", "package.json"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "dist/",
+    "docs/",
+    "node_modules/",
+    "package.json"
+  ]
 }
