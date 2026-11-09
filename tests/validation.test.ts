@@ -47,3 +47,18 @@ test('validation does not invoke callbacks, consume RNG, or mutate definitions',
 test.each([null, [], 1, 'table', { pools: {} }, { pools: [{ entries: [null] }] }])('invalid structure is reported rather than throwing: %p', value => {
   expect(validateTable(value).valid).toBe(false);
 });
+
+test.each(['int', 'normal_int'])('accepts the supported distribution alias %s', type => {
+  const definition = { pools: [{ rolls: { type, min: 1, max: 3 }, entries: [{ id: 'gold', qty: { type, min: 1, max: 3 } }] }] };
+  expect(validateTable(definition).valid).toBe(true);
+});
+
+test.each([{ type: 'dice', n: 2, d: 6 }, { type: 'dice', d: 8 }, { type: 'dice', plus: 2 }, { type: 'dice', dice: '2d6' }])('accepts inline and wrapped dice parameters: %p', rolls => {
+  const definition = { pools: [{ rolls, entries: [{ id: 'gold' }] }] };
+  expect(validateTable(definition).valid).toBe(true);
+});
+
+test('rejects a dice descriptor without any dice parameters', () => {
+  const definition = { pools: [{ rolls: { type: 'dice' } }] };
+  expect(validateTable(definition).valid).toBe(false);
+});

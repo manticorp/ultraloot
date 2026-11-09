@@ -205,13 +205,14 @@ canvas.addEventListener('pointerdown', event => {
   if (location) goTo(location.id); else { target = { x: Math.max(45, Math.min(915, x)), y: Math.max(75, Math.min(585, y)) }; if (reduced) { state.position = { x: target.x, y: target.y }; arrive(); } canvas.focus({ preventScroll: true }); }
 });
 const movementKeys = ['w', 'a', 's', 'd', 'arrowup', 'arrowleft', 'arrowdown', 'arrowright'];
-window.addEventListener('keydown', event => {
-  if (anyDialog() || ['INPUT', 'TEXTAREA', 'BUTTON', 'SUMMARY'].includes(document.activeElement?.tagName)) return;
+canvas.addEventListener('keydown', event => {
+  if (anyDialog()) return;
   const key = event.key.toLowerCase();
   if (movementKeys.includes(key)) { event.preventDefault(); keys.add(key); target = null; }
   if (['e', ' '].includes(key)) { event.preventDefault(); if (!event.repeat) interact(); }
 });
 window.addEventListener('keyup', event => keys.delete(event.key.toLowerCase()));
+canvas.addEventListener('blur', () => keys.clear());
 window.addEventListener('blur', () => { keys.clear(); save(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden) { keys.clear(); save(); } });
 window.addEventListener('pagehide', save);

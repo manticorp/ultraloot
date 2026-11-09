@@ -225,7 +225,7 @@ export function restoreGame (text) {
   if (!Array.isArray(saved.completed) || new Set(saved.completed).size !== saved.completed.length || saved.completed.some(id => !REQUESTS.some(request => request.id === id))) throw new Error('Invalid requests.');
   if (!Array.isArray(saved.discovered) || saved.discovered.some(id => !Object.hasOwn(ITEMS, id))) throw new Error('Invalid field guide.');
   if (!saved.position || !Number.isFinite(saved.position.x) || !Number.isFinite(saved.position.y)) throw new Error('Invalid position.');
-  if (!saved.searches || Object.entries(saved.searches).some(([id, count]) => !SPOTS.some(spot => spot.id === id) || !integer(count, 0, 3))) throw new Error('Invalid search counts.');
+  if (!saved.searches || typeof saved.searches !== 'object' || Array.isArray(saved.searches) || Object.entries(saved.searches).some(([id, count]) => !SPOTS.some(spot => spot.id === id) || !integer(count, 0, 3))) throw new Error('Invalid search counts.');
   const result = { ...createGame(saved.seed), ...saved, lastTrace: [], lastSpot: SPOTS.some(spot => spot.id === saved.lastSpot) ? saved.lastSpot : null };
   result.stats = { searches: integer(saved.stats?.searches, 0, 10000000) ? saved.stats.searches : 0, traded: integer(saved.stats?.traded, 0, 100000000) ? saved.stats.traded : 0 };
   result.position = { x: Math.max(45, Math.min(915, saved.position.x)), y: Math.max(75, Math.min(585, saved.position.y)) };

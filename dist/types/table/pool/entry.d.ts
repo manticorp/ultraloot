@@ -16,13 +16,13 @@ export type LootTableEntryDefinition = {
 };
 export interface FunctionDefinition {
     function: string;
-    arguments?: Array<any> | Record<string, any>;
-    args?: Array<any> | Record<string, any>;
+    arguments?: unknown;
+    args?: unknown;
 }
 export interface ConditionDefinition {
     function: string;
-    arguments?: Array<any> | Record<string, any>;
-    args?: Array<any> | Record<string, any>;
+    arguments?: unknown;
+    args?: unknown;
 }
 export default class LootTableEntry {
     id?: number | string;
