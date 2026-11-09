@@ -734,7 +734,7 @@ describe('testing ultraloot', () => {
     table.registerCondition('test', cond);
 
     return expect(table.roll({ n: 6 }).then(a => {
-      expect(cond).toBeCalled();
+      expect(cond).toHaveBeenCalled();
       expect(a).toHaveLength(9);
       expect(a[0]).toHaveProperty('id', 'gold');
       expect(a[0]).toHaveProperty('qty', 2);
@@ -803,7 +803,7 @@ describe('testing ultraloot', () => {
     table.registerCondition('test', cond);
 
     return expect(table.roll({ n: 6 }).then(a => {
-      expect(cond).toBeCalled();
+      expect(cond).toHaveBeenCalled();
       expect(a).toHaveLength(0);
     })).resolves.not.toThrow();
   });
@@ -860,7 +860,7 @@ describe('testing ultraloot', () => {
     table.registerCondition('test', cond);
 
     return expect(table.roll({ n: 6 }).then(a => {
-      expect(cond).toBeCalled();
+      expect(cond).toHaveBeenCalled();
       expect(a).toHaveLength(0);
     })).resolves.not.toThrow();
   });
@@ -917,7 +917,7 @@ describe('testing ultraloot', () => {
     table.registerCondition('test', cond);
 
     return expect(table.roll({ n: 6 }).then(a => {
-      expect(cond).toBeCalled();
+      expect(cond).toHaveBeenCalled();
       expect(a).toHaveLength(6);
     })).resolves.not.toThrow();
   });
@@ -985,7 +985,7 @@ describe('testing ultraloot', () => {
     table.registerCondition('testfalse', condfalse);
 
     return expect(table.roll({ n: 6 }).then(a => {
-      expect(condfalse).toBeCalled();
+      expect(condfalse).toHaveBeenCalled();
       expect(a).toHaveLength(0);
     })).resolves.not.toThrow();
   });
@@ -1081,8 +1081,8 @@ describe('testing ultraloot', () => {
     table.registerFunction('test', func);
 
     return expect(table.roll({ n: 6 }).then(a => {
-      expect(cond).toBeCalled();
-      expect(func).toBeCalled();
+      expect(cond).toHaveBeenCalled();
+      expect(func).toHaveBeenCalled();
       expect(a).toHaveLength(6);
     })).resolves.not.toThrow();
   });
@@ -1126,7 +1126,7 @@ describe('testing ultraloot', () => {
     table.registerFunction('test', func);
 
     return expect(table.roll({ n: 6 }).then(a => {
-      expect(func).toBeCalled();
+      expect(func).toHaveBeenCalled();
       expect(a).toHaveLength(6);
     })).resolves.not.toThrow();
   });
@@ -1187,8 +1187,8 @@ describe('testing ultraloot', () => {
     table.registerFunction('test', func);
 
     return expect(table.roll({ n: 6, looter, context }).then(a => {
-      expect(cond).toBeCalledTimes(6);
-      expect(func).toBeCalledTimes(1);
+      expect(cond).toHaveBeenCalledTimes(6);
+      expect(func).toHaveBeenCalledTimes(1);
       expect(a).toHaveLength(6);
     })).resolves.not.toThrow();
   });
@@ -1255,8 +1255,8 @@ describe('testing ultraloot', () => {
 
     return expect(parent.roll({ n: 6 }).then(a => {
       expect(a).toHaveLength(6);
-      expect(cond).toBeCalledTimes(6);
-      expect(func).toBeCalledTimes(1);
+      expect(cond).toHaveBeenCalledTimes(6);
+      expect(func).toHaveBeenCalledTimes(1);
     })).resolves.not.toThrow();
   });
 
@@ -1322,8 +1322,8 @@ describe('testing ultraloot', () => {
 
     return expect(parent.roll({ n: 6 }).then(a => {
       expect(a).toHaveLength(6);
-      expect(cond).toBeCalledTimes(6);
-      expect(func).toBeCalledTimes(6);
+      expect(cond).toHaveBeenCalledTimes(6);
+      expect(func).toHaveBeenCalledTimes(6);
     })).resolves.not.toThrow();
   });
 
@@ -1389,8 +1389,8 @@ describe('testing ultraloot', () => {
 
     return expect(parent.roll({ n: 6 }).then(a => {
       expect(a).toHaveLength(6);
-      expect(cond).toBeCalledTimes(6);
-      expect(func).toBeCalledTimes(1);
+      expect(cond).toHaveBeenCalledTimes(6);
+      expect(func).toHaveBeenCalledTimes(1);
     })).resolves.not.toThrow();
   });
 
@@ -1853,8 +1853,8 @@ describe('testing ultraloot', () => {
     table.registerFunction('test_fn_54387658476', func);
 
     return expect(table.roll({ n: 6 }).then(a => {
-      expect(cond).toBeCalled();
-      expect(func).toBeCalled();
+      expect(cond).toHaveBeenCalled();
+      expect(func).toHaveBeenCalled();
       expect(a).toHaveLength(6);
     })).resolves.not.toThrow();
   });
@@ -1908,8 +1908,8 @@ describe('testing ultraloot', () => {
     table.registerFunction('test_fn_12345', func);
 
     return expect(table.roll({ n: 6 }).then(a => {
-      expect(cond).toBeCalled();
-      expect(func).not.toBeCalled();
+      expect(cond).toHaveBeenCalled();
+      expect(func).not.toHaveBeenCalled();
       expect(a).toHaveLength(6);
     })).resolves.not.toThrow();
   });
