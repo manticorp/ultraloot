@@ -120,6 +120,7 @@ type LoadState = { active: Set<string>, tables: Map<string, LootTable>, rootPath
  * const ultralootCustomRng = new UltraLoot(rngSource);   // using a custom RNG
  */
 export class UltraLoot {
+  private constructingTables = new Set<object>();
   static version = CURRENT_VERSION;
 
   version = CURRENT_VERSION;
@@ -429,13 +430,20 @@ export class UltraLoot {
   }
 
   public createTable (def: LootTable | LootTableDefinition | LootTableEasyDefinition | LootTableJsonDefinition): LootTable {
-    if (def instanceof LootTable || this.isLootTableDefinition(def)) {
-      return new LootTable({ ...def, ul: this, rng: this.makeRng(def.rng ?? this.getRng()) });
+    if (!def || typeof def !== 'object') throw new Error('Expected a loot table object');
+    if (this.constructingTables.has(def)) throw new RecursiveTableError('Recursive inline table definition');
+    this.constructingTables.add(def);
+    try {
+      if (def instanceof LootTable || this.isLootTableDefinition(def)) {
+        return new LootTable({ ...def, ul: this, rng: this.makeRng(def.rng ?? this.getRng()) });
+      }
+      if (this.isEasyLootTableDefinition(def)) {
+        return new LootTable(this.transformEasyToProperLootTableDefinition({ ...def, rng: def.rng ?? this.getRng() }));
+      }
+      throw new Error('Cannot create loot table from these params');
+    } finally {
+      this.constructingTables.delete(def);
     }
-    if (this.isEasyLootTableDefinition(def)) {
-      return new LootTable(this.transformEasyToProperLootTableDefinition({ ...def, rng: def.rng ?? this.getRng() }));
-    }
-    throw new Error('Cannot create loot table from these params');
   }
 
   /**
@@ -550,6 +558,9 @@ export class UltraLoot {
   protected transformEasyToProperLootTablePoolDefinition (def: LootTablePoolEasyDefinition): LootTablePoolDefinition {
     const transformedEntries = [];
     for (let entry of (def.entries ?? [])) {
+      if (!(entry instanceof LootTableEntry) && !(entry instanceof LootTable) && 'type' in entry && entry.type === 'table' && entry.item && typeof entry.item === 'object' && !(entry.item instanceof LootTable)) {
+        entry = { ...entry, item: this.createTable(entry.item) };
+      }
       if (this.isEasyLootTableDefinition(entry)) {
         if (typeof entry.pools !== 'undefined' && Array.isArray(entry.pools)) {
           entry = this.createTable(entry);
@@ -862,19 +873,27 @@ export class UltraLoot {
     return this.loadTables(url, options);
   }
 
-  private async resolveDefinition (definition: LootTableJsonDefinition, load: (filename: string) => Promise<LootTable>): Promise<LootTable> {
+  private async resolveDefinition (definition: LootTableJsonDefinition, load: (filename: string) => Promise<LootTable>, active = new Set<object>()): Promise<LootTable> {
     if (!definition || typeof definition !== 'object') throw new Error('Expected a loot table definition');
-    const pools = [];
-    for (const pool of definition.pools ?? []) {
-      const entries = [];
-      for (const entry of pool.entries ?? []) {
-        const { type, ...copy } = entry;
-        if (type === 'table') copy.item = await load(String(entry.item));
-        entries.push(copy);
+    if (active.has(definition)) throw new RecursiveTableError('Recursive inline table definition');
+    active.add(definition);
+    try {
+      const pools = [];
+      for (const pool of definition.pools ?? []) {
+        const entries = [];
+        for (const entry of pool.entries ?? []) {
+          const { type, ...copy } = entry;
+          if (type === 'table') copy.item = entry.item instanceof LootTable ? entry.item
+            : entry.item && typeof entry.item === 'object' ? await this.resolveDefinition(entry.item, load, active)
+              : await load(String(entry.item));
+          entries.push(copy);
+        }
+        pools.push({ ...pool, entries });
       }
-      pools.push({ ...pool, entries });
+      return this.createTable({ ...definition, pools });
+    } finally {
+      active.delete(definition);
     }
-    return this.createTable({ ...definition, pools });
   }
 
   async resolveTable (table: LootTableJsonDefinition, options: LoadSaveArgs = {}): Promise<LootTable> {

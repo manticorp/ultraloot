@@ -65,3 +65,27 @@ test('saves and loads a complete graph with RNG state and unique flags', async (
   expect(restored.leaf.pools[0].entries[0]).toHaveProperty('unique', true);
   await expect(ul.saveTable(root, { path: directory })).rejects.toThrow();
 });
+
+
+test('constructs and loads recursive inline children without mutating JSON definitions', async () => {
+  const definition = { id: 'root', pools: [{ entries: [{ type: 'table', item: { id: 'child', pools: [{ entries: [{ type: 'table', item: { id: 'leaf', pools: [{ entries: [{ id: 'gold' }] }] } }] }] } }] }] };
+  const before = JSON.stringify(definition);
+  const ul = new UltraLoot(123);
+  expect(ul.validateTable(definition).valid).toBe(true);
+  expect(ul.createTable(definition).rollSync()[0].id).toBe('gold');
+  expect((await ul.resolveTable(definition)).rollSync()[0].id).toBe('gold');
+  await writeFile(path.join(directory, 'inline.json'), before);
+  expect((await ul.loadTable(path.join(directory, 'inline.json'))).rollSync()[0].id).toBe('gold');
+  expect(JSON.stringify(definition)).toBe(before);
+});
+
+test('rejects inline object cycles while allowing a shared inline child', async () => {
+  const root: any = { id: 'root', pools: [{ entries: [] }] };
+  root.pools[0].entries.push({ type: 'table', item: root });
+  const ul = new UltraLoot(123);
+  expect(() => ul.createTable(root)).toThrow(/recursive/i);
+  await expect(ul.resolveTable(root)).rejects.toThrow(/recursive/i);
+  const child = { id: 'shared', pools: [{ entries: [{ id: 'gold' }] }] };
+  const shared = { id: 'root', pools: [{ rolls: 2, entries: [{ type: 'table', item: child }, { type: 'table', item: child }] }] };
+  expect(ul.createTable(shared).rollSync()).toHaveLength(2);
+});
