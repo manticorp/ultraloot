@@ -24,3 +24,9 @@ test.each([
 ])('published schema rejects invalid descriptors: %p', definition => {
   expect(validate(definition)).toBe(false);
 });
+
+
+test.each(['int', 'normal_int'])('accepts the supported distribution alias %s', type => {
+  const definition = { pools: [{ rolls: { type, min: 1, max: 3 }, entries: [{ id: 'gold', qty: { type, min: 1, max: 3 } }] }] };
+  expect(validate(definition)).toBe(true);
+});
