@@ -98,8 +98,8 @@ describe('testing entries and entry results', () => {
       expect(result[0].id).toBe('test_id');
       expect(result[0].item.foo.bar).toBe('baz');
       expect(theItem.foo.bar).toBe('eggs');
-      expect(fn).toBeCalled();
-      expect(fn).toBeCalledWith(theItem);
+      expect(fn).toHaveBeenCalled();
+      expect(fn).toHaveBeenCalledWith(theItem);
     }).not.toThrow();
   });
 

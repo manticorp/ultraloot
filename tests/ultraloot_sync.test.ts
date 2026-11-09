@@ -291,7 +291,7 @@ describe('testing ultraloot in a sync fashion', () => {
     table.registerCondition('test', cond);
 
     const a = table.rollSync({ n: 6 });
-    expect(cond).toBeCalled();
+    expect(cond).toHaveBeenCalled();
     expect(a).toHaveLength(9);
     expect(a[0]).toHaveProperty('id', 'gold');
     expect(a[0]).toHaveProperty('qty', 2);
@@ -359,7 +359,7 @@ describe('testing ultraloot in a sync fashion', () => {
     table.registerCondition('test', cond);
 
     const a = table.rollSync({ n: 6 });
-    expect(cond).toBeCalled();
+    expect(cond).toHaveBeenCalled();
     expect(a).toHaveLength(0);
   });
 
@@ -415,7 +415,7 @@ describe('testing ultraloot in a sync fashion', () => {
     table.registerCondition('test', cond);
 
     const a = table.rollSync({ n: 6 });
-    expect(cond).toBeCalled();
+    expect(cond).toHaveBeenCalled();
     expect(a).toHaveLength(6);
   });
 
@@ -471,7 +471,7 @@ describe('testing ultraloot in a sync fashion', () => {
     table.registerCondition('test', cond);
 
     const a = table.rollSync({ n: 6 });
-    expect(cond).toBeCalled();
+    expect(cond).toHaveBeenCalled();
     expect(a).toHaveLength(0);
   });
 
@@ -538,7 +538,7 @@ describe('testing ultraloot in a sync fashion', () => {
     table.registerCondition('testfalse', condfalse);
 
     const a = table.rollSync({ n: 6 });
-    expect(condfalse).toBeCalled();
+    expect(condfalse).toHaveBeenCalled();
     expect(a).toHaveLength(0);
   });
 
@@ -632,8 +632,8 @@ describe('testing ultraloot in a sync fashion', () => {
     table.registerFunction('test', func);
 
     const a = table.rollSync({ n: 6 });
-    expect(cond).toBeCalled();
-    expect(func).toBeCalled();
+    expect(cond).toHaveBeenCalled();
+    expect(func).toHaveBeenCalled();
     expect(a).toHaveLength(6);
   });
 
@@ -693,8 +693,8 @@ describe('testing ultraloot in a sync fashion', () => {
     table.registerFunction('test', func);
 
     const a = table.rollSync({ n: 6, looter, context });
-    expect(cond).toBeCalledTimes(6);
-    expect(func).toBeCalledTimes(1);
+    expect(cond).toHaveBeenCalledTimes(6);
+    expect(func).toHaveBeenCalledTimes(1);
     expect(a).toHaveLength(6);
   });
 
@@ -760,8 +760,8 @@ describe('testing ultraloot in a sync fashion', () => {
 
     const a = parent.rollSync({ n: 6 });
     expect(a).toHaveLength(6);
-    expect(cond).toBeCalled();
-    expect(func).toBeCalled();
+    expect(cond).toHaveBeenCalled();
+    expect(func).toHaveBeenCalled();
   });
 
   test('roll with function and condition on ultraloot', () => {
@@ -826,8 +826,8 @@ describe('testing ultraloot in a sync fashion', () => {
 
     const a = parent.rollSync({ n: 6 });
     expect(a).toHaveLength(6);
-    expect(cond).toBeCalled();
-    expect(func).toBeCalled();
+    expect(cond).toHaveBeenCalled();
+    expect(func).toHaveBeenCalled();
   });
 
   test('roll with function and condition on pool', () => {
@@ -892,8 +892,8 @@ describe('testing ultraloot in a sync fashion', () => {
 
     const a = parent.rollSync({ n: 6 });
     expect(a).toHaveLength(6);
-    expect(cond).toBeCalledTimes(6);
-    expect(func).toBeCalledTimes(6);
+    expect(cond).toHaveBeenCalledTimes(6);
+    expect(func).toHaveBeenCalledTimes(6);
   });
 
   test('roll with missing function', () => {
