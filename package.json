@@ -65,12 +65,9 @@
   "author": "Harry Mustoe-Playfair <harry@mustoeplayfair.com>",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.25.2",
-    "@babel/preset-env": "^7.25.4",
     "@types/jest": "^30.0.0",
     "ajv": "^8.20.0",
     "autoprefixer": "^10.6.2",
-    "babel-loader": "^9.2.1",
     "copyfiles": "^2.4.1",
     "eslint": "^10.14.0",
     "fast-check": "^4.10.2",

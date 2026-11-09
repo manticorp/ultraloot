@@ -57,8 +57,11 @@ describe('Testing RNG Distributions specifically', () => {
     });
 
     test('should generate a value from the Pareto distribution', () => {
-      const result = rng.pareto({ shape: 1, scale: 1 });
-      expect(result).toBeGreaterThanOrEqual(1);
+      prng.results = [0.25, 0.5, 0.75, 1 - Number.EPSILON];
+      expect(prng.pareto({ shape: 1, scale: 1 })).toBeCloseTo(3);
+      expect(prng.pareto({ shape: 1, scale: 1 })).toBeCloseTo(1);
+      expect(prng.pareto({ shape: 1, scale: 1 })).toBeCloseTo(1 / 3);
+      expect(prng.pareto({ shape: 1, scale: 1 })).toBeGreaterThanOrEqual(0);
     });
 
     test('should generate a value from the Poisson distribution', () => {
