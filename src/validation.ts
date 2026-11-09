@@ -43,7 +43,7 @@ export function validateTable (definition: unknown, options: TableValidationOpti
         if (value[key] !== undefined && (typeof value[key] !== 'number' || !Number.isFinite(value[key]) || value[key] < 0)) issue(`${path}.${key}`, 'number.range', 'Expected a finite, non-negative bound');
       }
       if (typeof value.min === 'number' && typeof value.max === 'number' && value.min > value.max) issue(path, 'chancy.bounds', 'Minimum must not exceed maximum');
-      if (value.type === 'dice' && value.dice === undefined) issue(`${path}.dice`, 'chancy.dice', 'A dice distribution requires dice');
+      if (value.type === 'dice' && value.dice === undefined && !['n', 'd', 'plus'].some(key => value[key] !== undefined)) issue(`${path}.dice`, 'chancy.dice', 'A dice distribution requires dice or inline n, d, or plus');
     } else {
       issue(path, 'chancy.type', 'Expected a number, dice expression, numeric choices, or distribution');
     }

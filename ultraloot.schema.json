@@ -98,8 +98,27 @@
                 ]
               },
               "then": {
-                "required": [
-                  "dice"
+                "anyOf": [
+                  {
+                    "required": [
+                      "dice"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "n"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "d"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "plus"
+                    ]
+                  }
                 ]
               }
             }
