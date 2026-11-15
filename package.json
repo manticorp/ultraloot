@@ -77,7 +77,7 @@
     "jest": "^30.5.2",
     "neostandard": "^0.14.1",
     "rimraf": "^6.1.4",
-    "rollup": "^4.24.0",
+    "rollup": "^4.68.2",
     "rollup-plugin-dts": "^6.5.1",
     "terser-webpack-plugin": "^5.3.10",
     "ts-jest": "^29.2.5",
